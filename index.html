@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Research Paper Generator v3.0</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">🎓 Research Paper Generator</h1>
+                <p class="subtitle">v3.0 • Powered by Llama 3.1 + Semantic Scholar RAG</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Home Section with Feature Cards -->
+        <div class="feature-grid">
+            <div class="feature-card" onclick="showSection('literature-survey')">
+                <div class="feature-icon">📚</div>
+                <h3>Literature Survey</h3>
+                <p>Generate comprehensive surveys from research papers</p>
+            </div>
+            <div class="feature-card" onclick="showSection('paper-generation')">
+                <div class="feature-icon">📄</div>
+                <h3>Paper Generation</h3>
+                <p>AI-powered research paper with IEEE formatting</p>
+            </div>
+            <div class="feature-card" onclick="showSection('ocr-extractor')">
+                <div class="feature-icon">📷</div>
+                <h3>OCR Extractor</h3>
+                <p>Extract text from images or printed documents</p>
+            </div>
+        </div>
+
+        <!-- Literature Survey Section -->
+        <div id="literature-survey-section" class="content-section" style="display: none;">
+            <div class="section-header">
+                <h2>📚 Literature Survey Generator</h2>
+                <button class="btn-back" onclick="showHome()">← Back</button>
+            </div>
+
+            <div class="card">
+                <div class="form-group">
+                    <label for="surveyTopic">Research Topic</label>
+                    <input type="text" id="surveyTopic" class="input" 
+                           placeholder="e.g., Machine Learning in Healthcare" maxlength="500">
+                </div>
+
+                <button class="btn-primary btn-large" onclick="generateSurvey()">
+                    Generate Literature Survey
+                </button>
+            </div>
+
+            <div id="surveyResults" class="card" style="display: none;">
+                <h3>Generated Literature Survey</h3>
+                <div id="surveyContent" class="output-content"></div>
+                <button class="btn-secondary" onclick="downloadSurvey()">📥 Download PDF</button>
+            </div>
+        </div>
+
+        <!-- Paper Generation Section -->
+        <div id="paper-generation-section" class="content-section" style="display: none;">
+            <div class="section-header">
+                <h2>📄 AI Research Paper Generator</h2>
+                <button class="btn-back" onclick="showHome()">← Back</button>
+            </div>
+
+            <div class="card">
+                <div class="form-group">
+                    <label for="paperTitle">Paper Title / Topic</label>
+                    <input type="text" id="paperTitle" class="input" 
+                           placeholder="e.g., Deep Learning for Medical Image Analysis" maxlength="500">
+                </div>
+
+                <div class="form-group">
+                    <label for="authorName">Author Name</label>
+                    <input type="text" id="authorName" class="input" 
+                           placeholder="Your Name" value="Your Name">
+                </div>
+
+                <div class="form-group">
+                    <label for="authorEmail">Author Email</label>
+                    <input type="email" id="authorEmail" class="input" 
+                           placeholder="your.email@university.edu" value="your.email@university.edu">
+                </div>
+
+                <div class="form-group">
+                    <label for="authorAffiliation">Affiliation</label>
+                    <input type="text" id="authorAffiliation" class="input" 
+                           placeholder="Department, University" value="Department of CSE, University">
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="useRAG" checked>
+                    <label for="useRAG">Use RAG (Retrieve papers from Semantic Scholar)</label>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="hasUserData" onchange="toggleUserData()">
+                    <label for="hasUserData">I have experimental data to include</label>
+                </div>
+
+                <div id="userDataSection" style="display: none; margin-top: 1rem;">
+                    <div class="form-group">
+                        <label for="methodology">Methodology Details</label>
+                        <textarea id="methodology" class="input textarea" rows="3" 
+                                  placeholder="Tools: TensorFlow 2.x, Dataset: 10,000 images..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="results">Results Data</label>
+                        <textarea id="results" class="input textarea" rows="3" 
+                                  placeholder="Accuracy: 94.5%, F1-Score: 0.92..."></textarea>
+                    </div>
+                </div>
+
+                <button class="btn-primary btn-large" onclick="generatePaper()">
+                    Generate Research Paper
+                </button>
+            </div>
+
+            <div id="paperResults" class="card" style="display: none;">
+                <h3>Generated Research Paper</h3>
+                <div id="paperMetadata" class="metadata"></div>
+                <div id="paperContent" class="output-content"></div>
+                <button class="btn-secondary" onclick="downloadPaper()">📥 Download PDF</button>
+            </div>
+        </div>
+
+        <!-- OCR Extractor Section -->
+        <div id="ocr-extractor-section" class="content-section" style="display: none;">
+            <div class="section-header">
+                <h2>📷 OCR Text Extractor</h2>
+                <button class="btn-back" onclick="showHome()">← Back</button>
+            </div>
+
+            <div class="card">
+                <div class="ocr-instructions">
+                    <h3 style="margin-bottom: 1rem;">How to Use</h3>
+                    <ol style="line-height: 1.8; color: #666;">
+                        <li>Click "Choose Image" button below</li>
+                        <li>Select an image file (JPG or PNG)</li>
+                        <li>Click "Extract Text" to process with OCR</li>
+                        <li>Generate 3 AI-powered title options</li>
+                        <li>Choose a title and proceed to paper/survey generation</li>
+                    </ol>
+                </div>
+
+                <div class="form-group" style="margin-top: 2rem;">
+                    <label>Upload Image</label>
+                    
+                    <div style="text-align: center; padding: 2rem; border: 2px dashed #ccc; border-radius: 8px; background: #fafafa;">
+                        <div id="uploadPlaceholder">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">📤</div>
+                            
+                            <!-- Hidden file input -->
+                            <input 
+                                type="file" 
+                                id="ocrImage" 
+                                accept="image/jpeg,image/jpg,image/png" 
+                                onchange="handleImageUpload(event)"
+                                style="display: none;"
+                            >
+                            
+                            <!-- Visible upload button -->
+                            <button 
+                                type="button"
+                                class="btn-primary" 
+                                onclick="document.getElementById('ocrImage').click()"
+                                style="font-size: 1rem; padding: 0.75rem 2rem; margin-bottom: 0.5rem;"
+                            >
+                                📁 Choose Image
+                            </button>
+                            
+                            <p style="margin-top: 1rem; color: #666; font-size: 0.9rem;">
+                                Supports JPG, PNG (Max 10MB)
+                            </p>
+                        </div>
+                        
+                        <!-- Image Preview (hidden initially) -->
+                        <div id="imagePreview" style="display: none; margin-top: 1rem;">
+                            <img id="previewImg" alt="Preview" 
+                                 style="max-width: 100%; max-height: 400px; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <br>
+                            <button class="btn-secondary" onclick="removeImage()">❌ Remove Image</button>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-primary btn-large" id="extractBtn" onclick="extractText()" disabled 
+                        style="margin-top: 1.5rem; width: 100%;">
+                    🔍 Extract Text from Image
+                </button>
+            </div>
+
+            <!-- Extracted Text Results -->
+            <div id="ocrResults" class="card" style="display: none; margin-top: 2rem;">
+                <h3>📝 Extracted Text</h3>
+                <textarea 
+                    id="extractedText" 
+                    rows="8" 
+                    placeholder="Extracted text will appear here..."
+                    style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 8px; font-family: 'Courier New', monospace; margin: 1rem 0; font-size: 0.95rem;"
+                ></textarea>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn-secondary" onclick="copyToClipboard()">📋 Copy Text</button>
+                    <button class="btn-primary" onclick="generateTitleOptions()">✨ Generate Title Options</button>
+                </div>
+            </div>
+
+            <!-- Title Selection Section -->
+            <div id="titleSelectionSection" class="card" style="display: none; margin-top: 2rem;">
+                <h3>🎯 Select Your Preferred Title</h3>
+                <p style="color: #666; margin-bottom: 1.5rem;">
+                    Choose one of the AI-generated titles below, then proceed to generate your paper or literature survey.
+                </p>
+                
+                <div class="form-group">
+                    <div id="titleOptionsDiv" class="title-options-grid">
+                        <!-- Title options will be inserted here by JavaScript -->
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn-primary btn-large" onclick="proceedToPaperGeneration()" 
+                            style="flex: 1; min-width: 250px;">
+                        📄 Generate Research Paper
+                    </button>
+                    <button class="btn-primary btn-large" onclick="proceedToLiteratureSurvey()" 
+                            style="flex: 1; min-width: 250px;">
+                        📚 Generate Literature Survey
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div id="loading" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p id="loadingText">Processing...</p>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer"></div>
+
+    <!-- JavaScript Files - Load at end -->
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/literature-survey.js"></script>
+    <script src="/static/js/paper-generation.js"></script>
+    <script src="/static/js/ocr-extractor.js"></script>
+</body>
+</html>
