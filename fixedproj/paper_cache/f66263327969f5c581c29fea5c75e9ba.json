@@ -1,0 +1,85 @@
+{
+  "timestamp": "2025-11-24T14:28:52.698444",
+  "query": "Edge Al for smart agriculture involves deploying artificial intelligence",
+  "papers": [
+    {
+      "title": "A Review on the Use of Smart Agriculture Systems to Protect Crops",
+      "authors": [
+        "Gulshan Kumar",
+        "Palash M. Gourshettiwar",
+        "Saurabh Suman",
+        "Shravan Kumar",
+        "Dhiraj Kumar",
+        "Rahul Raushan"
+      ],
+      "year": 2025,
+      "venue": "2025 International Conference on Electronics and Renewable Systems (ICEARS)",
+      "doi": "10.1109/ICEARS64219.2025.10940294",
+      "url": "https://www.semanticscholar.org/paper/23cd900882391a1ea7b7a53df2a211b1d33d5231",
+      "citation_count": 1,
+      "abstract": "Smart agriculture systems leverage the possibilities offered by cutting-edge technologies such as IoT, AI, and remote sensing to revolutionize conventional farming by enhancing resource utilization, production, and crop damage mitigation. Real-time monitoring of soil and crop health, predictive analytics, pest control, and precision irrigation measures are all enabled by these systems. They are able to address major Indian agriculture issues, consequently boosting yield and profitability and promoting environmental sustainability. The largescale deployment of intelligent agriculture systems will change the agriculture landscape in India and will assure long-term food security for an ever-growing population. Challenges include adequate research and future studies in order to better install and achieve smart agricultural systems to protect crops. Intelligent agriculture involves all advanced research, including science and innovations, in national development through space technologies to enhance soil quality, conserve water, and facilitate agriculture information. Space ventures will undergo improved modernization through the introduction of crop sprayers, precision gene editors, epigenetics, big data analytics, IoT, wind and photovoltaic smart energy, AI-enabled robotic applications, and wide-scale desalination technologies. Implementing digital farming systems in developing economies will help their sectors as 85 percent of the global population is set to live in developing countries by 2030. Automation will prove to be necessary since food scarcity is on the rise along with resource wastage. Control strategies such as the IoT, aerial imagery, machine learning, and artificial intelligence will boost production and prevent soil degradation. These advanced technologies are also able to alleviate such issues as plant disease detection, pesticide management, and water application. The introduction of the Internet of Things in the agricultural research world has started with an urge for such communication technologies to communicate and connect devices. The overall assessment of these technologies is, however, vague. This study, therefore, critically analyses 94 papers published on the IoT communication technologies in smart agriculture to highlight the challenges, suggest resolutions, and set recommendations for their application. The need to integrate technology with research was underscored."
+    },
+    {
+      "title": "Modern Trends in the Development of Smart Agriculture Projects",
+      "authors": [
+        "Hassan Abd El Kareem Gomaa"
+      ],
+      "year": 2022,
+      "venue": "International Journal of Modern Agriculture and Environment",
+      "doi": "10.21608/ijmae.2023.214684.1000",
+      "url": "https://www.semanticscholar.org/paper/04b481b348cb2992869ceffa08d963315a0f3b1b",
+      "citation_count": 3,
+      "abstract": ": Smart agriculture projects have become increasingly prominent in recent years, harnessing cutting-edge technologies to revolutionize the agricultural sector. This abstract provides an overview of the modern trends in the development of smart agriculture projects. The advent of Internet of Things (IoT) and sensor technology has played a pivotal role in smart agriculture. Sensors deployed in agricultural settings collect real-time data on parameters like temperature, humidity, and soil moisture. This data is transmitted through IoT networks, enabling remote monitoring and management of farming operations, leading to improved decision-making and resource optimization. Precision agriculture is another significant trend, utilizing technologies such as GPS, drones, and remote sensing. These tools help farmers analyze field variability and deliver inputs precisely, leading to increased efficiency, reduced resource wastage, and enhanced crop yields. Data analytics and artificial intelligence (AI) have emerged as essential components of smart agriculture. Advanced algorithms and AI models process large datasets to derive valuable insights. Predictive analytics and decision support systems assist in weather forecasting, disease detection, and yield estimation, empowering farmers with data-driven recommendations."
+    },
+    {
+      "title": "Generative Digital Twins: A Novel Approach in the IoT Edge-Cloud Continuum",
+      "authors": [
+        "Claudio Savaglio",
+        "Vincenzo Barbuto",
+        "Fabrizio Mangione",
+        "Giancarlo Fortino"
+      ],
+      "year": 2025,
+      "venue": "IEEE Internet of Things Magazine",
+      "doi": "10.1109/IOTM.001.2400035",
+      "url": "https://www.semanticscholar.org/paper/03cb6ffa84a0e0ff25d2f3db054fe89fef2bf9a8",
+      "citation_count": 10,
+      "abstract": "Digital Twins (DTs) are software replicas that not only mirrors physical entities but can also proactively predict, control, optimize and simulate their behavior. Born in the manufacturing sector, this concept after an initial hype stayed untouched for decades. The rise of Internet of Things (IoT) and Artificial Intelligence (AI) enabled DT, respectively, to exchange real-world data and to fully exploit it for fulfilling its own goals. Very recently, Gener-ative AI (Gen-AI) methods started being sporadi-cally applied to DT in different contexts and with different targets. After studying the literature, in this article we provide a definition for the Gener-ative DT (GDT) which embraces main distinctive aspects and potential of current and future Gen-Al-aided DTs. In particular, we first disclose the role of Gen-AI in conciliating the model- and the data-driven approach for the development of DTs. Then, we analyze the added value of main Gen-AI architectures for maximizing the performance of DTs operating in the IoT domain and deployed in the edge-cloud continuum. Finally, we illustrate the potential of a GDT in emblematic Smart City scenarios through a use case involving the prediction of vehicles' trajectories when, due to uncontrolled events, only partial information is accessible. The outlined solution conciliates accuracy and explain-ability in the trajectory prediction with overall system robustness and effectiveness."
+    },
+    {
+      "title": "A Hybrid Convolutional Neural Network-Temporal Attention Mechanism Approach for Real-Time Prediction of Soil Moisture and Temperature in Precision Agriculture",
+      "authors": [
+        "Dr. M.L. Suresh",
+        "Swaroopa Rani",
+        "Dr. T K Rama",
+        "Krishna Rao",
+        "Dr. S. Gokilamani",
+        "D. Y. A. El-Ebiary",
+        "Dr. Prajakta U. Waghe",
+        "J. B. Slimane"
+      ],
+      "year": 2025,
+      "venue": "International Journal of Advanced Computer Science and Applications",
+      "doi": "10.14569/ijacsa.2025.0160556",
+      "url": "https://www.semanticscholar.org/paper/55d187142b27255c9219312440e908be2f72d465",
+      "citation_count": 1,
+      "abstract": "\u2014Precision Agriculture is a combination of Artificial Intelligence (AI) and the Internet of Things (IoT) to improve farming efficiency, sustainability, and overall productivity. This work presents hybrid CNN-TAM (Convolutional Neural Network\u2013Temporal Attention Mechanism) model running on Edge AI devices for real time crop soil temperature and Soil Moisture prognosis. IoT sensors gather long term environmental data which is preprocessed to remove noise and extract meaningful spatial and temporal features. CNN can obtain spatial patterns and TAM assigns dynamic attention weights to important time steps enhancing prediction accuracy. The proposed hybrid model surpasses the conventional methods like Linear Regression, Random Forest, LSTM, and independent CNN with the lowest RMSE (1.7). Different from cloud-based deployments, the Edge AI deployment offers reduced latency, consumes lower bandwidth, and is better suited for scalability, enabling large-scale, real-time precision farming. Experimental outcome confirms enhanced real-time prediction capability allowing farmers to optimize irrigation schedules, reduce resource waste, and improve crop resilience against extreme weather conditions. This ensures sustainable resource management, conserves water and fertilizers, and enhances decision-making in agriculture. The results demonstrate the capability of AI-driven decision-support tools in present-day agriculture and presents a scalable, cost-effective and deployable solution for both small-and large-scale farms. By emphasizing data privacy, real-time processing, and low-latency inference, this research contributes to the area of precision agriculture relying on AI, addressing key challenges such as real-time analytics, unreliable connectivity, and the need for immediate on-site decision-making. The study develops an AI-powered system for intelligent farm management to support sustainable and Smart Irrigation Optimization is used for efficient agricultural practices."
+    },
+    {
+      "title": "Advancements and Applications of Drone-Integrated Geographic Information System Technology - A Review",
+      "authors": [
+        "Md. Muzakkir Quamar",
+        "Baqer M. Al-Ramadan",
+        "K. A. Khan",
+        "Md Shafiullah",
+        "Sami El-Ferik"
+      ],
+      "year": 2023,
+      "venue": "Remote Sensing",
+      "doi": "10.3390/rs15205039",
+      "url": "https://www.semanticscholar.org/paper/43683bd04114c1f2307d62a1a6935dcb0d3a0857",
+      "citation_count": 83,
+      "abstract": "Drones, also known as unmanned aerial vehicles (UAVs), have gained numerous applications due to their low cost, ease of use, vertical takeover and landing, and ability to operate in high-risk or hard-to-reach areas. The contribution of this review is that of building the bridge between drone technology and its application and advancements in the field of Geographic Information System (GIS). The integration of drones and GIS is valuable as it reduces costs and improves accessibility for geospatial data collection. Traditional methods involving aircraft for aerial photography are expensive, requiring the hiring of aircraft, pilots, and photographers. Drones equipped with advanced cameras and artificial intelligence software can replace the conventional technique and at the same time, be economical and time-efficient. The integration of drones and GIS is expected to bring revolutionary benefits in the fields of precision agriculture, urban planning, emergency health response, disaster management, the development of smart cities, food delivery, etc. In this paper, a state-of-the-art review of the deployment of drone-integrated GIS applications in different fields is presented. Numerous techniques and associated challenges related to their development, formulation, implementation, and regulation are highlighted. It has been concluded that drone-integration solutions in GIS improve efficiency and accuracy, enhance the decision-making process, and facilitate better real-time monitoring. The findings of this review paper are intended to help and benefit researchers, business developers, emergency service providers, industrialists, and policymakers."
+    }
+  ]
+}

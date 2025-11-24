@@ -61,17 +61,7 @@ function addAuthor() {
     container.appendChild(authorEntry);
 }
 
-// Toggle user data section
-function toggleUserData() {
-    const checkbox = document.getElementById('hasUserData');
-    const form = document.getElementById('userDataForm');
 
-    if (checkbox.checked) {
-        form.classList.remove('hidden');
-    } else {
-        form.classList.add('hidden');
-    }
-}
 
 // Utility functions
 function formatDate(dateString) {

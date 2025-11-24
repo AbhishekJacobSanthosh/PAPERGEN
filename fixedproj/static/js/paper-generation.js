@@ -6,8 +6,10 @@ function toggleUserData() {
     const section = document.getElementById('userDataSection');
     if (hasData) {
         section.classList.remove('hidden');
+        section.style.setProperty('display', 'block', 'important');
     } else {
         section.classList.add('hidden');
+        section.style.setProperty('display', 'none', 'important');
     }
 }
 

@@ -236,9 +236,11 @@ Generate ONLY the title, nothing else."""
     "{description}"
 
     Requirements for EACH title:
-    - Maximum 12 words
+    - Maximum 18 words
+    - MUST be a complete, standalone title that makes sense on its own
+    - DO NOT end mid-sentence or with incomplete phrases like "directly on" or "involves deploying"
     - Professional academic tone
-    - Capture core research focus
+    - Capture core research focus clearly and completely
     - No quotation marks or extra formatting
     - Title case capitalization
     - Each title should emphasize a different aspect of the research
@@ -286,10 +288,10 @@ Generate ONLY the title, nothing else."""
             while len(titles) < count:
                 # Generate fallback titles
                 words = description.split()
-                if len(words) > 8:
-                    titles.append(' '.join(words[:8]) + '...')
+                if len(words) > 12:
+                    titles.append(' '.join(words[:12]))
                 else:
-                    titles.append(description[:50])
+                    titles.append(description[:80])
             
             return titles[:count]
         

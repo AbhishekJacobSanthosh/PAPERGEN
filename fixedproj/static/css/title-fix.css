@@ -1,0 +1,13 @@
+/* Fix for title option text wrapping */
+.title-option label {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+}
+
+.title-option label span {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    display: inline !important;
+}
