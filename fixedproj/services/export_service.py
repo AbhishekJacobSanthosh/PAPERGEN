@@ -10,7 +10,8 @@ from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER
 from reportlab.lib import colors
 from reportlab.platypus import (
     BaseDocTemplate, PageTemplate, Frame, Paragraph, 
-    Spacer, Table, TableStyle, Image as RLImage
+    Spacer, Table, TableStyle, Image as RLImage,
+    FrameBreak, NextPageTemplate
 )
 import base64
 from models.paper_structure import ResearchPaper
@@ -19,7 +20,7 @@ class ExportService:
     """Service for exporting papers to PDF and DOCX"""
     
     def generate_pdf(self, paper: ResearchPaper) -> BytesIO:
-        """Generate IEEE-format PDF"""
+        """Generate IEEE-format PDF with correct layout"""
         buffer = BytesIO()
         
         # Setup document
@@ -32,14 +33,67 @@ class ExportService:
             bottomMargin=0.75*inch
         )
         
-        # Two-column layout
-        frame_width = (letter[0] - 1.5*inch - 0.2*inch) / 2
-        frame_height = letter[1] - 1.5*inch
+        # Dimensions
+        full_width = letter[0] - 1.5*inch
+        col_width = (full_width - 0.2*inch) / 2
+        full_height = letter[1] - 1.5*inch
         
-        left_frame = Frame(0.75*inch, 0.75*inch, frame_width, frame_height, id='left')
-        right_frame = Frame(0.75*inch + frame_width + 0.2*inch, 0.75*inch, frame_width, frame_height, id='right')
+        # --- First Page Layout ---
+        # Top Frame for Title/Authors (approx 3 inches high, adjustable)
+        header_height = 3.5*inch 
+        body_height = full_height - header_height - 0.2*inch
         
-        doc.addPageTemplates([PageTemplate(id='TwoCol', frames=[left_frame, right_frame])])
+        frame_top = Frame(
+            0.75*inch, 
+            0.75*inch + body_height + 0.2*inch, 
+            full_width, 
+            header_height, 
+            id='top',
+            showBoundary=0
+        )
+        
+        frame_left_1 = Frame(
+            0.75*inch, 
+            0.75*inch, 
+            col_width, 
+            body_height, 
+            id='left_1',
+            showBoundary=0
+        )
+        
+        frame_right_1 = Frame(
+            0.75*inch + col_width + 0.2*inch, 
+            0.75*inch, 
+            col_width, 
+            body_height, 
+            id='right_1',
+            showBoundary=0
+        )
+        
+        # --- Later Pages Layout ---
+        frame_left_2 = Frame(
+            0.75*inch, 
+            0.75*inch, 
+            col_width, 
+            full_height, 
+            id='left_2',
+            showBoundary=0
+        )
+        
+        frame_right_2 = Frame(
+            0.75*inch + col_width + 0.2*inch, 
+            0.75*inch, 
+            col_width, 
+            full_height, 
+            id='right_2',
+            showBoundary=0
+        )
+        
+        # Templates
+        template_first = PageTemplate(id='FirstPage', frames=[frame_top, frame_left_1, frame_right_1])
+        template_later = PageTemplate(id='LaterPage', frames=[frame_left_2, frame_right_2])
+        
+        doc.addPageTemplates([template_first, template_later])
         
         # Define styles
         styles = self._create_styles()
@@ -47,25 +101,56 @@ class ExportService:
         # Build content
         elements = []
         
+        # --- Header Content (Flows into 'top' frame) ---
+        
         # Title
         elements.append(Paragraph(paper.title, styles['pdf_title']))
-        elements.append(Spacer(1, 0.1*inch))
+        elements.append(Spacer(1, 0.2*inch))
         
         # Authors
-        for author in paper.authors:
-            author_block = f"{author.name}<br/><i>{author.affiliation}</i><br/>{author.email}"
-            elements.append(Paragraph(author_block, styles['pdf_author']))
+        if paper.authors:
+            author_data = []
+            row = []
+            for i, author in enumerate(paper.authors):
+                block = [
+                    Paragraph(f"<b>{author.name}</b>", styles['pdf_author_name']),
+                    Paragraph(f"<i>{author.affiliation}</i>", styles['pdf_author_affil']),
+                    Paragraph(f"{author.email}", styles['pdf_author_email'])
+                ]
+                row.append(block)
+                if len(row) == 3 or i == len(paper.authors) - 1:
+                    author_data.append(row)
+                    row = []
+            
+            num_cols = len(author_data[0])
+            # Use full width for author table
+            t_col_width = full_width / num_cols
+            
+            t = Table(author_data, colWidths=[t_col_width] * num_cols)
+            t.setStyle(TableStyle([
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ]))
+            elements.append(t)
+            elements.append(Spacer(1, 0.3*inch))
+            
+        # Force break to left column of first page
+        elements.append(FrameBreak())
         
-        elements.append(Spacer(1, 0.15*inch))
+        # Switch to LaterPage template for subsequent pages
+        elements.append(NextPageTemplate('LaterPage'))
+        
+        # --- Body Content (Flows into 'left_1', 'right_1', then 'left_2', 'right_2'...) ---
         
         # Abstract
-        elements.append(Paragraph("<b><i>Abstract</i></b>—", styles['pdf_section']))
-        elements.append(Paragraph(paper.abstract, styles['pdf_abstract']))
+        abstract_text = f"<b><i>Abstract</i></b>—{paper.abstract}"
+        elements.append(Paragraph(abstract_text, styles['pdf_abstract']))
         elements.append(Spacer(1, 0.1*inch))
         
         # DOI
-        elements.append(Paragraph(f"<b>DOI:</b> {paper.doi}", styles['pdf_body']))
-        elements.append(Spacer(1, 0.15*inch))
+        if paper.doi:
+            elements.append(Paragraph(f"<b>DOI:</b> {paper.doi}", styles['pdf_body']))
+            elements.append(Spacer(1, 0.15*inch))
         
         # Sections
         section_titles = {
@@ -87,9 +172,8 @@ class ExportService:
                     if para.strip():
                         elements.append(Paragraph(para.strip(), styles['pdf_body']))
                 
-                # Add figures after results
                 if key == 'results':
-                    elements.extend(self._add_figures_to_pdf(paper.figures, frame_width, styles))
+                    elements.extend(self._add_figures_to_pdf(paper.figures, col_width, styles))
                 
                 elements.append(Spacer(1, 0.08*inch))
         
@@ -98,7 +182,7 @@ class ExportService:
         buffer.seek(0)
         
         return buffer
-    
+
     def generate_docx(self, paper: ResearchPaper) -> BytesIO:
         """Generate DOCX document"""
         try:
@@ -168,64 +252,90 @@ class ExportService:
             
         except ImportError:
             raise Exception("python-docx not installed. Run: pip install python-docx")
-    
+
     def _create_styles(self):
-        """Create PDF styles - FIXED: No conflicting style names"""
+        """Create PDF styles matching IEEE format"""
         styles = getSampleStyleSheet()
         
-        # Create custom styles with UNIQUE names (prefixed with 'pdf_')
+        # Title
         styles.add(ParagraphStyle(
             name='pdf_title',
             parent=styles['Heading1'],
-            fontSize=18,
-            leading=22,
+            fontSize=24,
+            leading=28,
             alignment=TA_CENTER,
             fontName='Times-Bold',
             spaceAfter=12
         ))
         
+        # Author styles
         styles.add(ParagraphStyle(
-            name='pdf_author',
+            name='pdf_author_name',
             parent=styles['Normal'],
-            fontSize=10,
-            leading=14,
+            fontSize=11,
+            leading=13,
             alignment=TA_CENTER,
-            fontName='Times-Roman',
-            spaceAfter=6
+            fontName='Times-Bold'
         ))
         
+        styles.add(ParagraphStyle(
+            name='pdf_author_affil',
+            parent=styles['Normal'],
+            fontSize=10,
+            leading=12,
+            alignment=TA_CENTER,
+            fontName='Times-Italic'
+        ))
+        
+        styles.add(ParagraphStyle(
+            name='pdf_author_email',
+            parent=styles['Normal'],
+            fontSize=9,
+            leading=11,
+            alignment=TA_CENTER,
+            fontName='Times-Roman'
+        ))
+        
+        # Section Heading (Centered)
         styles.add(ParagraphStyle(
             name='pdf_section',
             parent=styles['Heading2'],
             fontSize=10,
             leading=12,
+            alignment=TA_CENTER,
             fontName='Times-Bold',
             spaceAfter=6,
-            spaceBefore=8
+            spaceBefore=12,
+            textTransform='uppercase' 
         ))
         
+        # Body Text
         styles.add(ParagraphStyle(
             name='pdf_body',
             parent=styles['BodyText'],
-            fontSize=9,
-            leading=11,
+            fontSize=10,
+            leading=12,
             alignment=TA_JUSTIFY,
             fontName='Times-Roman',
             firstLineIndent=12,
             spaceAfter=6
         ))
         
+        # Abstract
         styles.add(ParagraphStyle(
             name='pdf_abstract',
             parent=styles['BodyText'],
             fontSize=9,
             leading=11,
             alignment=TA_JUSTIFY,
-            fontName='Times-Roman',
+            fontName='Times-Bold',
             firstLineIndent=0,
-            spaceAfter=6
+            spaceAfter=6,
+            leftIndent=0,
+            rightIndent=0
         ))
         
+        # Caption
         styles.add(ParagraphStyle(
             name='pdf_caption',
             parent=styles['BodyText'],

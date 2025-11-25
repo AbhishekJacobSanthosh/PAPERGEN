@@ -15,6 +15,16 @@ from config.settings import (
     TEMPERATURE_SETTINGS, WORD_COUNT_TARGET, ENFORCE_COMPLETE_SENTENCES
 )
 
+# Human-style writing guide to reduce AI detection
+HUMAN_STYLE_GUIDE = """
+STYLE GUIDELINES (CRITICAL):
+1. VARIETY: Vary sentence length significantly. Mix short, punchy sentences with longer, complex ones.
+2. VOCABULARY: Avoid these "AI buzzwords": delve, underscore, pivotal, realm, tapestry, landscape, leverage, intricate, multifaceted, paramount.
+3. TONE: Write with a specific, opinionated academic voice. Avoid generic neutrality.
+4. TRANSITIONS: Avoid robotic transitions like "Furthermore", "Moreover", "In conclusion". Use natural flow.
+5. STRUCTURE: Do not use perfect symmetry in paragraphs. Make it feel organic.
+"""
+
 # Generation configuration constants
 TOKEN_MULTIPLIER = 1.8
 RETRY_BASE_DELAY = 2
@@ -103,7 +113,9 @@ CRITICAL RULES:
 9. Do NOT repeat the section title
 10. Do NOT use asterisks or hashtags anywhere
 11. NEVER leave blank placeholders - always use complete specific terms
-12. When referring to topics, use the full specific subject name"""
+12. When referring to topics, use the full specific subject name
+
+{HUMAN_STYLE_GUIDE}"""
         else:
             full_prompt = f"""{prompt}
 
@@ -118,7 +130,9 @@ CRITICAL RULES:
 8. Do NOT repeat the section title
 9. Do NOT use asterisks or hashtags anywhere
 10. NEVER leave blank placeholders - always use complete specific terms
-11. When referring to topics, use the full specific subject name"""
+11. When referring to topics, use the full specific subject name
+
+{HUMAN_STYLE_GUIDE}"""
         
         for attempt in range(MAX_RETRIES):
             try:
@@ -136,7 +150,6 @@ CRITICAL RULES:
                     },
                     timeout=OLLAMA_TIMEOUT
                 )
-                
                 if response.status_code == 200:
                     result = response.json()
                     generated_text = result.get('response', '').strip()
@@ -355,6 +368,7 @@ CRITICAL REQUIREMENTS:
 - When referring to the research area, use the full specific subject
 - NEVER write "applications in" without specifying the application
 - End with a strong concluding statement
+- Output ONLY the abstract text. Do NOT start with "Here is...", "This paper...", "Abstract:", or any other introductory phrase.
 
 Write the complete abstract now:"""
 
@@ -366,12 +380,13 @@ Write the complete abstract now:"""
         )
         
         if result:
-            word_count = len(result.split())
-            if word_count < MIN_ABSTRACT_WORDS:
-                print(f"[LLM] Warning: Abstract too short ({word_count} words), regenerating...")
-                result = self.generate(prompt, temperature=0.8, max_tokens=400, context=context)
-            
-            return result
+            # Clean up common conversational prefixes
+            cleaned = result.strip()
+            # Remove "Here is the abstract..." type prefixes
+            cleaned = re.sub(r'^(Here is|Sure,|Certainly,|I have generated|The following is).*?(abstract|paper|titled).*?:\s*', '', cleaned, flags=re.IGNORECASE | re.DOTALL)
+            # Remove "Abstract" or "Abstract-" prefix
+            cleaned = re.sub(r'^(Abstract|Summary)[:\-\s]+', '', cleaned, flags=re.IGNORECASE)
+            return cleaned
         
         return "Abstract generation failed."
     
@@ -730,19 +745,6 @@ Write the Discussion section now:"""
 
 Write a {word_count}-word Conclusion section that includes:
 
-1. Summary (3 sentences):
-   - Restate: "This research addressed..."
-   - Summarize main findings about "{title}"
-   - What was accomplished?
-
-2. Key Contributions (3 sentences):
-   - Main contributions to "{title}" field
-   - Novel aspects of this work
-   - Significance to the domain
-
-3. Future Work (3 sentences):
-   - Promising directions for future "{title}" research
-   - How to extend this work
    - Open questions in "{title}" to address
 
 4. Closing Statement (1 sentence):

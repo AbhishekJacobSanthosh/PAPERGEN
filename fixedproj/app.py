@@ -198,10 +198,10 @@ def generate_titles():
             'error': 'Description too short (minimum 10 characters)'
         }), 400
     
-    if len(description) > 1000:
+    if len(description) > 10000:
         return jsonify({
             'success': False,
-            'error': 'Description too long (maximum 1000 characters)'
+            'error': 'Description too long (maximum 10000 characters)'
         }), 400
     
     count = data.get('count', 3)

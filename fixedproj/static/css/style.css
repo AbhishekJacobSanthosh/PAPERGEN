@@ -716,3 +716,90 @@ main {
     margin-bottom: 0.5rem;
     word-break: break-word;
 }
+
+/* IEEE Paper Format Styles */
+.ieee-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.ieee-title {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+    color: var(--text-primary);
+}
+
+.ieee-authors {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.ieee-author-block {
+    text-align: center;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 1rem;
+    max-width: 300px;
+}
+
+.ieee-author-name {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+}
+
+.ieee-author-affil {
+    font-style: italic;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+}
+
+.ieee-author-email {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    color: var(--primary);
+}
+
+.ieee-abstract-section {
+    font-family: 'Times New Roman', Times, serif;
+    margin: 2rem auto;
+    max-width: 90%;
+    text-align: justify;
+    line-height: 1.4;
+}
+
+.ieee-abstract-content {
+    font-weight: bold;
+    font-style: italic;
+}
+
+.ieee-abstract-label {
+    font-weight: bold;
+    font-style: italic;
+    margin-right: 0.5rem;
+}
+
+.ieee-body {
+    font-family: 'Times New Roman', Times, serif;
+    column-count: 2;
+    column-gap: 2rem;
+    text-align: justify;
+}
+
+@media (max-width: 768px) {
+    .ieee-body {
+        column-count: 1;
+    }
+
+    .ieee-authors {
+        flex-direction: column;
+        align-items: center;
+    }
+}

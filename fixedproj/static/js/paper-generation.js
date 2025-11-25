@@ -210,46 +210,69 @@ function displayGeneratedPaper(data) {
     const preview = document.getElementById('paperResults');
     const content = document.getElementById('paperContent');
 
+    // 1. IEEE Header
     let html = `
-        <div class="paper-header">
-            <h1>${data.title}</h1>
-            <div class="authors">
+        <div class="ieee-header">
+            <div class="ieee-title">${data.title}</div>
+            <div class="ieee-authors">
                 ${data.authors.map(a => `
-                    <div class="author">
-                        <strong>${a.name}</strong><br>
-                        ${a.affiliation}<br>
-                        ${a.email}
+                    <div class="ieee-author-block">
+                        <div class="ieee-author-name">${a.name}</div>
+                        <div class="ieee-author-affil">${a.affiliation}</div>
+                        <div class="ieee-author-email">${a.email}</div>
                     </div>
                 `).join('')}
             </div>
-            <div class="date">Generated: ${formatDate(data.generated_date)}</div>
+            <div class="date" style="color: #666; font-size: 0.9rem;">Generated: ${formatDate(data.generated_date)}</div>
+            
             <div class="integrity-section" style="margin-top: 15px;">
-                <button onclick="checkIntegrity()" class="btn-secondary">🛡️ Check Content Integrity</button>
-                <div id="integrityResults" class="hidden" style="margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 5px;">
+                <button onclick="checkIntegrity()" class="btn-secondary btn-small">🛡️ Check Content Integrity</button>
+                <div id="integrityResults" class="hidden" style="margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 5px; text-align: left;">
                     <!-- Results will appear here -->
                 </div>
             </div>
         </div>
     `;
 
-    // Add sections
-    // Add sections
-    const sections = ['abstract', 'introduction', 'literature_review',
+    // 2. Abstract (Special Formatting)
+    if (data.sections['abstract']) {
+        html += `
+            <div class="ieee-abstract-section">
+                <span class="ieee-abstract-label">Abstract—</span>
+                <span class="ieee-abstract-content">${data.sections['abstract']}</span>
+            </div>
+        `;
+    }
+
+    // 3. Body Content (Two Columns)
+    html += '<div class="ieee-body">';
+
+    const sections = ['introduction', 'literature_review',
         'methodology', 'results', 'discussion', 'conclusion'];
+
+    const romanNumerals = {
+        'introduction': 'I',
+        'literature_review': 'II',
+        'methodology': 'III',
+        'results': 'IV',
+        'discussion': 'V',
+        'conclusion': 'VI'
+    };
 
     sections.forEach(section => {
         if (data.sections[section]) {
-            const title = section.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+            const title = section.replace('_', ' ').toUpperCase();
+            const numeral = romanNumerals[section] || '';
             html += `
                 <div class="paper-section">
-                    <h2>${title}</h2>
-                    <p>${data.sections[section].replace(/\n/g, '<br>')}</p>
+                    <h2 style="font-size: 1.2rem; text-align: center; margin-top: 1.5rem; margin-bottom: 1rem;">${numeral}. ${title}</h2>
+                    <p style="text-indent: 1.5rem;">${data.sections[section].replace(/\n/g, '<br>')}</p>
                 </div>
             `;
         }
     });
 
-    // Add Figures and Tables
+    // Add Figures and Tables (Inside columns)
     if (data.figures) {
         Object.values(data.figures).forEach(fig => {
             if (fig.type === 'table') {
@@ -269,7 +292,6 @@ function displayGeneratedPaper(data) {
                     </div>
                 `;
             } else if (fig.type === 'chart') {
-                // Placeholder for charts (could use a library, but for now just text description)
                 html += `
                     <div class="paper-figure">
                         <h4>Figure ${fig.number}: ${fig.caption}</h4>
@@ -280,20 +302,25 @@ function displayGeneratedPaper(data) {
         });
     }
 
-    // Add references
+    // Add references (Inside columns)
     if (data.references && data.references.length > 0) {
-        html += '<div class="paper-section"><h2>References</h2><ol class="references">';
+        html += `
+            <div class="paper-section">
+                <h2 style="font-size: 1.2rem; text-align: center; margin-top: 1.5rem; margin-bottom: 1rem;">REFERENCES</h2>
+                <ol class="references">
+        `;
         data.references.forEach(ref => {
             if (typeof ref === 'string') {
                 html += `<li>${ref}</li>`;
             } else {
-                // Format object: Authors, "Title", Venue, Year.
                 const authors = Array.isArray(ref.authors) ? ref.authors.join(', ') : ref.authors;
                 html += `<li>${authors}, "${ref.title}", <em>${ref.venue}</em>, ${ref.year}.</li>`;
             }
         });
         html += '</ol></div>';
     }
+
+    html += '</div>'; // End ieee-body
 
     content.innerHTML = html;
     preview.classList.remove('hidden');

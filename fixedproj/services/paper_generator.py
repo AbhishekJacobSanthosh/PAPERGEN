@@ -1,7 +1,10 @@
 import uuid
 import logging
+import os
+import json
 from datetime import datetime
 from typing import List, Dict, Optional
+import concurrent.futures
 
 from models.paper_structure import ResearchPaper, Author, Reference, Figure
 from models.llm import LLMInterface
@@ -72,73 +75,88 @@ class PaperGeneratorService:
         # Step 4: Generate sections
         sections = {}
         previous_sections = {'abstract': abstract}
-        section_order = [
-            'introduction', 'literature_review', 'methodology',
-            'results', 'discussion', 'conclusion'
-        ]
         
-        for idx, section_name in enumerate(section_order, 1):
-            logger.info(f"[{idx}/6] Generating {section_name}...")
-            use_context = section_name in ['introduction', 'literature_review', 'discussion']
+        # Sequential sections (dependent on previous context)
+        sequential_sections = ['introduction']
+        
+        for section_name in sequential_sections:
+            logger.info(f"Generating {section_name}...")
+            use_context = True # Introduction always uses context
             context = rag_context if use_rag and use_context else ""
             
-            # User data prep
-            user_context = None
-            if user_data:
-                if section_name == 'methodology':
-                    method_parts = []
-                    if user_data.get('methodology'):
-                        method_parts.append(user_data['methodology'])
-                    if user_data.get('dataset', {}).get('name'):
-                        dataset_info = f"Dataset: {user_data['dataset']['name']}"
-                        if user_data['dataset'].get('size'):
-                            dataset_info += f", {user_data['dataset']['size']}"
-                        if user_data['dataset'].get('details'):
-                            dataset_info += f". {user_data['dataset']['details']}"
-                        method_parts.append(dataset_info)
-                    if method_parts:
-                        user_context = '\n\n'.join(method_parts)
-                elif section_name == 'results':
-                    result_parts = []
-                    if user_data.get('results'):
-                        result_parts.append(user_data['results'])
-                    if user_data.get('findings'):
-                        result_parts.append(f"Key Observations: {user_data['findings']}")
-                    if result_parts:
-                        user_context = '\n\n'.join(result_parts)
-            
-            # LLM Generation
             content = self.llm.generate_section(
                 section_name=section_name,
                 title=title,
                 previous_sections=previous_sections,
                 rag_context=context,
-                user_data=user_context
+                user_data=None # Intro usually doesn't need user data directly
             )
-
+            
             if not content:
-                logger.error(f"Failed to generate {section_name}, using fallback")
                 content = f"[{section_name.title()} content generation failed]"
             else:
-                # Debug pre-clean
-                is_preserved, warning = self.text_processor.validate_title_preserved(content, title)
-                if not is_preserved:
-                    logger.error(f"[Pre-clean] {warning} - Content starts with: {content[:120]}")
-                for _ in range(2):
-                    content, issues = self.text_processor.validate_topic_references(content, title)
-                    if issues:
-                        logger.debug(f"[Validation] {section_name}: " + ', '.join(issues))
                 content = self.text_processor.clean_generated_text(
                     content, section_name=section_name, paper_title=title
                 )
-                # Debug post-clean
-                is_preserved_after, warning_after = self.text_processor.validate_title_preserved(content, title)
-                if not is_preserved_after and is_preserved:
-                    logger.error(f"[Post-clean] ⚠️ TITLE LOST DURING CLEANING: {warning_after}")
-
+                
             sections[section_name] = content
             previous_sections[section_name] = content
             logger.info(f"✓ {section_name}: {self.text_processor.count_words(content)} words")
+
+        # Parallel sections (can run independently given Intro + Abstract)
+        parallel_sections = ['literature_review', 'methodology', 'results', 'discussion', 'conclusion']
+        
+        # Prepare user data context for specific sections
+        section_user_data = {}
+        if user_data:
+            # Methodology context
+            method_parts = []
+            if user_data.get('methodology'):
+                method_parts.append(user_data['methodology'])
+            if user_data.get('dataset', {}).get('name'):
+                dataset_info = f"Dataset: {user_data['dataset']['name']}"
+                if user_data['dataset'].get('size'):
+                    dataset_info += f", {user_data['dataset']['size']}"
+                if user_data['dataset'].get('details'):
+                    dataset_info += f". {user_data['dataset']['details']}"
+                method_parts.append(dataset_info)
+            if method_parts:
+                section_user_data['methodology'] = '\n\n'.join(method_parts)
+
+            # Results context
+            result_parts = []
+            if user_data.get('results'):
+                result_parts.append(user_data['results'])
+            if user_data.get('findings'):
+                result_parts.append(f"Key Observations: {user_data['findings']}")
+            if result_parts:
+                section_user_data['results'] = '\n\n'.join(result_parts)
+
+        logger.info(f"Starting parallel generation for: {', '.join(parallel_sections)}")
+        
+        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+            future_to_section = {
+                executor.submit(
+                    self._generate_section_task, 
+                    section_name, 
+                    title, 
+                    previous_sections.copy(), # Pass copy of current context
+                    rag_context if use_rag else "",
+                    section_user_data.get(section_name)
+                ): section_name 
+                for section_name in parallel_sections
+            }
+            
+            for future in concurrent.futures.as_completed(future_to_section):
+                section_name = future_to_section[future]
+                try:
+                    content = future.result()
+                    sections[section_name] = content
+                    logger.info(f"✓ {section_name}: {self.text_processor.count_words(content)} words")
+                except Exception as e:
+                    logger.error(f"Error generating {section_name}: {e}")
+                    sections[section_name] = f"[{section_name.title()} generation failed]"
+
         
         # Step 5: Generate references
         logger.info("Generating references...")
@@ -231,50 +249,82 @@ class PaperGeneratorService:
         abstract = self.llm.generate_abstract(title, rag_context)
         abstract = self.text_processor.clean_generated_text(abstract, section_name="abstract", paper_title=title)
         
-        # Step 4: Sections
+        # Step 4: Generate sections
         sections = {}
         previous_sections = {'abstract': abstract}
-        section_order = ['introduction', 'literature_review', 'methodology', 'results', 'discussion', 'conclusion']
         
-        for idx, section_name in enumerate(section_order, 1):
-            yield json.dumps({
-                'status': 'section_start', 
-                'section': section_name, 
-                'message': f'Writing {section_name.replace("_", " ")} ({idx}/6)...'
-            })
+        # 4a. Sequential Introduction
+        yield json.dumps({
+            'status': 'section_start', 
+            'section': 'introduction', 
+            'message': 'Writing Introduction...'
+        })
+        
+        intro_content = self.llm.generate_section(
+            section_name='introduction',
+            title=title,
+            previous_sections=previous_sections,
+            rag_context=rag_context if use_rag else "",
+            user_data=None
+        )
+        
+        if intro_content:
+            intro_content = self.text_processor.clean_generated_text(intro_content, section_name='introduction', paper_title=title)
+        else:
+            intro_content = "[Introduction generation failed]"
             
-            use_context = section_name in ['introduction', 'literature_review', 'discussion']
-            context = rag_context if use_rag and use_context else ""
-            
-            # User data prep (simplified for stream)
-            user_context = None
-            if user_data:
-                if section_name == 'methodology' and (user_data.get('methodology') or user_data.get('dataset')):
-                    user_context = str(user_data.get('methodology', '')) + str(user_data.get('dataset', ''))
-                elif section_name == 'results' and (user_data.get('results') or user_data.get('findings')):
-                    user_context = str(user_data.get('results', '')) + str(user_data.get('findings', ''))
+        sections['introduction'] = intro_content
+        previous_sections['introduction'] = intro_content
+        
+        yield json.dumps({
+            'status': 'section_complete', 
+            'section': 'introduction',
+            'preview': intro_content[:100] + "..."
+        })
 
-            content = self.llm.generate_section(
-                section_name=section_name,
-                title=title,
-                previous_sections=previous_sections,
-                rag_context=context,
-                user_data=user_context
-            )
+        # 4b. Parallel Sections
+        parallel_sections = ['literature_review', 'methodology', 'results', 'discussion', 'conclusion']
+        
+        yield json.dumps({
+            'status': 'parallel_start',
+            'message': 'Generating remaining sections in parallel...'
+        })
+        
+        # Prepare user data
+        section_user_data = {}
+        if user_data:
+            if user_data.get('methodology') or user_data.get('dataset'):
+                section_user_data['methodology'] = str(user_data.get('methodology', '')) + str(user_data.get('dataset', ''))
+            if user_data.get('results') or user_data.get('findings'):
+                section_user_data['results'] = str(user_data.get('results', '')) + str(user_data.get('findings', ''))
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+            future_to_section = {
+                executor.submit(
+                    self._generate_section_task, 
+                    section_name, 
+                    title, 
+                    previous_sections.copy(), 
+                    rag_context if use_rag else "",
+                    section_user_data.get(section_name)
+                ): section_name 
+                for section_name in parallel_sections
+            }
             
-            if not content:
-                content = f"[{section_name.title()} content generation failed]"
-            else:
-                content = self.text_processor.clean_generated_text(content, section_name=section_name, paper_title=title)
-                
-            sections[section_name] = content
-            previous_sections[section_name] = content
-            
-            yield json.dumps({
-                'status': 'section_complete', 
-                'section': section_name,
-                'preview': content[:100] + "..."
-            })
+            for future in concurrent.futures.as_completed(future_to_section):
+                section_name = future_to_section[future]
+                try:
+                    content = future.result()
+                    sections[section_name] = content
+                    
+                    yield json.dumps({
+                        'status': 'section_complete', 
+                        'section': section_name,
+                        'preview': content[:100] + "..."
+                    })
+                except Exception as e:
+                    logger.error(f"Stream error {section_name}: {e}")
+                    sections[section_name] = f"[{section_name} failed]"
 
         # Step 5: References
         yield json.dumps({'status': 'references', 'message': 'Compiling references...'})
@@ -312,6 +362,9 @@ class PaperGeneratorService:
             'total_words': total_words,
             'rag_enabled': use_rag
         }
+        
+        # Auto-save the paper
+        self.save_paper(paper)
         
         yield json.dumps({'status': 'complete', 'paper': paper.to_dict()})
     
@@ -414,3 +467,47 @@ class PaperGeneratorService:
         year = datetime.now().year
         unique_id = uuid.uuid4().hex[:8].upper()
         return f"10.1109/ACCESS.{year}.{unique_id}"
+
+    def _generate_section_task(self, section_name, title, previous_sections, rag_context, user_data):
+        """Helper for parallel execution"""
+        logger.info(f"Generating {section_name} (Parallel)...")
+        content = self.llm.generate_section(
+            section_name=section_name,
+            title=title,
+            previous_sections=previous_sections,
+            rag_context=rag_context,
+            user_data=user_data
+        )
+        
+        if content:
+            content = self.text_processor.clean_generated_text(
+                content, section_name=section_name, paper_title=title
+            )
+        else:
+            content = f"[{section_name} failed]"
+            
+        return content
+
+    def save_paper(self, paper: ResearchPaper) -> str:
+        """Save paper to disk as JSON"""
+        try:
+            # Create directory if not exists
+            save_dir = os.path.join(os.getcwd(), 'saved_papers')
+            os.makedirs(save_dir, exist_ok=True)
+            
+            # Create filename
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            safe_title = "".join([c for c in paper.title if c.isalnum() or c in (' ', '-', '_')]).strip()
+            safe_title = safe_title.replace(' ', '_')[:50]
+            filename = f"{timestamp}_{safe_title}.json"
+            filepath = os.path.join(save_dir, filename)
+            
+            # Save JSON
+            with open(filepath, 'w', encoding='utf-8') as f:
+                json.dump(paper.to_dict(), f, indent=4, ensure_ascii=False)
+                
+            logger.info(f"Paper saved to: {filepath}")
+            return filepath
+        except Exception as e:
+            logger.error(f"Failed to save paper: {e}")
+            return ""

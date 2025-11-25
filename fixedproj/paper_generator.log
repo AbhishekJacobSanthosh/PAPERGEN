@@ -1236,3 +1236,430 @@ NameError: name 'DOWNLOAD_DIR' is not defined
 2025-11-25 12:55:37,388 - __main__ - INFO - Retrieved latest paper: /home/cselab3/Documents/ms22cs006/PAPERGEN/fixedproj/saved_papers/paper_20251124_151910.json
 2025-11-25 12:55:37,388 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 12:55:37] "GET /api/latest-paper HTTP/1.1" 200 -
 2025-11-25 12:55:41,614 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 12:55:41] "POST /api/check-integrity HTTP/1.1" 200 -
+2025-11-25 23:14:33,111 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 23:14:38,675 - services.integrity_service - INFO - Loading AI detection model...
+2025-11-25 23:14:47,647 - huggingface_hub.file_download - WARNING - Xet Storage is enabled for this repo, but the 'hf_xet' package is not installed. Falling back to regular HTTP download. For better performance, install the package with: `pip install huggingface_hub[hf_xet]` or `pip install hf_xet`
+2025-11-25 23:16:07,276 - services.integrity_service - INFO - AI detection model loaded successfully
+2025-11-25 23:16:07,277 - __main__ - INFO - ======================================================================
+2025-11-25 23:16:07,304 - __main__ - INFO - ======================================================================
+2025-11-25 23:16:07,305 - __main__ - INFO - ======================================================================
+2025-11-25 23:16:07,312 - __main__ - INFO - ======================================================================
+2025-11-25 23:16:07,331 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.20.10.2:8080
+2025-11-25 23:16:07,331 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-11-25 23:16:07,333 - werkzeug - INFO -  * Restarting with stat
+2025-11-25 23:16:14,005 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 23:16:15,973 - services.integrity_service - INFO - Loading AI detection model...
+2025-11-25 23:16:18,146 - services.integrity_service - INFO - AI detection model loaded successfully
+2025-11-25 23:16:18,147 - __main__ - INFO - ======================================================================
+2025-11-25 23:16:18,149 - __main__ - INFO - ======================================================================
+2025-11-25 23:16:18,150 - __main__ - INFO - ======================================================================
+2025-11-25 23:16:18,156 - __main__ - INFO - ======================================================================
+2025-11-25 23:16:18,162 - werkzeug - WARNING -  * Debugger is active!
+2025-11-25 23:16:18,165 - werkzeug - INFO -  * Debugger PIN: 370-200-730
+2025-11-25 23:17:29,670 - werkzeug - INFO -  * Detected change in 'C:\\ai-paper-project\\finalproj\\PAPERGEN\\fixedproj\\services\\paper_generator.py', reloading
+2025-11-25 23:17:30,298 - werkzeug - INFO -  * Restarting with stat
+2025-11-25 23:17:37,397 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 23:17:39,283 - services.integrity_service - INFO - Loading AI detection model...
+2025-11-25 23:17:41,593 - services.integrity_service - INFO - AI detection model loaded successfully
+2025-11-25 23:17:41,594 - __main__ - INFO - ======================================================================
+2025-11-25 23:17:41,596 - __main__ - INFO - ======================================================================
+2025-11-25 23:17:41,597 - __main__ - INFO - ======================================================================
+2025-11-25 23:17:41,602 - __main__ - INFO - ======================================================================
+2025-11-25 23:17:41,608 - werkzeug - WARNING -  * Debugger is active!
+2025-11-25 23:17:41,612 - werkzeug - INFO -  * Debugger PIN: 370-200-730
+2025-11-25 23:20:43,781 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:20:43] "GET / HTTP/1.1" 200 -
+2025-11-25 23:20:44,084 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:20:44] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-11-25 23:20:44,089 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:20:44] "GET /static/js/ocr-extractor.js HTTP/1.1" 200 -
+2025-11-25 23:20:44,090 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:20:44] "GET /static/css/integrity.css HTTP/1.1" 200 -
+2025-11-25 23:20:44,108 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:20:44] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-11-25 23:20:44,109 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:20:44] "GET /static/css/title-fix.css HTTP/1.1" 200 -
+2025-11-25 23:20:44,110 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:20:44] "GET /static/js/paper-generation.js HTTP/1.1" 200 -
+2025-11-25 23:20:44,113 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:20:44] "GET /static/js/literature-survey.js HTTP/1.1" 200 -
+2025-11-25 23:20:44,755 - __main__ - WARNING - 404 error: http://localhost:8080/favicon.ico
+2025-11-25 23:20:44,756 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:20:44] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-11-25 23:21:07,722 - __main__ - WARNING - LLM warmup failed
+2025-11-25 23:21:07,723 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:21:07] "[35m[1mPOST /api/warmup HTTP/1.1[0m" 500 -
+2025-11-25 23:21:33,654 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:21:33] "GET / HTTP/1.1" 200 -
+2025-11-25 23:21:33,694 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:21:33] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-11-25 23:21:33,696 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:21:33] "GET /static/css/title-fix.css HTTP/1.1" 200 -
+2025-11-25 23:21:33,699 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:21:33] "GET /static/css/integrity.css HTTP/1.1" 200 -
+2025-11-25 23:21:33,701 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:21:33] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-11-25 23:21:33,703 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:21:33] "GET /static/js/literature-survey.js HTTP/1.1" 200 -
+2025-11-25 23:21:33,711 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:21:33] "GET /static/js/paper-generation.js HTTP/1.1" 200 -
+2025-11-25 23:21:33,713 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:21:33] "GET /static/js/ocr-extractor.js HTTP/1.1" 200 -
+2025-11-25 23:21:34,217 - __main__ - WARNING - 404 error: http://localhost:8080/favicon.ico
+2025-11-25 23:21:34,218 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:21:34] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-11-25 23:21:37,136 - __main__ - INFO - LLM warmup successful
+2025-11-25 23:21:37,137 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:21:37] "POST /api/warmup HTTP/1.1" 200 -
+2025-11-25 23:22:06,600 - __main__ - INFO - Streaming paper generation - Topic: Photonic simulation of localization phenomena usin...
+2025-11-25 23:22:06,601 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:22:06] "POST /api/generate-paper-stream HTTP/1.1" 200 -
+2025-11-25 23:23:37,335 - services.paper_generator - INFO - Generating literature_review (Parallel)...
+2025-11-25 23:23:37,337 - services.paper_generator - INFO - Generating methodology (Parallel)...
+2025-11-25 23:23:37,339 - services.paper_generator - INFO - Generating results (Parallel)...
+2025-11-25 23:24:15,154 - services.paper_generator - INFO - Generating discussion (Parallel)...
+2025-11-25 23:25:02,403 - services.paper_generator - INFO - Generating conclusion (Parallel)...
+2025-11-25 23:27:30,977 - services.paper_generator - INFO - Using 3 retrieved papers for references
+2025-11-25 23:27:30,978 - services.paper_generator - INFO - Generating 12 generic references to meet minimum of 15
+2025-11-25 23:27:39,292 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:27:39] "POST /api/check-integrity HTTP/1.1" 200 -
+2025-11-25 23:28:06,211 - __main__ - INFO - Generating paper PDF - Title: Photonic simulation of localization phenomena usin...
+2025-11-25 23:28:06,258 - __main__ - INFO - Paper PDF generated successfully
+2025-11-25 23:28:06,258 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:28:06] "POST /api/download-pdf HTTP/1.1" 200 -
+2025-11-25 23:30:10,078 - werkzeug - INFO -  * Detected change in 'C:\\ai-paper-project\\finalproj\\PAPERGEN\\fixedproj\\config\\settings.py', reloading
+2025-11-25 23:30:10,876 - werkzeug - INFO -  * Restarting with stat
+2025-11-25 23:30:19,856 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 23:30:22,551 - services.integrity_service - INFO - Loading AI detection model...
+2025-11-25 23:30:24,984 - services.integrity_service - INFO - AI detection model loaded successfully
+2025-11-25 23:30:24,984 - __main__ - INFO - ======================================================================
+2025-11-25 23:30:24,987 - __main__ - INFO - ======================================================================
+2025-11-25 23:30:24,989 - __main__ - INFO - ======================================================================
+2025-11-25 23:30:24,995 - __main__ - INFO - ======================================================================
+2025-11-25 23:30:25,004 - werkzeug - WARNING -  * Debugger is active!
+2025-11-25 23:30:25,009 - werkzeug - INFO -  * Debugger PIN: 370-200-730
+2025-11-25 23:30:56,249 - werkzeug - INFO -  * Detected change in 'C:\\ai-paper-project\\finalproj\\PAPERGEN\\fixedproj\\models\\llm.py', reloading
+2025-11-25 23:30:57,017 - werkzeug - INFO -  * Restarting with stat
+2025-11-25 23:32:53,009 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 23:32:54,886 - services.integrity_service - INFO - Loading AI detection model...
+2025-11-25 23:32:57,134 - services.integrity_service - INFO - AI detection model loaded successfully
+2025-11-25 23:32:57,135 - __main__ - INFO - ======================================================================
+2025-11-25 23:32:57,137 - __main__ - INFO - ======================================================================
+2025-11-25 23:32:57,138 - __main__ - INFO - ======================================================================
+2025-11-25 23:32:57,144 - __main__ - INFO - ======================================================================
+2025-11-25 23:32:57,157 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.20.10.2:8080
+2025-11-25 23:32:57,158 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-11-25 23:32:57,160 - werkzeug - INFO -  * Restarting with stat
+2025-11-25 23:33:04,123 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 23:33:06,026 - services.integrity_service - INFO - Loading AI detection model...
+2025-11-25 23:33:08,276 - services.integrity_service - INFO - AI detection model loaded successfully
+2025-11-25 23:33:08,276 - __main__ - INFO - ======================================================================
+2025-11-25 23:33:08,278 - __main__ - INFO - ======================================================================
+2025-11-25 23:33:08,279 - __main__ - INFO - ======================================================================
+2025-11-25 23:33:08,285 - __main__ - INFO - ======================================================================
+2025-11-25 23:33:08,292 - werkzeug - WARNING -  * Debugger is active!
+2025-11-25 23:33:08,296 - werkzeug - INFO -  * Debugger PIN: 370-200-730
+2025-11-25 23:33:24,598 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 23:33:26,531 - services.integrity_service - INFO - Loading AI detection model...
+2025-11-25 23:33:28,911 - services.integrity_service - INFO - AI detection model loaded successfully
+2025-11-25 23:33:28,911 - __main__ - INFO - ======================================================================
+2025-11-25 23:33:28,913 - __main__ - INFO - ======================================================================
+2025-11-25 23:33:28,914 - __main__ - INFO - ======================================================================
+2025-11-25 23:33:28,920 - __main__ - INFO - ======================================================================
+2025-11-25 23:33:28,931 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.20.10.2:8080
+2025-11-25 23:33:28,931 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-11-25 23:33:28,933 - werkzeug - INFO -  * Restarting with stat
+2025-11-25 23:33:35,497 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 23:33:37,417 - services.integrity_service - INFO - Loading AI detection model...
+2025-11-25 23:33:39,480 - services.integrity_service - INFO - AI detection model loaded successfully
+2025-11-25 23:33:39,480 - __main__ - INFO - ======================================================================
+2025-11-25 23:33:39,481 - __main__ - INFO - ======================================================================
+2025-11-25 23:33:39,483 - __main__ - INFO - ======================================================================
+2025-11-25 23:33:39,490 - __main__ - INFO - ======================================================================
+2025-11-25 23:33:39,497 - werkzeug - WARNING -  * Debugger is active!
+2025-11-25 23:33:39,500 - werkzeug - INFO -  * Debugger PIN: 370-200-730
+2025-11-25 23:33:41,342 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:33:41] "GET / HTTP/1.1" 200 -
+2025-11-25 23:33:41,527 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:33:41] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-11-25 23:33:41,529 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:33:41] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-11-25 23:33:41,533 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:33:41] "GET /static/css/title-fix.css HTTP/1.1" 200 -
+2025-11-25 23:33:41,535 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:33:41] "GET /static/css/integrity.css HTTP/1.1" 200 -
+2025-11-25 23:33:41,535 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:33:41] "GET /static/js/ocr-extractor.js HTTP/1.1" 200 -
+2025-11-25 23:33:41,538 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:33:41] "GET /static/js/paper-generation.js HTTP/1.1" 200 -
+2025-11-25 23:33:41,538 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:33:41] "GET /static/js/literature-survey.js HTTP/1.1" 200 -
+2025-11-25 23:33:42,085 - __main__ - WARNING - 404 error: http://localhost:8080/favicon.ico
+2025-11-25 23:33:42,085 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:33:42] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-11-25 23:34:05,320 - __main__ - WARNING - LLM warmup failed
+2025-11-25 23:34:05,321 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:34:05] "[35m[1mPOST /api/warmup HTTP/1.1[0m" 500 -
+2025-11-25 23:35:38,423 - __main__ - INFO - Streaming paper generation - Topic: Photonic simulation of localization phenomena usin...
+2025-11-25 23:35:38,424 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:35:38] "POST /api/generate-paper-stream HTTP/1.1" 200 -
+2025-11-25 23:37:26,293 - services.paper_generator - INFO - Generating literature_review (Parallel)...
+2025-11-25 23:37:26,296 - services.paper_generator - INFO - Generating methodology (Parallel)...
+2025-11-25 23:37:26,298 - services.paper_generator - INFO - Generating results (Parallel)...
+2025-11-25 23:38:24,273 - services.paper_generator - INFO - Generating discussion (Parallel)...
+2025-11-25 23:39:10,145 - services.paper_generator - INFO - Generating conclusion (Parallel)...
+2025-11-25 23:41:25,673 - services.paper_generator - INFO - Using 3 retrieved papers for references
+2025-11-25 23:41:25,673 - services.paper_generator - INFO - Generating 12 generic references to meet minimum of 15
+2025-11-25 23:41:43,039 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:41:43] "POST /api/check-integrity HTTP/1.1" 200 -
+2025-11-25 23:41:51,520 - __main__ - INFO - Generating paper PDF - Title: Photonic simulation of localization phenomena usin...
+2025-11-25 23:41:51,610 - __main__ - INFO - Paper PDF generated successfully
+2025-11-25 23:41:51,616 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:41:51] "POST /api/download-pdf HTTP/1.1" 200 -
+2025-11-25 23:48:28,064 - werkzeug - INFO -  * Detected change in 'C:\\ai-paper-project\\finalproj\\PAPERGEN\\fixedproj\\models\\llm.py', reloading
+2025-11-25 23:48:30,157 - werkzeug - INFO -  * Restarting with stat
+2025-11-25 23:48:39,522 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 23:48:42,099 - services.integrity_service - INFO - Loading AI detection model...
+2025-11-25 23:48:44,099 - services.integrity_service - INFO - AI detection model loaded successfully
+2025-11-25 23:48:44,100 - __main__ - INFO - ======================================================================
+2025-11-25 23:48:44,104 - __main__ - INFO - ======================================================================
+2025-11-25 23:48:44,105 - __main__ - INFO - ======================================================================
+2025-11-25 23:48:44,115 - __main__ - INFO - ======================================================================
+2025-11-25 23:48:44,123 - werkzeug - WARNING -  * Debugger is active!
+2025-11-25 23:48:44,129 - werkzeug - INFO -  * Debugger PIN: 370-200-730
+2025-11-25 23:48:52,211 - werkzeug - INFO -  * Detected change in 'C:\\ai-paper-project\\finalproj\\PAPERGEN\\fixedproj\\models\\llm.py', reloading
+2025-11-25 23:48:52,984 - werkzeug - INFO -  * Restarting with stat
+2025-11-25 23:50:10,323 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 23:50:12,524 - services.integrity_service - INFO - Loading AI detection model...
+2025-11-25 23:50:14,494 - services.integrity_service - INFO - AI detection model loaded successfully
+2025-11-25 23:50:14,495 - __main__ - INFO - ======================================================================
+2025-11-25 23:50:14,498 - __main__ - INFO - ======================================================================
+2025-11-25 23:50:14,499 - __main__ - INFO - ======================================================================
+2025-11-25 23:50:14,507 - __main__ - INFO - ======================================================================
+2025-11-25 23:50:14,522 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.20.10.2:8080
+2025-11-25 23:50:14,523 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-11-25 23:50:14,524 - werkzeug - INFO -  * Restarting with stat
+2025-11-25 23:50:22,043 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 23:50:24,213 - services.integrity_service - INFO - Loading AI detection model...
+2025-11-25 23:50:26,144 - services.integrity_service - INFO - AI detection model loaded successfully
+2025-11-25 23:50:26,145 - __main__ - INFO - ======================================================================
+2025-11-25 23:50:26,147 - __main__ - INFO - ======================================================================
+2025-11-25 23:50:26,148 - __main__ - INFO - ======================================================================
+2025-11-25 23:50:26,155 - __main__ - INFO - ======================================================================
+2025-11-25 23:50:26,161 - werkzeug - WARNING -  * Debugger is active!
+2025-11-25 23:50:26,165 - werkzeug - INFO -  * Debugger PIN: 370-200-730
+2025-11-25 23:50:30,208 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:50:30] "GET / HTTP/1.1" 200 -
+2025-11-25 23:50:30,418 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:50:30] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-11-25 23:50:30,423 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:50:30] "GET /static/css/title-fix.css HTTP/1.1" 200 -
+2025-11-25 23:50:30,424 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:50:30] "GET /static/css/integrity.css HTTP/1.1" 200 -
+2025-11-25 23:50:30,433 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:50:30] "GET /static/js/ocr-extractor.js HTTP/1.1" 200 -
+2025-11-25 23:50:30,442 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:50:30] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-11-25 23:50:30,442 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:50:30] "GET /static/js/paper-generation.js HTTP/1.1" 200 -
+2025-11-25 23:50:30,458 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:50:30] "GET /static/js/literature-survey.js HTTP/1.1" 200 -
+2025-11-25 23:50:31,040 - __main__ - WARNING - 404 error: http://localhost:8080/favicon.ico
+2025-11-25 23:50:31,041 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:50:31] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-11-25 23:51:01,225 - __main__ - INFO - LLM warmup successful
+2025-11-25 23:51:01,227 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:51:01] "POST /api/warmup HTTP/1.1" 200 -
+2025-11-25 23:53:02,420 - __main__ - INFO - Processing OCR - File: Screenshot 2025-11-25 235253.png
+2025-11-25 23:53:08,392 - __main__ - INFO - OCR extracted 1417 characters
+2025-11-25 23:53:08,393 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:53:08] "POST /api/extract-ocr HTTP/1.1" 200 -
+2025-11-25 23:53:11,561 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:53:11] "[31m[1mPOST /api/generate-titles HTTP/1.1[0m" 400 -
+2025-11-25 23:55:05,408 - werkzeug - INFO -  * Detected change in 'C:\\ai-paper-project\\finalproj\\PAPERGEN\\fixedproj\\app.py', reloading
+2025-11-25 23:55:06,237 - werkzeug - INFO -  * Restarting with stat
+2025-11-25 23:55:14,551 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 23:55:17,206 - services.integrity_service - INFO - Loading AI detection model...
+2025-11-25 23:55:19,421 - services.integrity_service - INFO - AI detection model loaded successfully
+2025-11-25 23:55:19,422 - __main__ - INFO - ======================================================================
+2025-11-25 23:55:19,425 - __main__ - INFO - ======================================================================
+2025-11-25 23:55:19,426 - __main__ - INFO - ======================================================================
+2025-11-25 23:55:19,432 - __main__ - INFO - ======================================================================
+2025-11-25 23:55:19,440 - werkzeug - WARNING -  * Debugger is active!
+2025-11-25 23:55:19,444 - werkzeug - INFO -  * Debugger PIN: 370-200-730
+2025-11-25 23:56:09,065 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:56:09] "GET / HTTP/1.1" 200 -
+2025-11-25 23:56:09,256 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:56:09] "GET /static/css/title-fix.css HTTP/1.1" 200 -
+2025-11-25 23:56:09,260 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:56:09] "GET /static/js/ocr-extractor.js HTTP/1.1" 200 -
+2025-11-25 23:56:09,261 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:56:09] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-11-25 23:56:09,274 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:56:09] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-11-25 23:56:09,277 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:56:09] "GET /static/css/integrity.css HTTP/1.1" 200 -
+2025-11-25 23:56:09,279 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:56:09] "GET /static/js/literature-survey.js HTTP/1.1" 200 -
+2025-11-25 23:56:09,280 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:56:09] "GET /static/js/paper-generation.js HTTP/1.1" 200 -
+2025-11-25 23:56:09,725 - __main__ - WARNING - 404 error: http://localhost:8080/favicon.ico
+2025-11-25 23:56:09,725 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:56:09] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-11-25 23:56:15,421 - __main__ - INFO - Processing OCR - File: Screenshot 2025-11-25 235253.png
+2025-11-25 23:56:21,301 - __main__ - INFO - OCR extracted 1417 characters
+2025-11-25 23:56:21,302 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:56:21] "POST /api/extract-ocr HTTP/1.1" 200 -
+2025-11-25 23:56:24,499 - root - INFO - Generating 3 title options for description: Explainable Al focuses on making machine learning models transparent and understandable to human use...
+2025-11-25 23:56:34,593 - __main__ - INFO - LLM warmup successful
+2025-11-25 23:56:34,593 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:56:34] "POST /api/warmup HTTP/1.1" 200 -
+2025-11-25 23:56:46,363 - root - INFO - Generated 3 title options successfully
+2025-11-25 23:56:46,364 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:56:46] "POST /api/generate-titles HTTP/1.1" 200 -
+2025-11-25 23:57:41,725 - __main__ - INFO - Retrieving papers - Topic: Enhancing Trust in High-Stakes Domains through Transparent Machine Learning Models, Count: 10
+2025-11-25 23:57:43,418 - __main__ - INFO - Retrieved 10 papers
+2025-11-25 23:57:43,419 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:57:43] "POST /api/retrieve-papers HTTP/1.1" 200 -
+2025-11-25 23:57:43,439 - __main__ - INFO - Generating survey - Topic: Enhancing Trust in High-Stakes Domains through Transparent Machine Learning Models, Papers: 10
+2025-11-25 23:59:14,462 - __main__ - INFO - Survey generated - Words: 540
+2025-11-25 23:59:14,462 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:59:14] "POST /api/generate-survey HTTP/1.1" 200 -
+2025-11-25 23:59:17,815 - __main__ - INFO - Generating survey PDF - Topic: Enhancing Trust in High-Stakes Domains through Transparent Machine Learning Models
+2025-11-25 23:59:17,832 - __main__ - INFO - Survey PDF generated successfully
+2025-11-25 23:59:17,833 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:59:17] "POST /api/download-survey-pdf HTTP/1.1" 200 -
+2025-11-25 23:59:57,722 - __main__ - INFO - Streaming paper generation - Topic: Enhancing Trust in High-Stakes Domains through Tra...
+2025-11-25 23:59:57,722 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 23:59:57] "POST /api/generate-paper-stream HTTP/1.1" 200 -
+2025-11-26 00:01:23,681 - services.paper_generator - INFO - Generating literature_review (Parallel)...
+2025-11-26 00:01:23,683 - services.paper_generator - INFO - Generating methodology (Parallel)...
+2025-11-26 00:01:23,684 - services.paper_generator - INFO - Generating results (Parallel)...
+2025-11-26 00:02:05,637 - services.paper_generator - INFO - Generating discussion (Parallel)...
+2025-11-26 00:02:57,839 - services.paper_generator - INFO - Generating conclusion (Parallel)...
+2025-11-26 00:05:32,750 - services.paper_generator - INFO - Using 5 retrieved papers for references
+2025-11-26 00:05:32,750 - services.paper_generator - INFO - Generating 10 generic references to meet minimum of 15
+2025-11-26 00:05:44,183 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:05:44] "POST /api/check-integrity HTTP/1.1" 200 -
+2025-11-26 00:05:48,422 - __main__ - INFO - Generating paper PDF - Title: Enhancing Trust in High-Stakes Domains through Tra...
+2025-11-26 00:05:48,466 - __main__ - INFO - Paper PDF generated successfully
+2025-11-26 00:05:48,466 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:05:48] "POST /api/download-pdf HTTP/1.1" 200 -
+2025-11-26 00:10:21,600 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:10:21] "GET / HTTP/1.1" 200 -
+2025-11-26 00:10:21,635 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:10:21] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-11-26 00:10:21,637 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:10:21] "GET /static/css/title-fix.css HTTP/1.1" 200 -
+2025-11-26 00:10:21,639 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:10:21] "GET /static/css/integrity.css HTTP/1.1" 200 -
+2025-11-26 00:10:21,640 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:10:21] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-11-26 00:10:21,641 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:10:21] "GET /static/js/literature-survey.js HTTP/1.1" 200 -
+2025-11-26 00:10:21,641 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:10:21] "GET /static/js/paper-generation.js HTTP/1.1" 200 -
+2025-11-26 00:10:21,679 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:10:21] "GET /static/js/ocr-extractor.js HTTP/1.1" 200 -
+2025-11-26 00:10:22,510 - __main__ - WARNING - 404 error: http://localhost:8080/favicon.ico
+2025-11-26 00:10:22,511 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:10:22] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-11-26 00:10:23,550 - __main__ - INFO - Retrieved latest paper: C:\ai-paper-project\finalproj\PAPERGEN\fixedproj\saved_papers\paper_20251124_151910.json
+2025-11-26 00:10:23,551 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:10:23] "GET /api/latest-paper HTTP/1.1" 200 -
+2025-11-26 00:10:25,182 - __main__ - INFO - LLM warmup successful
+2025-11-26 00:10:25,182 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:10:25] "POST /api/warmup HTTP/1.1" 200 -
+2025-11-26 00:10:28,017 - __main__ - INFO - Generating paper PDF - Title: Edge Processing for Smart Agriculture: Enhancing R...
+2025-11-26 00:10:28,150 - __main__ - INFO - Paper PDF generated successfully
+2025-11-26 00:10:28,150 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:10:28] "POST /api/download-pdf HTTP/1.1" 200 -
+2025-11-26 00:10:40,543 - __main__ - INFO - Generating paper PDF - Title: Edge Processing for Smart Agriculture: Enhancing R...
+2025-11-26 00:10:40,658 - __main__ - INFO - Paper PDF generated successfully
+2025-11-26 00:10:40,658 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:10:40] "POST /api/download-pdf HTTP/1.1" 200 -
+2025-11-26 00:10:54,321 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:10:54] "POST /api/check-integrity HTTP/1.1" 200 -
+2025-11-26 00:11:28,303 - __main__ - INFO - Streaming paper generation - Topic: Edge Processing for Smart Agriculture: Enhancing R...
+2025-11-26 00:11:28,304 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:11:28] "POST /api/generate-paper-stream HTTP/1.1" 200 -
+2025-11-26 00:13:08,858 - services.paper_generator - INFO - Generating literature_review (Parallel)...
+2025-11-26 00:13:08,860 - services.paper_generator - INFO - Generating methodology (Parallel)...
+2025-11-26 00:13:08,862 - services.paper_generator - INFO - Generating results (Parallel)...
+2025-11-26 00:13:58,235 - services.paper_generator - INFO - Generating discussion (Parallel)...
+2025-11-26 00:14:56,934 - services.paper_generator - INFO - Generating conclusion (Parallel)...
+2025-11-26 00:17:45,251 - services.paper_generator - INFO - Using 5 retrieved papers for references
+2025-11-26 00:17:45,251 - services.paper_generator - INFO - Generating 10 generic references to meet minimum of 15
+2025-11-26 00:17:48,426 - __main__ - INFO - Generating paper PDF - Title: Edge Processing for Smart Agriculture: Enhancing R...
+2025-11-26 00:17:48,466 - __main__ - INFO - Paper PDF generated successfully
+2025-11-26 00:17:48,468 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:17:48] "POST /api/download-pdf HTTP/1.1" 200 -
+2025-11-26 00:19:16,781 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:19:16] "POST /api/check-integrity HTTP/1.1" 200 -
+2025-11-26 00:20:58,409 - werkzeug - INFO -  * Detected change in 'C:\\ai-paper-project\\finalproj\\PAPERGEN\\fixedproj\\services\\export_service.py', reloading
+2025-11-26 00:20:59,239 - werkzeug - INFO -  * Restarting with stat
+2025-11-26 00:21:07,837 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-26 00:21:10,336 - services.integrity_service - INFO - Loading AI detection model...
+2025-11-26 00:21:12,448 - services.integrity_service - INFO - AI detection model loaded successfully
+2025-11-26 00:21:12,449 - __main__ - INFO - ======================================================================
+2025-11-26 00:21:12,452 - __main__ - INFO - ======================================================================
+2025-11-26 00:21:12,453 - __main__ - INFO - ======================================================================
+2025-11-26 00:21:12,459 - __main__ - INFO - ======================================================================
+2025-11-26 00:21:12,468 - werkzeug - WARNING -  * Debugger is active!
+2025-11-26 00:21:12,472 - werkzeug - INFO -  * Debugger PIN: 370-200-730
+2025-11-26 00:21:33,640 - werkzeug - INFO -  * Detected change in 'C:\\ai-paper-project\\finalproj\\PAPERGEN\\fixedproj\\services\\paper_generator.py', reloading
+2025-11-26 00:21:34,269 - werkzeug - INFO -  * Restarting with stat
+2025-11-26 00:21:41,358 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-26 00:21:43,418 - services.integrity_service - INFO - Loading AI detection model...
+2025-11-26 00:21:45,517 - services.integrity_service - INFO - AI detection model loaded successfully
+2025-11-26 00:21:45,517 - __main__ - INFO - ======================================================================
+2025-11-26 00:21:45,519 - __main__ - INFO - ======================================================================
+2025-11-26 00:21:45,520 - __main__ - INFO - ======================================================================
+2025-11-26 00:21:45,526 - __main__ - INFO - ======================================================================
+2025-11-26 00:21:45,532 - werkzeug - WARNING -  * Debugger is active!
+2025-11-26 00:21:45,536 - werkzeug - INFO -  * Debugger PIN: 370-200-730
+2025-11-26 00:22:37,918 - werkzeug - INFO -  * Detected change in 'C:\\ai-paper-project\\finalproj\\PAPERGEN\\fixedproj\\services\\paper_generator.py', reloading
+2025-11-26 00:22:38,678 - werkzeug - INFO -  * Restarting with stat
+2025-11-26 00:22:46,391 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-26 00:22:48,405 - services.integrity_service - INFO - Loading AI detection model...
+2025-11-26 00:22:50,587 - services.integrity_service - INFO - AI detection model loaded successfully
+2025-11-26 00:22:50,587 - __main__ - INFO - ======================================================================
+2025-11-26 00:22:50,590 - __main__ - INFO - ======================================================================
+2025-11-26 00:22:50,592 - __main__ - INFO - ======================================================================
+2025-11-26 00:22:50,599 - __main__ - INFO - ======================================================================
+2025-11-26 00:22:50,605 - werkzeug - WARNING -  * Debugger is active!
+2025-11-26 00:22:50,609 - werkzeug - INFO -  * Debugger PIN: 370-200-730
+2025-11-26 00:23:15,045 - __main__ - INFO - Generating paper PDF - Title: Edge Processing for Smart Agriculture: Enhancing R...
+2025-11-26 00:23:15,092 - __main__ - INFO - Paper PDF generated successfully
+2025-11-26 00:23:15,092 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:23:15] "POST /api/download-pdf HTTP/1.1" 200 -
+2025-11-26 00:23:28,498 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:23:28] "GET / HTTP/1.1" 200 -
+2025-11-26 00:23:28,685 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:23:28] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-11-26 00:23:28,689 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:23:28] "GET /static/js/ocr-extractor.js HTTP/1.1" 200 -
+2025-11-26 00:23:28,691 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:23:28] "GET /static/css/title-fix.css HTTP/1.1" 200 -
+2025-11-26 00:23:28,693 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:23:28] "GET /static/css/integrity.css HTTP/1.1" 200 -
+2025-11-26 00:23:28,694 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:23:28] "GET /static/js/paper-generation.js HTTP/1.1" 200 -
+2025-11-26 00:23:28,696 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:23:28] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-11-26 00:23:28,697 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:23:28] "GET /static/js/literature-survey.js HTTP/1.1" 200 -
+2025-11-26 00:23:29,349 - __main__ - WARNING - 404 error: http://localhost:8080/favicon.ico
+2025-11-26 00:23:29,351 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:23:29] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-11-26 00:23:30,408 - __main__ - INFO - Retrieved latest paper: C:\ai-paper-project\finalproj\PAPERGEN\fixedproj\saved_papers\paper_20251124_151910.json
+2025-11-26 00:23:30,409 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:23:30] "GET /api/latest-paper HTTP/1.1" 200 -
+2025-11-26 00:23:35,826 - __main__ - INFO - Generating paper PDF - Title: Edge Processing for Smart Agriculture: Enhancing R...
+2025-11-26 00:23:35,963 - __main__ - INFO - Paper PDF generated successfully
+2025-11-26 00:23:35,965 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:23:35] "POST /api/download-pdf HTTP/1.1" 200 -
+2025-11-26 00:23:53,819 - __main__ - INFO - LLM warmup successful
+2025-11-26 00:23:53,820 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:23:53] "POST /api/warmup HTTP/1.1" 200 -
+2025-11-26 00:24:17,161 - __main__ - INFO - Streaming paper generation - Topic: Edge Processing for Smart Agriculture: Enhancing R...
+2025-11-26 00:24:17,162 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:24:17] "POST /api/generate-paper-stream HTTP/1.1" 200 -
+2025-11-26 00:25:56,700 - services.paper_generator - INFO - Generating literature_review (Parallel)...
+2025-11-26 00:25:56,701 - services.paper_generator - INFO - Generating methodology (Parallel)...
+2025-11-26 00:25:56,703 - services.paper_generator - INFO - Generating results (Parallel)...
+2025-11-26 00:26:50,933 - services.paper_generator - INFO - Generating discussion (Parallel)...
+2025-11-26 00:28:04,847 - services.paper_generator - INFO - Generating conclusion (Parallel)...
+2025-11-26 00:31:25,445 - services.paper_generator - INFO - Using 5 retrieved papers for references
+2025-11-26 00:31:25,445 - services.paper_generator - INFO - Generating 10 generic references to meet minimum of 15
+2025-11-26 00:31:25,446 - services.paper_generator - ERROR - Failed to save paper: name 'os' is not defined
+2025-11-26 00:31:57,242 - __main__ - INFO - Generating paper PDF - Title: Edge Processing for Smart Agriculture: Enhancing R...
+2025-11-26 00:31:57,296 - __main__ - INFO - Paper PDF generated successfully
+2025-11-26 00:31:57,297 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:31:57] "POST /api/download-pdf HTTP/1.1" 200 -
+2025-11-26 00:33:57,785 - werkzeug - INFO -  * Detected change in 'C:\\ai-paper-project\\finalproj\\PAPERGEN\\fixedproj\\services\\export_service.py', reloading
+2025-11-26 00:33:58,604 - werkzeug - INFO -  * Restarting with stat
+2025-11-26 00:36:30,136 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-26 00:36:32,839 - services.integrity_service - INFO - Loading AI detection model...
+2025-11-26 00:36:34,926 - services.integrity_service - INFO - AI detection model loaded successfully
+2025-11-26 00:36:34,927 - __main__ - INFO - ======================================================================
+2025-11-26 00:36:34,931 - __main__ - INFO - ======================================================================
+2025-11-26 00:36:34,932 - __main__ - INFO - ======================================================================
+2025-11-26 00:36:34,941 - __main__ - INFO - ======================================================================
+2025-11-26 00:36:34,971 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.20.10.2:8080
+2025-11-26 00:36:34,972 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-11-26 00:36:34,974 - werkzeug - INFO -  * Restarting with stat
+2025-11-26 00:36:42,737 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-26 00:36:44,667 - services.integrity_service - INFO - Loading AI detection model...
+2025-11-26 00:36:47,043 - services.integrity_service - INFO - AI detection model loaded successfully
+2025-11-26 00:36:47,044 - __main__ - INFO - ======================================================================
+2025-11-26 00:36:47,046 - __main__ - INFO - ======================================================================
+2025-11-26 00:36:47,047 - __main__ - INFO - ======================================================================
+2025-11-26 00:36:47,054 - __main__ - INFO - ======================================================================
+2025-11-26 00:36:47,060 - werkzeug - WARNING -  * Debugger is active!
+2025-11-26 00:36:47,063 - werkzeug - INFO -  * Debugger PIN: 370-200-730
+2025-11-26 00:36:47,084 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:36:47] "GET / HTTP/1.1" 200 -
+2025-11-26 00:36:47,241 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:36:47] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-11-26 00:36:47,244 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:36:47] "GET /static/css/title-fix.css HTTP/1.1" 200 -
+2025-11-26 00:36:47,246 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:36:47] "GET /static/js/ocr-extractor.js HTTP/1.1" 200 -
+2025-11-26 00:36:47,248 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:36:47] "GET /static/css/integrity.css HTTP/1.1" 200 -
+2025-11-26 00:36:47,251 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:36:47] "GET /static/js/literature-survey.js HTTP/1.1" 200 -
+2025-11-26 00:36:47,253 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:36:47] "GET /static/js/paper-generation.js HTTP/1.1" 200 -
+2025-11-26 00:36:47,253 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:36:47] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-11-26 00:36:47,916 - __main__ - WARNING - 404 error: http://localhost:8080/favicon.ico
+2025-11-26 00:36:47,917 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:36:47] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-11-26 00:36:51,201 - __main__ - INFO - Retrieved latest paper: C:\ai-paper-project\finalproj\PAPERGEN\fixedproj\saved_papers\paper_20251124_151910.json
+2025-11-26 00:36:51,203 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:36:51] "GET /api/latest-paper HTTP/1.1" 200 -
+2025-11-26 00:36:56,015 - __main__ - INFO - Generating paper PDF - Title: Edge Processing for Smart Agriculture: Enhancing R...
+2025-11-26 00:36:56,162 - __main__ - INFO - Paper PDF generated successfully
+2025-11-26 00:36:56,164 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:36:56] "POST /api/download-pdf HTTP/1.1" 200 -
+2025-11-26 00:37:11,799 - __main__ - INFO - LLM warmup successful
+2025-11-26 00:37:11,799 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:37:11] "POST /api/warmup HTTP/1.1" 200 -
+2025-11-26 00:37:20,263 - __main__ - INFO - Processing OCR - File: Screenshot 2025-11-25 235253.png
+2025-11-26 00:37:26,293 - __main__ - INFO - OCR extracted 1417 characters
+2025-11-26 00:37:26,294 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:37:26] "POST /api/extract-ocr HTTP/1.1" 200 -
+2025-11-26 00:37:28,453 - root - INFO - Generating 3 title options for description: Explainable Al focuses on making machine learning models transparent and understandable to human use...
+2025-11-26 00:37:42,519 - root - INFO - Generated 3 title options successfully
+2025-11-26 00:37:42,521 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:37:42] "POST /api/generate-titles HTTP/1.1" 200 -
+2025-11-26 00:38:42,541 - __main__ - INFO - Streaming paper generation - Topic: Enhancing Trust and Compliance through Transparent...
+2025-11-26 00:38:42,543 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:38:42] "POST /api/generate-paper-stream HTTP/1.1" 200 -
+2025-11-26 00:40:21,910 - services.paper_generator - INFO - Generating literature_review (Parallel)...
+2025-11-26 00:40:21,912 - services.paper_generator - INFO - Generating methodology (Parallel)...
+2025-11-26 00:40:21,914 - services.paper_generator - INFO - Generating results (Parallel)...
+2025-11-26 00:41:22,250 - services.paper_generator - INFO - Generating discussion (Parallel)...
+2025-11-26 00:42:11,583 - services.paper_generator - INFO - Generating conclusion (Parallel)...
+2025-11-26 00:44:12,260 - services.paper_generator - INFO - Using 5 retrieved papers for references
+2025-11-26 00:44:12,260 - services.paper_generator - INFO - Generating 10 generic references to meet minimum of 15
+2025-11-26 00:44:12,261 - services.paper_generator - ERROR - Failed to save paper: name 'os' is not defined
+2025-11-26 00:44:53,187 - __main__ - INFO - Generating paper PDF - Title: Enhancing Trust and Compliance through Transparent...
+2025-11-26 00:44:53,245 - __main__ - INFO - Paper PDF generated successfully
+2025-11-26 00:44:53,246 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:44:53] "POST /api/download-pdf HTTP/1.1" 200 -
+2025-11-26 00:45:10,501 - werkzeug - INFO -  * Detected change in 'C:\\ai-paper-project\\finalproj\\PAPERGEN\\fixedproj\\services\\paper_generator.py', reloading
+2025-11-26 00:45:11,651 - werkzeug - INFO -  * Restarting with stat
+2025-11-26 00:45:23,441 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-26 00:45:26,588 - services.integrity_service - INFO - Loading AI detection model...
+2025-11-26 00:45:28,593 - services.integrity_service - INFO - AI detection model loaded successfully
+2025-11-26 00:45:28,593 - __main__ - INFO - ======================================================================
+2025-11-26 00:45:28,597 - __main__ - INFO - ======================================================================
+2025-11-26 00:45:28,598 - __main__ - INFO - ======================================================================
+2025-11-26 00:45:28,607 - __main__ - INFO - ======================================================================
+2025-11-26 00:45:28,616 - werkzeug - WARNING -  * Debugger is active!
+2025-11-26 00:45:28,622 - werkzeug - INFO -  * Debugger PIN: 370-200-730
+2025-11-26 00:45:58,981 - werkzeug - INFO - 127.0.0.1 - - [26/Nov/2025 00:45:58] "POST /api/check-integrity HTTP/1.1" 200 -
