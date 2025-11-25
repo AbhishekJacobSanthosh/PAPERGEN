@@ -383,3 +383,405 @@
 2025-11-24 15:19:23,177 - __main__ - INFO - Generating paper PDF - Title: Edge Processing for Smart Agriculture: Enhancing R...
 2025-11-24 15:19:23,317 - __main__ - INFO - Paper PDF generated successfully
 2025-11-24 15:19:23,318 - werkzeug - INFO - 127.0.0.1 - - [24/Nov/2025 15:19:23] "POST /api/download-pdf HTTP/1.1" 200 -
+2025-11-25 09:06:53,727 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 09:06:54,749 - __main__ - INFO - ======================================================================
+2025-11-25 09:06:54,749 - __main__ - INFO - 🎓 AI Research Paper Generator v3.0
+2025-11-25 09:06:54,749 - __main__ - INFO - ======================================================================
+2025-11-25 09:06:54,749 - __main__ - INFO - ✓ All services initialized
+2025-11-25 09:06:54,749 - __main__ - INFO - ======================================================================
+2025-11-25 09:06:54,751 - __main__ - INFO - 🚀 Starting server on http://0.0.0.0:8080
+2025-11-25 09:06:54,751 - __main__ - INFO - 📝 Model: llama3.1:8b
+2025-11-25 09:06:54,751 - __main__ - INFO - ======================================================================
+2025-11-25 09:06:54,755 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.1.50.220:8080
+2025-11-25 09:06:54,755 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-11-25 09:06:54,755 - werkzeug - INFO -  * Restarting with stat
+2025-11-25 09:06:56,313 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 09:06:57,329 - __main__ - INFO - ======================================================================
+2025-11-25 09:06:57,329 - __main__ - INFO - 🎓 AI Research Paper Generator v3.0
+2025-11-25 09:06:57,329 - __main__ - INFO - ======================================================================
+2025-11-25 09:06:57,329 - __main__ - INFO - ✓ All services initialized
+2025-11-25 09:06:57,329 - __main__ - INFO - ======================================================================
+2025-11-25 09:06:57,331 - __main__ - INFO - 🚀 Starting server on http://0.0.0.0:8080
+2025-11-25 09:06:57,331 - __main__ - INFO - 📝 Model: llama3.1:8b
+2025-11-25 09:06:57,331 - __main__ - INFO - ======================================================================
+2025-11-25 09:06:57,333 - werkzeug - WARNING -  * Debugger is active!
+2025-11-25 09:06:57,340 - werkzeug - INFO -  * Debugger PIN: 130-544-881
+2025-11-25 09:06:58,458 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:06:58] "GET / HTTP/1.1" 200 -
+2025-11-25 09:06:58,480 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:06:58] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-11-25 09:06:58,480 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:06:58] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-11-25 09:06:58,480 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:06:58] "GET /static/js/literature-survey.js HTTP/1.1" 200 -
+2025-11-25 09:06:58,481 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:06:58] "GET /static/css/title-fix.css HTTP/1.1" 200 -
+2025-11-25 09:06:58,481 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:06:58] "GET /static/js/paper-generation.js HTTP/1.1" 200 -
+2025-11-25 09:06:58,482 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:06:58] "GET /static/js/ocr-extractor.js HTTP/1.1" 200 -
+2025-11-25 09:06:58,609 - __main__ - WARNING - 404 error: http://localhost:8080/favicon.ico
+2025-11-25 09:06:58,610 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:06:58] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-11-25 09:06:59,756 - __main__ - INFO - LLM warmup successful
+2025-11-25 09:06:59,756 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:06:59] "POST /api/warmup HTTP/1.1" 200 -
+2025-11-25 09:10:01,394 - __main__ - INFO - Processing OCR - File: Screenshot from 2025-11-25 09-09-52.png
+2025-11-25 09:10:02,846 - __main__ - INFO - OCR extracted 912 characters
+2025-11-25 09:10:02,846 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:10:02] "POST /api/extract-ocr HTTP/1.1" 200 -
+2025-11-25 09:10:06,754 - root - INFO - Generating 3 title options for description: Small-scale enterprises often compare private and public cloud models to choose the best fit for the...
+2025-11-25 09:10:22,532 - root - INFO - Generated 3 title options successfully
+2025-11-25 09:10:22,532 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:10:22] "POST /api/generate-titles HTTP/1.1" 200 -
+2025-11-25 09:16:39,837 - __main__ - INFO - Retrieving papers - Topic: Evaluating Cost-Effectiveness of Public and Private Cloud Models for Small-Scale Enterprises., Count: 10
+2025-11-25 09:16:40,879 - __main__ - INFO - Retrieved 1 papers
+2025-11-25 09:16:40,879 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:16:40] "POST /api/retrieve-papers HTTP/1.1" 200 -
+2025-11-25 09:16:40,883 - __main__ - INFO - Generating survey - Topic: Evaluating Cost-Effectiveness of Public and Private Cloud Models for Small-Scale Enterprises., Papers: 1
+2025-11-25 09:18:32,850 - __main__ - INFO - Survey generated - Words: 718
+2025-11-25 09:18:32,850 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:18:32] "POST /api/generate-survey HTTP/1.1" 200 -
+2025-11-25 09:18:40,301 - __main__ - INFO - Generating survey PDF - Topic: Evaluating Cost-Effectiveness of Public and Private Cloud Models for Small-Scale Enterprises.
+2025-11-25 09:18:40,311 - __main__ - INFO - Survey PDF generated successfully
+2025-11-25 09:18:40,311 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:18:40] "POST /api/download-survey-pdf HTTP/1.1" 200 -
+2025-11-25 09:19:24,644 - __main__ - INFO - Generating paper - Topic: Evaluating Cost-Effectiveness of Public and Privat..., Authors: 1, RAG: True, Selected Title: 
+2025-11-25 09:19:24,645 - __main__ - INFO - Generated title internally: Evaluating Cost-Effectiveness of Public and Private Cloud Models for Small-Scale Enterprises.
+2025-11-25 09:19:24,645 - services.paper_generator - INFO - Starting generation for: Evaluating Cost-Effectiveness of Public and Private Cloud Models for Small-Scale Enterprises.
+2025-11-25 09:19:24,645 - services.paper_generator - INFO - RAG enabled: True, User data provided: False
+2025-11-25 09:19:24,645 - services.paper_generator - INFO - Using external/preset title: Evaluating Cost-Effectiveness of Public and Private Cloud Models for Small-Scale Enterprises.
+2025-11-25 09:19:24,646 - services.paper_generator - INFO - Retrieving papers from Semantic Scholar...
+2025-11-25 09:19:24,646 - services.paper_generator - INFO - Retrieved 1 papers
+2025-11-25 09:19:24,646 - services.paper_generator - INFO - Generating abstract...
+2025-11-25 09:20:25,671 - services.paper_generator - ERROR - [Abstract post-clean] ⚠️ TITLE LOST: Title 'Evaluating Cost-Effectiveness of Public and Private Cloud Models for Small-Scale Enterprises.' not found at start of section
+2025-11-25 09:20:25,671 - services.paper_generator - INFO - Abstract: 312 words
+2025-11-25 09:20:25,671 - services.paper_generator - INFO - [1/6] Generating introduction...
+2025-11-25 09:21:30,492 - services.paper_generator - ERROR - [Pre-clean] Title 'Evaluating Cost-Effectiveness of Public and Private Cloud Models for Small-Scale Enterprises.' not found at start of section - Content starts with: Evaluating Cost-Effectiveness of Public and Private Cloud Models for Small-Scale Enterprises has become increasingly cru
+2025-11-25 09:21:30,494 - services.paper_generator - INFO - ✓ introduction: 314 words
+2025-11-25 09:21:30,494 - services.paper_generator - INFO - [2/6] Generating literature_review...
+2025-11-25 09:23:02,662 - services.paper_generator - ERROR - [Pre-clean] Title 'Evaluating Cost-Effectiveness of Public and Private Cloud Models for Small-Scale Enterprises.' not found at start of section - Content starts with: The literature review on Evaluating Cost-Effectiveness of Public and Private Cloud Models for Small-Scale Enterprises pr
+2025-11-25 09:23:02,664 - services.paper_generator - INFO - ✓ literature_review: 355 words
+2025-11-25 09:23:02,664 - services.paper_generator - INFO - [3/6] Generating methodology...
+2025-11-25 09:24:30,435 - services.paper_generator - INFO - ✓ methodology: 306 words
+2025-11-25 09:24:30,435 - services.paper_generator - INFO - [4/6] Generating results...
+2025-11-25 09:25:34,627 - services.paper_generator - ERROR - [Pre-clean] Title 'Evaluating Cost-Effectiveness of Public and Private Cloud Models for Small-Scale Enterprises.' not found at start of section - Content starts with: The results of our experiments evaluating the cost-effectiveness of public and private cloud models for small-scale ente
+2025-11-25 09:25:34,629 - services.paper_generator - INFO - ✓ results: 285 words
+2025-11-25 09:25:34,629 - services.paper_generator - INFO - [5/6] Generating discussion...
+2025-11-25 09:27:05,361 - services.paper_generator - ERROR - [Pre-clean] Title 'Evaluating Cost-Effectiveness of Public and Private Cloud Models for Small-Scale Enterprises.' not found at start of section - Content starts with: The findings of this study provide a comprehensive evaluation framework for small-scale enterprises (SMEs) to assess the
+2025-11-25 09:27:05,364 - services.paper_generator - INFO - ✓ discussion: 449 words
+2025-11-25 09:27:05,364 - services.paper_generator - INFO - [6/6] Generating conclusion...
+2025-11-25 09:28:00,544 - services.paper_generator - ERROR - [Pre-clean] Title 'Evaluating Cost-Effectiveness of Public and Private Cloud Models for Small-Scale Enterprises.' not found at start of section - Content starts with: This research addressed the pressing need for a comprehensive evaluation framework to assess the cost-effectiveness of p
+2025-11-25 09:28:00,546 - services.paper_generator - INFO - ✓ conclusion: 253 words
+2025-11-25 09:28:00,546 - services.paper_generator - INFO - Generating references...
+2025-11-25 09:28:00,546 - services.paper_generator - INFO - References: 15 total
+2025-11-25 09:28:00,546 - services.paper_generator - INFO - Generating figures and tables...
+2025-11-25 09:28:00,738 - services.paper_generator - INFO - Generated 2 figures/tables
+2025-11-25 09:28:00,738 - services.paper_generator - INFO - ✓ Paper generation complete! (2274 words, 15 refs)
+2025-11-25 09:28:00,738 - __main__ - INFO - Paper generated successfully - Words: 2274
+2025-11-25 09:28:00,738 - __main__ - INFO - Auto-saved paper to /home/ritlab-01/Documents/1ms22cs006/PAPERGEN/fixedproj/saved_papers/paper_20251125_092800.json
+2025-11-25 09:28:00,739 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:28:00] "POST /api/generate-paper HTTP/1.1" 200 -
+2025-11-25 09:28:04,487 - __main__ - INFO - Generating paper PDF - Title: Evaluating Cost-Effectiveness of Public and Privat...
+2025-11-25 09:28:04,557 - __main__ - INFO - Paper PDF generated successfully
+2025-11-25 09:28:04,558 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:28:04] "POST /api/download-pdf HTTP/1.1" 200 -
+2025-11-25 09:53:45,667 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 09:53:46,670 - __main__ - INFO - ======================================================================
+2025-11-25 09:53:46,670 - __main__ - INFO - 🎓 AI Research Paper Generator v3.0
+2025-11-25 09:53:46,671 - __main__ - INFO - ======================================================================
+2025-11-25 09:53:46,671 - __main__ - INFO - ✓ All services initialized
+2025-11-25 09:53:46,671 - __main__ - INFO - ======================================================================
+2025-11-25 09:53:46,672 - __main__ - INFO - 🚀 Starting server on http://0.0.0.0:8080
+2025-11-25 09:53:46,672 - __main__ - INFO - 📝 Model: llama3.1:8b
+2025-11-25 09:53:46,672 - __main__ - INFO - ======================================================================
+2025-11-25 09:53:46,676 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.1.50.220:8080
+2025-11-25 09:53:46,676 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-11-25 09:53:46,676 - werkzeug - INFO -  * Restarting with stat
+2025-11-25 09:53:48,066 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 09:53:49,036 - __main__ - INFO - ======================================================================
+2025-11-25 09:53:49,036 - __main__ - INFO - 🎓 AI Research Paper Generator v3.0
+2025-11-25 09:53:49,036 - __main__ - INFO - ======================================================================
+2025-11-25 09:53:49,036 - __main__ - INFO - ✓ All services initialized
+2025-11-25 09:53:49,036 - __main__ - INFO - ======================================================================
+2025-11-25 09:53:49,038 - __main__ - INFO - 🚀 Starting server on http://0.0.0.0:8080
+2025-11-25 09:53:49,038 - __main__ - INFO - 📝 Model: llama3.1:8b
+2025-11-25 09:53:49,038 - __main__ - INFO - ======================================================================
+2025-11-25 09:53:49,040 - werkzeug - WARNING -  * Debugger is active!
+2025-11-25 09:53:49,040 - werkzeug - INFO -  * Debugger PIN: 130-544-881
+2025-11-25 09:53:51,949 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:53:51] "GET / HTTP/1.1" 200 -
+2025-11-25 09:53:51,979 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:53:51] "GET /static/css/title-fix.css HTTP/1.1" 200 -
+2025-11-25 09:53:51,979 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:53:51] "GET /static/js/literature-survey.js HTTP/1.1" 200 -
+2025-11-25 09:53:51,980 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:53:51] "GET /static/js/paper-generation.js HTTP/1.1" 200 -
+2025-11-25 09:53:51,983 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:53:51] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-11-25 09:53:51,983 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:53:51] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-11-25 09:53:51,984 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:53:51] "GET /static/js/ocr-extractor.js HTTP/1.1" 200 -
+2025-11-25 09:53:52,144 - __main__ - WARNING - 404 error: http://localhost:8080/favicon.ico
+2025-11-25 09:53:52,145 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:53:52] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-11-25 09:53:56,240 - __main__ - INFO - LLM warmup successful
+2025-11-25 09:53:56,241 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:53:56] "POST /api/warmup HTTP/1.1" 200 -
+2025-11-25 09:57:04,846 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:57:04] "GET / HTTP/1.1" 200 -
+2025-11-25 09:57:04,871 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:57:04] "GET /static/css/title-fix.css HTTP/1.1" 200 -
+2025-11-25 09:57:04,877 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:57:04] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-11-25 09:57:04,879 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:57:04] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-11-25 09:57:04,881 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:57:04] "GET /static/js/literature-survey.js HTTP/1.1" 200 -
+2025-11-25 09:57:04,887 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:57:04] "GET /static/js/paper-generation.js HTTP/1.1" 200 -
+2025-11-25 09:57:04,888 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:57:04] "GET /static/js/ocr-extractor.js HTTP/1.1" 200 -
+2025-11-25 09:57:05,009 - __main__ - WARNING - 404 error: http://localhost:8080/favicon.ico
+2025-11-25 09:57:05,011 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:57:05] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-11-25 09:57:06,189 - __main__ - INFO - LLM warmup successful
+2025-11-25 09:57:06,189 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 09:57:06] "POST /api/warmup HTTP/1.1" 200 -
+2025-11-25 09:57:49,898 - __main__ - INFO - Generating paper - Topic: Machine Learning in Healthcare..., Authors: 2, RAG: True, Selected Title: 
+2025-11-25 09:57:49,898 - __main__ - INFO - Generated title internally: Machine Learning in Healthcare
+2025-11-25 09:57:49,898 - services.paper_generator - INFO - Starting generation for: Machine Learning in Healthcare
+2025-11-25 09:57:49,898 - services.paper_generator - INFO - RAG enabled: True, User data provided: False
+2025-11-25 09:57:49,898 - services.paper_generator - INFO - Using external/preset title: Machine Learning in Healthcare
+2025-11-25 09:57:49,898 - services.paper_generator - INFO - Retrieving papers from Semantic Scholar...
+2025-11-25 09:57:51,488 - services.paper_generator - INFO - Retrieved 2 papers
+2025-11-25 09:57:51,488 - services.paper_generator - INFO - Generating abstract...
+2025-11-25 09:58:47,383 - services.paper_generator - INFO - Abstract: 307 words
+2025-11-25 09:58:47,383 - services.paper_generator - INFO - [1/6] Generating introduction...
+2025-11-25 09:59:44,893 - services.paper_generator - INFO - ✓ introduction: 254 words
+2025-11-25 09:59:44,893 - services.paper_generator - INFO - [2/6] Generating literature_review...
+2025-11-25 10:00:59,961 - services.paper_generator - INFO - ✓ literature_review: 306 words
+2025-11-25 10:00:59,961 - services.paper_generator - INFO - [3/6] Generating methodology...
+2025-11-25 10:02:18,404 - services.paper_generator - INFO - ✓ methodology: 317 words
+2025-11-25 10:02:18,404 - services.paper_generator - INFO - [4/6] Generating results...
+2025-11-25 10:03:16,231 - services.paper_generator - INFO - ✓ results: 258 words
+2025-11-25 10:03:16,232 - services.paper_generator - INFO - [5/6] Generating discussion...
+2025-11-25 10:04:37,296 - services.paper_generator - INFO - ✓ discussion: 396 words
+2025-11-25 10:04:37,296 - services.paper_generator - INFO - [6/6] Generating conclusion...
+2025-11-25 10:05:26,052 - services.paper_generator - INFO - ✓ conclusion: 246 words
+2025-11-25 10:05:26,052 - services.paper_generator - INFO - Generating references...
+2025-11-25 10:05:26,053 - services.paper_generator - INFO - References: 15 total
+2025-11-25 10:05:26,053 - services.paper_generator - INFO - Generating figures and tables...
+2025-11-25 10:05:26,293 - services.paper_generator - INFO - Generated 2 figures/tables
+2025-11-25 10:05:26,293 - services.paper_generator - INFO - ✓ Paper generation complete! (2084 words, 15 refs)
+2025-11-25 10:05:26,294 - __main__ - INFO - Paper generated successfully - Words: 2084
+2025-11-25 10:05:26,294 - __main__ - INFO - Auto-saved paper to /home/ritlab-01/Documents/1ms22cs006/PAPERGEN/fixedproj/saved_papers/paper_20251125_100526.json
+2025-11-25 10:05:26,295 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:05:26] "POST /api/generate-paper HTTP/1.1" 200 -
+2025-11-25 10:06:22,340 - __main__ - INFO - Generating paper PDF - Title: Machine Learning in Healthcare...
+2025-11-25 10:06:22,406 - __main__ - INFO - Paper PDF generated successfully
+2025-11-25 10:06:22,407 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:06:22] "POST /api/download-pdf HTTP/1.1" 200 -
+2025-11-25 10:12:11,360 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 10:12:12,371 - __main__ - INFO - ======================================================================
+2025-11-25 10:12:12,371 - __main__ - INFO - 🎓 AI Research Paper Generator v3.0
+2025-11-25 10:12:12,371 - __main__ - INFO - ======================================================================
+2025-11-25 10:12:12,371 - __main__ - INFO - ✓ All services initialized
+2025-11-25 10:12:12,371 - __main__ - INFO - ======================================================================
+2025-11-25 10:12:12,373 - __main__ - INFO - 🚀 Starting server on http://0.0.0.0:8080
+2025-11-25 10:12:12,373 - __main__ - INFO - 📝 Model: llama3.1:8b
+2025-11-25 10:12:12,373 - __main__ - INFO - ======================================================================
+2025-11-25 10:12:12,377 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.1.50.220:8080
+2025-11-25 10:12:12,377 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-11-25 10:12:12,378 - werkzeug - INFO -  * Restarting with stat
+2025-11-25 10:12:13,906 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 10:12:14,900 - __main__ - INFO - ======================================================================
+2025-11-25 10:12:14,900 - __main__ - INFO - 🎓 AI Research Paper Generator v3.0
+2025-11-25 10:12:14,900 - __main__ - INFO - ======================================================================
+2025-11-25 10:12:14,900 - __main__ - INFO - ✓ All services initialized
+2025-11-25 10:12:14,900 - __main__ - INFO - ======================================================================
+2025-11-25 10:12:14,902 - __main__ - INFO - 🚀 Starting server on http://0.0.0.0:8080
+2025-11-25 10:12:14,902 - __main__ - INFO - 📝 Model: llama3.1:8b
+2025-11-25 10:12:14,902 - __main__ - INFO - ======================================================================
+2025-11-25 10:12:14,904 - werkzeug - WARNING -  * Debugger is active!
+2025-11-25 10:12:14,906 - werkzeug - INFO -  * Debugger PIN: 130-544-881
+2025-11-25 10:12:40,574 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 10:12:41,551 - __main__ - INFO - ======================================================================
+2025-11-25 10:12:41,551 - __main__ - INFO - 🎓 AI Research Paper Generator v3.0
+2025-11-25 10:12:41,551 - __main__ - INFO - ======================================================================
+2025-11-25 10:12:41,551 - __main__ - INFO - ✓ All services initialized
+2025-11-25 10:12:41,551 - __main__ - INFO - ======================================================================
+2025-11-25 10:12:41,553 - __main__ - INFO - 🚀 Starting server on http://0.0.0.0:8080
+2025-11-25 10:12:41,553 - __main__ - INFO - 📝 Model: llama3.1:8b
+2025-11-25 10:12:41,553 - __main__ - INFO - ======================================================================
+2025-11-25 10:13:02,467 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 10:13:03,434 - __main__ - INFO - ======================================================================
+2025-11-25 10:13:03,434 - __main__ - INFO - 🎓 AI Research Paper Generator v3.0
+2025-11-25 10:13:03,434 - __main__ - INFO - ======================================================================
+2025-11-25 10:13:03,434 - __main__ - INFO - ✓ All services initialized
+2025-11-25 10:13:03,434 - __main__ - INFO - ======================================================================
+2025-11-25 10:13:03,436 - __main__ - INFO - 🚀 Starting server on http://0.0.0.0:8080
+2025-11-25 10:13:03,436 - __main__ - INFO - 📝 Model: llama3.1:8b
+2025-11-25 10:13:03,436 - __main__ - INFO - ======================================================================
+2025-11-25 10:14:47,668 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 10:14:48,639 - __main__ - INFO - ======================================================================
+2025-11-25 10:14:48,640 - __main__ - INFO - 🎓 AI Research Paper Generator v3.0
+2025-11-25 10:14:48,640 - __main__ - INFO - ======================================================================
+2025-11-25 10:14:48,640 - __main__ - INFO - ✓ All services initialized
+2025-11-25 10:14:48,640 - __main__ - INFO - ======================================================================
+2025-11-25 10:14:48,642 - __main__ - INFO - 🚀 Starting server on http://0.0.0.0:8080
+2025-11-25 10:14:48,642 - __main__ - INFO - 📝 Model: llama3.1:8b
+2025-11-25 10:14:48,642 - __main__ - INFO - ======================================================================
+2025-11-25 10:14:48,644 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.1.50.220:8080
+2025-11-25 10:14:48,644 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-11-25 10:14:48,644 - werkzeug - INFO -  * Restarting with stat
+2025-11-25 10:14:50,130 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 10:14:51,095 - __main__ - INFO - ======================================================================
+2025-11-25 10:14:51,096 - __main__ - INFO - 🎓 AI Research Paper Generator v3.0
+2025-11-25 10:14:51,096 - __main__ - INFO - ======================================================================
+2025-11-25 10:14:51,096 - __main__ - INFO - ✓ All services initialized
+2025-11-25 10:14:51,096 - __main__ - INFO - ======================================================================
+2025-11-25 10:14:51,098 - __main__ - INFO - 🚀 Starting server on http://0.0.0.0:8080
+2025-11-25 10:14:51,098 - __main__ - INFO - 📝 Model: llama3.1:8b
+2025-11-25 10:14:51,098 - __main__ - INFO - ======================================================================
+2025-11-25 10:14:51,100 - werkzeug - WARNING -  * Debugger is active!
+2025-11-25 10:14:51,100 - werkzeug - INFO -  * Debugger PIN: 130-544-881
+2025-11-25 10:14:56,916 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:14:56] "GET / HTTP/1.1" 200 -
+2025-11-25 10:14:56,946 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:14:56] "[36mGET /static/js/literature-survey.js HTTP/1.1[0m" 304 -
+2025-11-25 10:14:56,946 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:14:56] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-11-25 10:14:56,946 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:14:56] "[36mGET /static/css/title-fix.css HTTP/1.1[0m" 304 -
+2025-11-25 10:14:56,947 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:14:56] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-11-25 10:14:56,948 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:14:56] "[36mGET /static/js/ocr-extractor.js HTTP/1.1[0m" 304 -
+2025-11-25 10:14:56,950 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:14:56] "GET /static/js/paper-generation.js HTTP/1.1" 200 -
+2025-11-25 10:15:01,282 - __main__ - INFO - LLM warmup successful
+2025-11-25 10:15:01,282 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:15:01] "POST /api/warmup HTTP/1.1" 200 -
+2025-11-25 10:15:54,441 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:15:54] "GET / HTTP/1.1" 200 -
+2025-11-25 10:15:54,450 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:15:54] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-11-25 10:15:54,451 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:15:54] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-11-25 10:15:54,452 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:15:54] "[36mGET /static/css/title-fix.css HTTP/1.1[0m" 304 -
+2025-11-25 10:15:54,454 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:15:54] "[36mGET /static/js/literature-survey.js HTTP/1.1[0m" 304 -
+2025-11-25 10:15:54,455 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:15:54] "[36mGET /static/js/ocr-extractor.js HTTP/1.1[0m" 304 -
+2025-11-25 10:15:54,455 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:15:54] "[36mGET /static/js/paper-generation.js HTTP/1.1[0m" 304 -
+2025-11-25 10:15:55,609 - __main__ - INFO - LLM warmup successful
+2025-11-25 10:15:55,609 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:15:55] "POST /api/warmup HTTP/1.1" 200 -
+2025-11-25 10:15:59,926 - __main__ - INFO - Retrieved latest paper: /home/ritlab-01/Documents/1ms22cs006/PAPERGEN/fixedproj/saved_papers/paper_20251125_100526.json
+2025-11-25 10:15:59,928 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:15:59] "GET /api/latest-paper HTTP/1.1" 200 -
+2025-11-25 10:16:18,072 - __main__ - INFO - Generating paper PDF - Title: Machine Learning in Healthcare...
+2025-11-25 10:16:18,134 - __main__ - INFO - Paper PDF generated successfully
+2025-11-25 10:16:18,134 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:16:18] "POST /api/download-pdf HTTP/1.1" 200 -
+2025-11-25 10:17:04,814 - __main__ - INFO - Streaming paper generation - Topic: Deep Learning for Medical Image Analysis...
+2025-11-25 10:17:04,815 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:17:04] "POST /api/generate-paper-stream HTTP/1.1" 200 -
+2025-11-25 10:25:11,661 - __main__ - INFO - Generating paper PDF - Title: Deep Learning for Medical Image Analysis...
+2025-11-25 10:25:11,678 - __main__ - INFO - Paper PDF generated successfully
+2025-11-25 10:25:11,678 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:25:11] "POST /api/download-pdf HTTP/1.1" 200 -
+2025-11-25 10:30:45,915 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 10:30:46,902 - __main__ - INFO - ======================================================================
+2025-11-25 10:30:46,902 - __main__ - INFO - 🎓 AI Research Paper Generator v3.0
+2025-11-25 10:30:46,902 - __main__ - INFO - ======================================================================
+2025-11-25 10:30:46,902 - __main__ - INFO - ✓ All services initialized
+2025-11-25 10:30:46,902 - __main__ - INFO - ======================================================================
+2025-11-25 10:30:46,904 - __main__ - INFO - 🚀 Starting server on http://0.0.0.0:8080
+2025-11-25 10:30:46,904 - __main__ - INFO - 📝 Model: llama3.1:8b
+2025-11-25 10:30:46,904 - __main__ - INFO - ======================================================================
+2025-11-25 10:30:46,906 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.1.50.220:8080
+2025-11-25 10:30:46,907 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-11-25 10:30:46,907 - werkzeug - INFO -  * Restarting with stat
+2025-11-25 10:30:48,429 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 10:30:49,435 - __main__ - INFO - ======================================================================
+2025-11-25 10:30:49,435 - __main__ - INFO - 🎓 AI Research Paper Generator v3.0
+2025-11-25 10:30:49,435 - __main__ - INFO - ======================================================================
+2025-11-25 10:30:49,435 - __main__ - INFO - ✓ All services initialized
+2025-11-25 10:30:49,435 - __main__ - INFO - ======================================================================
+2025-11-25 10:30:49,437 - __main__ - INFO - 🚀 Starting server on http://0.0.0.0:8080
+2025-11-25 10:30:49,437 - __main__ - INFO - 📝 Model: llama3.1:8b
+2025-11-25 10:30:49,437 - __main__ - INFO - ======================================================================
+2025-11-25 10:30:49,439 - werkzeug - WARNING -  * Debugger is active!
+2025-11-25 10:30:49,439 - werkzeug - INFO -  * Debugger PIN: 130-544-881
+2025-11-25 10:34:14,344 - werkzeug - INFO -  * Detected change in '/home/ritlab-01/Documents/1ms22cs006/PAPERGEN/fixedproj/models/llm.py', reloading
+2025-11-25 10:34:14,710 - werkzeug - INFO -  * Restarting with stat
+2025-11-25 10:34:16,299 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 10:34:17,284 - __main__ - INFO - ======================================================================
+2025-11-25 10:34:17,284 - __main__ - INFO - 🎓 AI Research Paper Generator v3.0
+2025-11-25 10:34:17,284 - __main__ - INFO - ======================================================================
+2025-11-25 10:34:17,284 - __main__ - INFO - ✓ All services initialized
+2025-11-25 10:34:17,284 - __main__ - INFO - ======================================================================
+2025-11-25 10:34:17,288 - __main__ - INFO - 🚀 Starting server on http://0.0.0.0:8080
+2025-11-25 10:34:17,288 - __main__ - INFO - 📝 Model: llama3.1:8b
+2025-11-25 10:34:17,288 - __main__ - INFO - ======================================================================
+2025-11-25 10:34:17,290 - werkzeug - WARNING -  * Debugger is active!
+2025-11-25 10:34:17,290 - werkzeug - INFO -  * Debugger PIN: 130-544-881
+2025-11-25 10:35:10,300 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 10:35:11,272 - __main__ - INFO - ======================================================================
+2025-11-25 10:35:11,272 - __main__ - INFO - 🎓 AI Research Paper Generator v3.0
+2025-11-25 10:35:11,272 - __main__ - INFO - ======================================================================
+2025-11-25 10:35:11,272 - __main__ - INFO - ✓ All services initialized
+2025-11-25 10:35:11,272 - __main__ - INFO - ======================================================================
+2025-11-25 10:35:11,274 - __main__ - INFO - 🚀 Starting server on http://0.0.0.0:8080
+2025-11-25 10:35:11,275 - __main__ - INFO - 📝 Model: llama3.1:8b
+2025-11-25 10:35:11,275 - __main__ - INFO - ======================================================================
+2025-11-25 10:35:11,277 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.1.50.220:8080
+2025-11-25 10:35:11,277 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-11-25 10:35:11,277 - werkzeug - INFO -  * Restarting with stat
+2025-11-25 10:35:12,756 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 10:35:13,727 - __main__ - INFO - ======================================================================
+2025-11-25 10:35:13,727 - __main__ - INFO - 🎓 AI Research Paper Generator v3.0
+2025-11-25 10:35:13,727 - __main__ - INFO - ======================================================================
+2025-11-25 10:35:13,727 - __main__ - INFO - ✓ All services initialized
+2025-11-25 10:35:13,727 - __main__ - INFO - ======================================================================
+2025-11-25 10:35:13,729 - __main__ - INFO - 🚀 Starting server on http://0.0.0.0:8080
+2025-11-25 10:35:13,729 - __main__ - INFO - 📝 Model: llama3.1:8b
+2025-11-25 10:35:13,729 - __main__ - INFO - ======================================================================
+2025-11-25 10:35:13,731 - werkzeug - WARNING -  * Debugger is active!
+2025-11-25 10:35:13,731 - werkzeug - INFO -  * Debugger PIN: 130-544-881
+2025-11-25 10:36:00,138 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 10:36:01,107 - __main__ - INFO - ======================================================================
+2025-11-25 10:36:01,107 - __main__ - INFO - 🎓 AI Research Paper Generator v3.0
+2025-11-25 10:36:01,107 - __main__ - INFO - ======================================================================
+2025-11-25 10:36:01,108 - __main__ - INFO - ✓ All services initialized
+2025-11-25 10:36:01,108 - __main__ - INFO - ======================================================================
+2025-11-25 10:36:01,109 - __main__ - INFO - 🚀 Starting server on http://0.0.0.0:8080
+2025-11-25 10:36:01,110 - __main__ - INFO - 📝 Model: llama3.1:8b
+2025-11-25 10:36:01,110 - __main__ - INFO - ======================================================================
+2025-11-25 10:36:28,044 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 10:36:29,034 - __main__ - INFO - ======================================================================
+2025-11-25 10:36:29,034 - __main__ - INFO - 🎓 AI Research Paper Generator v3.0
+2025-11-25 10:36:29,034 - __main__ - INFO - ======================================================================
+2025-11-25 10:36:29,034 - __main__ - INFO - ✓ All services initialized
+2025-11-25 10:36:29,034 - __main__ - INFO - ======================================================================
+2025-11-25 10:36:29,036 - __main__ - INFO - 🚀 Starting server on http://0.0.0.0:8080
+2025-11-25 10:36:29,036 - __main__ - INFO - 📝 Model: llama3.1:8b
+2025-11-25 10:36:29,036 - __main__ - INFO - ======================================================================
+2025-11-25 10:36:29,039 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.1.50.220:8080
+2025-11-25 10:36:29,039 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-11-25 10:36:29,039 - werkzeug - INFO -  * Restarting with stat
+2025-11-25 10:36:30,552 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2025-11-25 10:36:31,557 - __main__ - INFO - ======================================================================
+2025-11-25 10:36:31,557 - __main__ - INFO - 🎓 AI Research Paper Generator v3.0
+2025-11-25 10:36:31,557 - __main__ - INFO - ======================================================================
+2025-11-25 10:36:31,557 - __main__ - INFO - ✓ All services initialized
+2025-11-25 10:36:31,557 - __main__ - INFO - ======================================================================
+2025-11-25 10:36:31,559 - __main__ - INFO - 🚀 Starting server on http://0.0.0.0:8080
+2025-11-25 10:36:31,559 - __main__ - INFO - 📝 Model: llama3.1:8b
+2025-11-25 10:36:31,559 - __main__ - INFO - ======================================================================
+2025-11-25 10:36:31,561 - werkzeug - WARNING -  * Debugger is active!
+2025-11-25 10:36:31,561 - werkzeug - INFO -  * Debugger PIN: 130-544-881
+2025-11-25 10:36:39,781 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:36:39] "GET / HTTP/1.1" 200 -
+2025-11-25 10:36:39,814 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:36:39] "GET /static/css/title-fix.css HTTP/1.1" 200 -
+2025-11-25 10:36:39,816 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:36:39] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-11-25 10:36:39,817 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:36:39] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-11-25 10:36:39,819 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:36:39] "GET /static/js/paper-generation.js HTTP/1.1" 200 -
+2025-11-25 10:36:39,823 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:36:39] "GET /static/js/literature-survey.js HTTP/1.1" 200 -
+2025-11-25 10:36:39,824 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:36:39] "GET /static/js/ocr-extractor.js HTTP/1.1" 200 -
+2025-11-25 10:36:39,951 - __main__ - WARNING - 404 error: http://localhost:8080/favicon.ico
+2025-11-25 10:36:39,952 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:36:39] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-11-25 10:36:42,426 - __main__ - INFO - Retrieved latest paper: /home/ritlab-01/Documents/1ms22cs006/PAPERGEN/fixedproj/saved_papers/paper_20251125_100526.json
+2025-11-25 10:36:42,427 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:36:42] "GET /api/latest-paper HTTP/1.1" 200 -
+2025-11-25 10:36:44,082 - __main__ - INFO - LLM warmup successful
+2025-11-25 10:36:44,082 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:36:44] "POST /api/warmup HTTP/1.1" 200 -
+2025-11-25 10:36:52,372 - __main__ - ERROR - PPTX generation error: name 'Reference' is not defined
+Traceback (most recent call last):
+  File "/home/ritlab-01/Documents/1ms22cs006/PAPERGEN/fixedproj/app.py", line 843, in download_pptx
+    references=[Reference(**r) for r in paper_data.get('references', [])],
+  File "/home/ritlab-01/Documents/1ms22cs006/PAPERGEN/fixedproj/app.py", line 843, in <listcomp>
+    references=[Reference(**r) for r in paper_data.get('references', [])],
+NameError: name 'Reference' is not defined
+2025-11-25 10:36:52,372 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:36:52] "[35m[1mPOST /api/download-pptx HTTP/1.1[0m" 500 -
+2025-11-25 10:38:15,051 - __main__ - INFO - Streaming paper generation - Topic: Machine Learning in Education...
+2025-11-25 10:38:15,051 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:38:15] "POST /api/generate-paper-stream HTTP/1.1" 200 -
+2025-11-25 10:46:32,903 - __main__ - INFO - Generating paper PDF - Title: Machine Learning in Education...
+2025-11-25 10:46:32,934 - __main__ - INFO - Paper PDF generated successfully
+2025-11-25 10:46:32,935 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:46:32] "POST /api/download-pdf HTTP/1.1" 200 -
+2025-11-25 10:46:54,312 - __main__ - ERROR - PPTX generation error: name 'Reference' is not defined
+Traceback (most recent call last):
+  File "/home/ritlab-01/Documents/1ms22cs006/PAPERGEN/fixedproj/app.py", line 843, in download_pptx
+    references=[Reference(**r) for r in paper_data.get('references', [])],
+  File "/home/ritlab-01/Documents/1ms22cs006/PAPERGEN/fixedproj/app.py", line 843, in <listcomp>
+    references=[Reference(**r) for r in paper_data.get('references', [])],
+NameError: name 'Reference' is not defined
+2025-11-25 10:46:54,313 - werkzeug - INFO - 127.0.0.1 - - [25/Nov/2025 10:46:54] "[35m[1mPOST /api/download-pptx HTTP/1.1[0m" 500 -

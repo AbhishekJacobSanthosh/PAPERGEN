@@ -48,18 +48,7 @@ function hideLoading() {
 // function closeModal() { ... }
 // window.onclick = ...
 
-// Author management
-function addAuthor() {
-    const container = document.getElementById('authorsContainer');
-    const authorEntry = document.createElement('div');
-    authorEntry.className = 'author-entry';
-    authorEntry.innerHTML = `
-        <input type="text" class="input author-name" placeholder="Full Name">
-        <input type="email" class="input author-email" placeholder="Email">
-        <input type="text" class="input author-affiliation" placeholder="University/Institution">
-    `;
-    container.appendChild(authorEntry);
-}
+
 
 
 

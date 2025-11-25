@@ -452,6 +452,8 @@ Write the complete abstract now:"""
         
         return f"""Write the Introduction section for this research paper:
 
+        CITATION RULE: You MUST use IEEE style citations like [1], [2] when referring to the provided research context. Do NOT use (Author, Year).
+
 {paper_context}
 
 {rag_section}
@@ -502,11 +504,13 @@ Write the Introduction section now:"""
 
     ABSOLUTE REQUIREMENT - READ THIS CAREFULLY:
     Whenever you write about research work, you MUST write the complete phrase "{title}" after "on".
+    
+    CITATION RULE: You MUST use IEEE style citations like [1], [2] for EVERY paper discussed. Do NOT use (Author, Year).
 
     CORRECT EXAMPLES (using the actual topic "{title}"):
-    ✓ "Recent work by Smith et al. on {title} explores..."
+    ✓ "Recent work by Smith et al. [1] on {title} explores..."
     ✓ "The literature review on {title} provides..."
-    ✓ "Research on {title} has demonstrated..."
+    ✓ "Research on {title} [2] has demonstrated..."
     ✓ "Studies on {title} have shown..."
 
     WRONG EXAMPLES (DO NOT DO THIS):
@@ -676,6 +680,8 @@ Write the Results section with realistic metrics now:"""
         rag_section = f"Research context to compare against:\n{rag_context}\n" if rag_context else ""
         
         return f"""Write the Discussion section for this research paper on "{title}":
+
+        CITATION RULE: Use IEEE style citations [1], [2] when comparing your results with previous work.
 
 {paper_context}
 

@@ -7,7 +7,7 @@ Production-ready Flask application with:
 - Security improvements
 - User data support
 """
-from flask import Flask, request, jsonify, render_template, send_file
+from flask import Flask, request, jsonify, render_template, send_file, Response, stream_with_context
 from datetime import datetime
 from functools import wraps
 import os
@@ -24,10 +24,11 @@ from config.settings import (
 )
 
 # Import models
-from models.paper_structure import Author, ResearchPaper
+from models.paper_structure import ResearchPaper, Author, Reference
 
 # Import services
 from services.paper_generator import PaperGeneratorService
+from services.presentation_generator import PresentationGeneratorService
 from services.rag_service import RAGService
 from services.export_service import ExportService
 from services.ocr_service import OCRService
@@ -142,6 +143,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Initialize services
 paper_generator = PaperGeneratorService()
+presentation_generator = PresentationGeneratorService()
 rag_service = RAGService()
 export_service = ExportService()
 ocr_service = OCRService()
@@ -293,6 +295,54 @@ def generate_paper_endpoint():
         'success': True,
         'paper': paper.to_dict()
     })
+
+
+@app.route('/api/generate-paper-stream', methods=['POST'])
+def generate_paper_stream_endpoint():
+    """Generate research paper with streaming updates (SSE)"""
+    data = request.json
+    
+    # Validate request (reuse existing validator logic manually or via try-catch)
+    try:
+        RequestValidator.validate_paper_generation(data)
+    except ValidationError as e:
+        return jsonify({'success': False, 'error': str(e)}), 400
+        
+    topic = data.get('topic', '').strip()
+    authors_data = data.get('authors', [])
+    use_rag = data.get('use_rag', True)
+    user_data = data.get('user_data')
+    selected_title = data.get('selected_title', '').strip()
+    
+    logger.info(f"Streaming paper generation - Topic: {topic[:50]}...")
+    
+    # Parse authors
+    authors = []
+    for author_data in authors_data:
+        authors.append(Author(
+            name=author_data.get('name', 'Unknown'),
+            email=author_data.get('email', 'email@edu'),
+            affiliation=author_data.get('affiliation', 'University')
+        ))
+        
+    def generate():
+        # Generator wrapper for SSE
+        try:
+            # Determine title
+            paper_title = selected_title if selected_title else None
+            
+            # Call streaming service
+            for event_json in paper_generator.generate_paper_stream(
+                topic, authors, use_rag, user_data, title=paper_title
+            ):
+                yield f"data: {event_json}\n\n"
+                
+        except Exception as e:
+            logger.error(f"Streaming error: {e}", exc_info=True)
+            error_json = json.dumps({'status': 'error', 'message': str(e)})
+            yield f"data: {error_json}\n\n"
+
+    return Response(stream_with_context(generate()), mimetype='text/event-stream')
 
 
 @app.route('/api/latest-paper', methods=['GET'])
@@ -774,6 +824,44 @@ def internal_error(error):
     return jsonify({'success': False, 'error': 'Internal server error'}), 500
 
 # ==================== MAIN ====================
+
+@app.route('/api/download-pptx', methods=['POST'])
+def download_pptx():
+    """Generate and download PPTX"""
+    data = request.json
+    if not data or 'paper' not in data:
+        return jsonify({'success': False, 'error': 'No paper data provided'}), 400
+        
+    try:
+        # Reconstruct paper object
+        paper_data = data['paper']
+        paper = ResearchPaper(
+            title=paper_data.get('title', 'Untitled'),
+            authors=[Author(**a) for a in paper_data.get('authors', [])],
+            abstract=paper_data.get('abstract', ''),
+            sections=paper_data.get('sections', {}),
+            references=[Reference(**r) for r in paper_data.get('references', [])],
+            figures={}, # Figures not supported in PPTX yet
+            doi=paper_data.get('doi'),
+            generated_at=datetime.now()
+        )
+        
+        # Generate PPTX
+        filename = f"presentation_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pptx"
+        filepath = os.path.join(DOWNLOAD_DIR, filename)
+        presentation_generator.generate_presentation(paper, filepath)
+        
+        return send_file(
+            filepath,
+            as_attachment=True,
+            download_name=f"{paper.title[:30]}_presentation.pptx",
+            mimetype='application/vnd.openxmlformats-officedocument.presentationml.presentation'
+        )
+        
+    except Exception as e:
+        logger.error(f"PPTX generation error: {e}", exc_info=True)
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 
 if __name__ == '__main__':
     logger.info(f"🚀 Starting server on http://{HOST}:{PORT}")

@@ -198,6 +198,118 @@ class PaperGeneratorService:
         }
         logger.info(f"✓ Paper generation complete! ({total_words} words, {len(references)} refs)")
         return paper
+
+    def generate_paper_stream(self, topic: str, authors: List[Author],
+                            use_rag: bool = True, user_data: Optional[Dict] = None, 
+                            title: Optional[str] = None):
+        """Generate paper with streaming progress updates"""
+        import json
+        
+        yield json.dumps({'status': 'start', 'message': 'Starting generation...'})
+        
+        # Step 1: Title
+        if title:
+            yield json.dumps({'status': 'title', 'message': f'Using title: {title}'})
+        else:
+            yield json.dumps({'status': 'title', 'message': 'Generating optimized title...'})
+            title = self.generate_title(topic)
+            yield json.dumps({'status': 'title_complete', 'title': title})
+            
+        # Step 2: RAG
+        rag_context = ""
+        retrieved_papers = []
+        if use_rag:
+            yield json.dumps({'status': 'rag_start', 'message': 'Searching for relevant research papers...'})
+            retrieved_papers = self.rag.search_papers(topic, limit=5)
+            rag_context = self.rag.build_context(retrieved_papers)
+            if len(rag_context) > MAX_RAG_CONTEXT_CHARS:
+                rag_context = rag_context[:MAX_RAG_CONTEXT_CHARS] + "..."
+            yield json.dumps({'status': 'rag_complete', 'count': len(retrieved_papers)})
+            
+        # Step 3: Abstract
+        yield json.dumps({'status': 'abstract', 'message': 'Drafting abstract...'})
+        abstract = self.llm.generate_abstract(title, rag_context)
+        abstract = self.text_processor.clean_generated_text(abstract, section_name="abstract", paper_title=title)
+        
+        # Step 4: Sections
+        sections = {}
+        previous_sections = {'abstract': abstract}
+        section_order = ['introduction', 'literature_review', 'methodology', 'results', 'discussion', 'conclusion']
+        
+        for idx, section_name in enumerate(section_order, 1):
+            yield json.dumps({
+                'status': 'section_start', 
+                'section': section_name, 
+                'message': f'Writing {section_name.replace("_", " ")} ({idx}/6)...'
+            })
+            
+            use_context = section_name in ['introduction', 'literature_review', 'discussion']
+            context = rag_context if use_rag and use_context else ""
+            
+            # User data prep (simplified for stream)
+            user_context = None
+            if user_data:
+                if section_name == 'methodology' and (user_data.get('methodology') or user_data.get('dataset')):
+                    user_context = str(user_data.get('methodology', '')) + str(user_data.get('dataset', ''))
+                elif section_name == 'results' and (user_data.get('results') or user_data.get('findings')):
+                    user_context = str(user_data.get('results', '')) + str(user_data.get('findings', ''))
+
+            content = self.llm.generate_section(
+                section_name=section_name,
+                title=title,
+                previous_sections=previous_sections,
+                rag_context=context,
+                user_data=user_context
+            )
+            
+            if not content:
+                content = f"[{section_name.title()} content generation failed]"
+            else:
+                content = self.text_processor.clean_generated_text(content, section_name=section_name, paper_title=title)
+                
+            sections[section_name] = content
+            previous_sections[section_name] = content
+            
+            yield json.dumps({
+                'status': 'section_complete', 
+                'section': section_name,
+                'preview': content[:100] + "..."
+            })
+
+        # Step 5: References
+        yield json.dumps({'status': 'references', 'message': 'Compiling references...'})
+        references = self._generate_references(retrieved_papers, title)
+        
+        # Step 6: Figures
+        figures = {}
+        if USE_REALISTIC_DATA and retrieved_papers:
+            yield json.dumps({'status': 'figures', 'message': 'Generating data visualizations...'})
+            try:
+                table_data = self.figure_gen.generate_realistic_comparison_table(retrieved_papers)
+                figures['table1'] = Figure(type='table', caption='Performance comparison', data=table_data, number=1)
+            except:
+                pass
+
+        # Finalize
+        paper = ResearchPaper(
+            title=title,
+            authors=authors,
+            abstract=abstract,
+            sections=sections,
+            references=references,
+            figures=figures,
+            doi=self._generate_doi(),
+            generated_at=datetime.now()
+        )
+        
+        # Calculate metadata
+        total_words = len(abstract.split()) + sum(len(s.split()) for s in sections.values() if s)
+        paper.metadata = {
+            'total_words': total_words,
+            'rag_enabled': use_rag
+        }
+        
+        yield json.dumps({'status': 'complete', 'paper': paper.to_dict()})
     
     def generate_title(self, description: str) -> str:
         if len(description.split()) <= 12:

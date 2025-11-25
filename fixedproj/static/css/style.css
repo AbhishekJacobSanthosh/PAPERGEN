@@ -217,10 +217,57 @@ main {
 
 /* Authors */
 .author-entry {
-    display: grid;
-    grid-template-columns: 2fr 2fr 3fr;
+    display: flex;
+    flex-direction: column;
     gap: 1rem;
-    margin-bottom: 1rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.author-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.75rem;
+}
+
+.author-header h4 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.btn-remove {
+    color: var(--error);
+    background: transparent;
+    border: 1px solid var(--error);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 0.25rem 0.75rem;
+    transition: all 0.2s;
+}
+
+.btn-remove:hover {
+    background: var(--error);
+    color: white;
+}
+
+.author-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.author-fields .full-width {
+    grid-column: 1 / -1;
 }
 
 /* User Data Section */
@@ -603,4 +650,69 @@ main {
 
 .min-w-250 {
     min-width: 250px;
+}
+
+/* Generated Paper Styles */
+.paper-section {
+    margin-bottom: 2rem;
+}
+
+.paper-section h2 {
+    color: var(--primary);
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.paper-figure {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-align: center;
+}
+
+.paper-figure h4 {
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+}
+
+.generated-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+    font-size: 0.9rem;
+}
+
+.generated-table th,
+.generated-table td {
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    text-align: left;
+}
+
+.generated-table th {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.chart-placeholder {
+    background: var(--bg-dark);
+    padding: 2rem;
+    border: 1px dashed var(--text-muted);
+    border-radius: 4px;
+    color: var(--text-muted);
+    font-family: monospace;
+}
+
+.references {
+    padding-left: 1.5rem;
+    color: var(--text-secondary);
+}
+
+.references li {
+    margin-bottom: 0.5rem;
+    word-break: break-word;
 }

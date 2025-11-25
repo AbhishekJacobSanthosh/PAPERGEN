@@ -13,24 +13,67 @@ function toggleUserData() {
     }
 }
 
+// Author Management
+function addAuthorField(name = '', email = '', affiliation = '') {
+    const container = document.getElementById('authorsContainer');
+    const authorId = Date.now();
+
+    const authorDiv = document.createElement('div');
+    authorDiv.className = 'author-entry';
+    authorDiv.id = `author-${authorId}`;
+    authorDiv.innerHTML = `
+        <div class="author-header">
+            <h4>Author Details</h4>
+            ${container.children.length > 0 ? `<button type="button" class="btn-remove" onclick="removeAuthorField('${authorId}')">Remove</button>` : ''}
+        </div>
+        <div class="author-fields">
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" class="input author-name" placeholder="Author Name" value="${name}">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" class="input author-email" placeholder="Email" value="${email}">
+            </div>
+            <div class="form-group full-width">
+                <label>Affiliation</label>
+                <input type="text" class="input author-affiliation" placeholder="Affiliation" value="${affiliation}">
+            </div>
+        </div>
+    `;
+
+    container.appendChild(authorDiv);
+}
+
+function removeAuthorField(id) {
+    const element = document.getElementById(`author-${id}`);
+    if (element) {
+        element.remove();
+    }
+}
+
 // Generate Research Paper (manual title support)
 async function generatePaper() {
     // Always get the current value from the paperTitle input field
     const paperTitle = document.getElementById('paperTitle').value.trim();
-    const authorName = document.getElementById('authorName').value.trim();
-    const authorEmail = document.getElementById('authorEmail').value.trim();
-    const affiliation = document.getElementById('authorAffiliation').value.trim();
     const useRAG = document.getElementById('useRAG').checked;
     const hasUserData = document.getElementById('hasUserData').checked;
 
+    // Collect authors
+    const authorEntries = document.querySelectorAll('.author-entry');
+    const authors = [];
 
-    const authors = [{
-        name: authorName,
-        email: authorEmail,
-        affiliation: affiliation
-    }];
+    authorEntries.forEach(entry => {
+        const name = entry.querySelector('.author-name').value.trim();
+        const email = entry.querySelector('.author-email').value.trim();
+        const affiliation = entry.querySelector('.author-affiliation').value.trim();
 
-    // Validate topic (title) - works for both manual and autofilled entry
+        if (name && email && affiliation) {
+            authors.push({ name, email, affiliation });
+        }
+    });
+
+    // Validate topic (title)
     if (!paperTitle) {
         showNotification('Please enter a paper topic', 'error');
         return;
@@ -41,8 +84,8 @@ async function generatePaper() {
     }
 
     // Validate author details
-    if (!authorName) {
-        showNotification('Please enter author name', 'error');
+    if (authors.length === 0) {
+        showNotification('Please add at least one author with complete details', 'error');
         return;
     }
 
@@ -56,40 +99,111 @@ async function generatePaper() {
         }
     }
 
-    // IMPORTANT: Use 'topic' key for backend!
     const payload = {
         topic: paperTitle,
-        authors: authors, // backend expects this!
+        authors: authors,
         use_rag: useRAG,
         user_data: userExperimentalData
     };
 
-    showLoading('Generating research paper. This may take a few minutes...');
+    // UI Setup
+    const loading = document.getElementById('loading');
+    const loadingText = document.getElementById('loadingText');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressMessage = document.getElementById('progressMessage');
+
+    loading.classList.remove('hidden');
+    progressContainer.classList.remove('hidden');
+    loadingText.textContent = 'Generating Research Paper...';
+    progressBar.style.width = '5%';
+    progressMessage.textContent = 'Starting...';
+
     try {
-        const response = await fetch('/api/generate-paper', {
+        const response = await fetch('/api/generate-paper-stream', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
-        const data = await response.json();
-        if (data.success) {
-            currentPaper = data.paper;
-            displayGeneratedPaper(data.paper);
-            showNotification('✅ Research paper generated successfully!', 'success');
-        } else {
-            showNotification('Error: ' + (data.error || 'Unknown error'), 'error');
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n\n');
+            buffer = lines.pop(); // Keep incomplete chunk
+
+            for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                    try {
+                        const data = JSON.parse(line.slice(6));
+
+                        // Handle events
+                        if (data.status === 'start') {
+                            progressBar.style.width = '10%';
+                            progressMessage.textContent = data.message;
+                        } else if (data.status === 'title') {
+                            progressBar.style.width = '20%';
+                            progressMessage.textContent = data.message;
+                        } else if (data.status === 'rag_start') {
+                            progressBar.style.width = '30%';
+                            progressMessage.textContent = data.message;
+                        } else if (data.status === 'rag_complete') {
+                            progressBar.style.width = '40%';
+                            progressMessage.textContent = `Retrieved ${data.count} papers`;
+                        } else if (data.status === 'abstract') {
+                            progressBar.style.width = '50%';
+                            progressMessage.textContent = data.message;
+                        } else if (data.status === 'section_start') {
+                            const sectionMap = {
+                                'introduction': 55,
+                                'literature_review': 62,
+                                'methodology': 69,
+                                'results': 76,
+                                'discussion': 83,
+                                'conclusion': 90
+                            };
+                            if (sectionMap[data.section]) {
+                                progressBar.style.width = `${sectionMap[data.section]}%`;
+                            }
+                            progressMessage.textContent = data.message;
+                        } else if (data.status === 'references') {
+                            progressBar.style.width = '95%';
+                            progressMessage.textContent = data.message;
+                        } else if (data.status === 'complete') {
+                            progressBar.style.width = '100%';
+                            progressMessage.textContent = 'Done!';
+                            currentPaper = data.paper;
+                            displayGeneratedPaper(data.paper);
+                            showNotification('✅ Research paper generated successfully!', 'success');
+                        } else if (data.status === 'error') {
+                            throw new Error(data.message);
+                        }
+                    } catch (e) {
+                        console.error('Error parsing stream:', e);
+                    }
+                }
+            }
         }
     } catch (error) {
-        showNotification('Failed to generate paper. Please try again.', 'error');
+        showNotification('Failed to generate paper: ' + error.message, 'error');
         console.error(error);
     } finally {
-        hideLoading();
+        loading.classList.add('hidden');
+        progressContainer.classList.add('hidden');
     }
 }
 
 // Show/hide user data fields on load (optional fallback)
 document.addEventListener('DOMContentLoaded', () => {
     toggleUserData();
+    // Add initial author field
+    addAuthorField('Your Name', 'your.email@university.edu', 'Department of CSE, University');
 });
 
 function displayGeneratedPaper(data) {
@@ -113,6 +227,7 @@ function displayGeneratedPaper(data) {
     `;
 
     // Add sections
+    // Add sections
     const sections = ['abstract', 'introduction', 'literature_review',
         'methodology', 'results', 'discussion', 'conclusion'];
 
@@ -122,17 +237,54 @@ function displayGeneratedPaper(data) {
             html += `
                 <div class="paper-section">
                     <h2>${title}</h2>
-                    <p>${data.sections[section]}</p>
+                    <p>${data.sections[section].replace(/\n/g, '<br>')}</p>
                 </div>
             `;
         }
     });
 
-    // Add references if present
+    // Add Figures and Tables
+    if (data.figures) {
+        Object.values(data.figures).forEach(fig => {
+            if (fig.type === 'table') {
+                html += `
+                    <div class="paper-figure">
+                        <h4>Table ${fig.number}: ${fig.caption}</h4>
+                        <table class="generated-table">
+                            <thead>
+                                <tr>${fig.data[0].map(h => `<th>${h}</th>`).join('')}</tr>
+                            </thead>
+                            <tbody>
+                                ${fig.data.slice(1).map(row => `
+                                    <tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } else if (fig.type === 'chart') {
+                // Placeholder for charts (could use a library, but for now just text description)
+                html += `
+                    <div class="paper-figure">
+                        <h4>Figure ${fig.number}: ${fig.caption}</h4>
+                        <div class="chart-placeholder">[Chart Data: ${fig.data.substring(0, 50)}...]</div>
+                    </div>
+                `;
+            }
+        });
+    }
+
+    // Add references
     if (data.references && data.references.length > 0) {
         html += '<div class="paper-section"><h2>References</h2><ol class="references">';
         data.references.forEach(ref => {
-            html += `<li>${ref}</li>`;
+            if (typeof ref === 'string') {
+                html += `<li>${ref}</li>`;
+            } else {
+                // Format object: Authors, "Title", Venue, Year.
+                const authors = Array.isArray(ref.authors) ? ref.authors.join(', ') : ref.authors;
+                html += `<li>${authors}, "${ref.title}", <em>${ref.venue}</em>, ${ref.year}.</li>`;
+            }
         });
         html += '</ol></div>';
     }
@@ -152,7 +304,10 @@ async function downloadPaper(format = 'pdf') {
 
     showLoading(`Preparing ${format.toUpperCase()} download...`);
 
-    const endpoint = format === 'pdf' ? '/api/download-pdf' : '/api/download-docx';
+    let endpoint;
+    if (format === 'pdf') endpoint = '/api/download-pdf';
+    else if (format === 'docx') endpoint = '/api/download-docx';
+    else if (format === 'pptx') endpoint = '/api/download-pptx';
 
     try {
         const response = await fetch(endpoint, {

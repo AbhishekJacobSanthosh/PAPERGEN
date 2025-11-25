@@ -81,22 +81,13 @@
                         placeholder="e.g., Deep Learning for Medical Image Analysis" maxlength="500">
                 </div>
 
-                <div class="form-group">
-                    <label for="authorName">Author Name</label>
-                    <input type="text" id="authorName" class="input" placeholder="Your Name" value="Your Name">
+                <div id="authorsContainer">
+                    <!-- Author fields will be added here by JS -->
                 </div>
 
-                <div class="form-group">
-                    <label for="authorEmail">Author Email</label>
-                    <input type="email" id="authorEmail" class="input" placeholder="your.email@university.edu"
-                        value="your.email@university.edu">
-                </div>
-
-                <div class="form-group">
-                    <label for="authorAffiliation">Affiliation</label>
-                    <input type="text" id="authorAffiliation" class="input" placeholder="Department, University"
-                        value="Department of CSE, University">
-                </div>
+                <button type="button" class="btn-secondary mb-2" onclick="addAuthorField()">
+                    + Add Another Author
+                </button>
 
                 <div class="checkbox-group">
                     <input type="checkbox" id="useRAG" checked>
@@ -136,7 +127,11 @@
                 <h3>Generated Research Paper</h3>
                 <div id="paperMetadata" class="metadata"></div>
                 <div id="paperContent" class="output-content"></div>
-                <button class="btn-secondary" onclick="downloadPaper()">📥 Download PDF</button>
+                <div class="flex-gap mt-1">
+                    <button class="btn-secondary flex-1" onclick="downloadPaper('pdf')">📥 PDF</button>
+                    <button class="btn-secondary flex-1" onclick="downloadPaper('docx')">📝 DOCX</button>
+                    <button class="btn-secondary flex-1" onclick="downloadPaper('pptx')">📊 PPTX</button>
+                </div>
             </div>
         </div>
 
@@ -240,6 +235,14 @@
     <div id="loading" class="loading-overlay hidden">
         <div class="loading-spinner"></div>
         <p id="loadingText">Processing...</p>
+        <div id="progressContainer" class="hidden mt-1" style="width: 300px;">
+            <div class="progress-bar-bg"
+                style="background: #334155; height: 8px; border-radius: 4px; overflow: hidden;">
+                <div id="progressBar" style="width: 0%; height: 100%; background: #6366f1; transition: width 0.3s;">
+                </div>
+            </div>
+            <p id="progressMessage" class="text-sm text-gray-400 mt-1 text-center">Initializing...</p>
+        </div>
     </div>
 
     <!-- Notification Container -->
