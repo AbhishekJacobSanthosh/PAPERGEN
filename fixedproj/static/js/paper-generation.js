@@ -223,6 +223,12 @@ function displayGeneratedPaper(data) {
                 `).join('')}
             </div>
             <div class="date">Generated: ${formatDate(data.generated_date)}</div>
+            <div class="integrity-section" style="margin-top: 15px;">
+                <button onclick="checkIntegrity()" class="btn-secondary">🛡️ Check Content Integrity</button>
+                <div id="integrityResults" class="hidden" style="margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 5px;">
+                    <!-- Results will appear here -->
+                </div>
+            </div>
         </div>
     `;
 
@@ -366,3 +372,80 @@ async function recoverLastPaper() {
         hideLoading();
     }
 }
+
+async function checkIntegrity() {
+    if (!currentPaper) return;
+
+    const resultsDiv = document.getElementById('integrityResults');
+    resultsDiv.classList.remove('hidden');
+    resultsDiv.innerHTML = 'Checking... <span class="spinner"></span>';
+
+    try {
+        const response = await fetch('/api/check-integrity', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ paper: currentPaper })
+        });
+
+        const data = await response.json();
+
+        if (data.error) throw new Error(data.error);
+
+        let html = `
+            <div class="integrity-report-container">
+                <h4 class="report-title"><i class="fas fa-shield-alt"></i> Content Integrity Report</h4>
+                
+                <div class="integrity-grid">
+                    <!-- Plagiarism Card -->
+                    <div class="integrity-card ${getScoreClass(data.plagiarism.score, 'plagiarism')}">
+                        <div class="card-icon">
+                            <i class="fas fa-copy"></i>
+                        </div>
+                        <div class="card-content">
+                            <h5>Plagiarism Check</h5>
+                            <div class="score-display">
+                                <span class="score-value">${data.plagiarism.score}%</span>
+                                <span class="score-label">Similarity</span>
+                            </div>
+                            <p class="score-details">${data.plagiarism.details}</p>
+                        </div>
+                    </div>
+
+                    <!-- AI Detection Card -->
+                    <div class="integrity-card ${getScoreClass(data.ai_detection.score, 'ai')}">
+                        <div class="card-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="card-content">
+                            <h5>AI Detection</h5>
+                            <div class="score-display">
+                                <span class="score-value">${data.ai_detection.score}%</span>
+                                <span class="score-label">Probability</span>
+                            </div>
+                            <p class="score-details">${data.ai_detection.details}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        resultsDiv.innerHTML = html;
+
+    } catch (error) {
+        resultsDiv.innerHTML = `
+            <div class="integrity-error">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>Error: ${error.message}</span>
+            </div>`;
+    }
+}
+
+function getScoreClass(score, type) {
+    if (type === 'plagiarism') {
+        return score > 40 ? 'danger' : (score > 20 ? 'warning' : 'success');
+    } else {
+        return score > 80 ? 'danger' : (score > 50 ? 'warning' : 'success');
+    }
+}
+
+

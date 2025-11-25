@@ -280,6 +280,10 @@ class PaperGeneratorService:
         yield json.dumps({'status': 'references', 'message': 'Compiling references...'})
         references = self._generate_references(retrieved_papers, title)
         
+        # Add references to sections for export
+        reference_text = self._format_references(references)
+        sections['references'] = reference_text
+        
         # Step 6: Figures
         figures = {}
         if USE_REALISTIC_DATA and retrieved_papers:
@@ -321,11 +325,16 @@ class PaperGeneratorService:
         return title
     
     def _generate_references(self, retrieved_papers: List[Reference], title: str) -> List[Reference]:
-        references = list(retrieved_papers[:min(len(retrieved_papers), 5)])
+        # Use all retrieved papers up to limit
+        references = list(retrieved_papers)
+        logger.info(f"Using {len(references)} retrieved papers for references")
+        
         needed = MIN_REFERENCES - len(references)
         if needed > 0:
+            logger.info(f"Generating {needed} generic references to meet minimum of {MIN_REFERENCES}")
             generic_refs = self._get_generic_references(title, needed)
             references.extend(generic_refs)
+            
         return references
     
     def _get_generic_references(self, title: str, count: int) -> List[Reference]:

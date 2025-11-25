@@ -41,6 +41,13 @@ class RAGService:
         print(f"[RAG] Searching Semantic Scholar: {query[:50]}...")
         papers = self._search_api(query, limit)
         
+        # Fallback for long queries if no papers found
+        if not papers and len(query.split()) > 5:
+            simplified_query = self._simplify_query(query)
+            if simplified_query != query:
+                print(f"[RAG] No papers found. Retrying with simplified query: {simplified_query}")
+                papers = self._search_api(simplified_query, limit)
+        
         if papers:
             # Save to cache
             self._save_to_cache(query, papers)
@@ -95,9 +102,11 @@ class RAGService:
     def _search_api(self, query: str, limit: int) -> List[Reference]:
         """Search Semantic Scholar API with retry logic"""
         url = f"{self.api_base}/paper/search"
+        # Fetch more candidates to account for filtering
+        fetch_limit = limit * 3
         params = {
             'query': query,
-            'limit': limit,
+            'limit': fetch_limit,
             'fields': 'title,abstract,authors,year,citationCount,venue,externalIds,url'
         }
         
@@ -124,6 +133,9 @@ class RAGService:
                                 abstract=paper.get('abstract', '')
                             )
                             references.append(ref)
+                            
+                            if len(references) >= limit:
+                                break
                     
                     return references
                 
@@ -234,3 +246,10 @@ Abstract: {paper.abstract[:400]}...
                 
         except Exception as e:
             print(f"[RAG] Cache save error: {e}")
+
+    def _simplify_query(self, query: str) -> str:
+        """Simplify query by removing common stopwords and keeping key terms"""
+        stopwords = {'investigating', 'the', 'efficacy', 'of', 'in', 'preventing', 'a', 'an', 'and', 'for', 'to', 'with', 'on', 'at', 'by'}
+        words = query.lower().split()
+        key_terms = [w for w in words if w not in stopwords]
+        return ' '.join(key_terms)

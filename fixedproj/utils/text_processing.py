@@ -140,38 +140,33 @@ class TextProcessor:
         """
         issues = []
 
-        # Fix blanks after common prepositions
+        # Fix blanks after common prepositions - use generic term instead of full topic
         preps = ['on', 'in', 'of', 'for', 'with', 'to', 'about', 'as', 'at', 'by']
         for kw in preps:
-            text, n1 = re.subn(rf'\b{kw}\s*[,\.]', f'{kw} {topic},', text)
-            if n1: issues.append(f"Fixed {n1} instances of '{kw} ,' or '{kw} .'")
-            text, n2 = re.subn(rf'\b{kw}\s*\.', f'{kw} {topic}.', text)
-            if n2: issues.append(f"Fixed {n2} trailing preposition blanks '{kw} .'")
+            text, n1 = re.subn(rf'\b{kw}\s*[,\.]', f'{kw} this domain,', text)
+            if n1: issues.append(f"Fixed {n1} instances of '{kw} ,'")
+            text, n2 = re.subn(rf'\b{kw}\s*\.', f'{kw} this domain.', text)
+            if n2: issues.append(f"Fixed {n2} trailing preposition blanks")
 
-        # Fix sentences that start with a verb (likely missing subject)
+        # Fix sentences that start with a verb - use "This study" or "The system"
         text, n3 = re.subn(
             r'(^|\n+)\s*(is|are|was|were|has|have|can|will|may|provides|offers|represents)\b',
-            f'\n{topic} \\2', text, flags=re.IGNORECASE
+            f'\nThis study \\2', text, flags=re.IGNORECASE
         )
-        if n3: issues.append("Fixed lines starting with a verb (missing subject).")
+        if n3: issues.append("Fixed lines starting with a verb (inserted 'This study').")
 
-        # Fix lines that start with punctuation (often a sign of a missed variable)
-        text, n4 = re.subn(r'(^|\n)[\.,;:]', f'\n{topic}', text)
-        if n4: issues.append("Fixed lines starting with punctuation.")
+        # Fix lines that start with punctuation - remove the punctuation instead of inserting title
+        text, n4 = re.subn(r'(^|\n)[\.,;:]\s*', r'\1', text)
+        if n4: issues.append("Removed leading punctuation.")
 
         # Fix 'for future work in .' and similar endings
-        text, n5 = re.subn(r'in\s*\.', f'in {topic}.', text)
-        if n5: issues.append("Fixed 'in .' endings at sentence/paragraph close.")
-        text, n6 = re.subn(r'for\s*\.', f'for {topic}.', text)
-        if n6: issues.append("Fixed 'for .' endings at sentence/paragraph close.")
-
-        # Optional: repeat pass if you want (to catch recursion from prior replacements)
-        # for _ in range(1):
-        #     text, _ = TextProcessor.validate_topic_references(text, topic)
+        text, n5 = re.subn(r'in\s*\.', f'in this field.', text)
+        if n5: issues.append("Fixed 'in .' endings.")
+        text, n6 = re.subn(r'for\s*\.', f'for future research.', text)
+        if n6: issues.append("Fixed 'for .' endings.")
         
         return text, issues
 
-    
     @staticmethod
     def remove_first_person(text: str) -> str:
         """Remove or replace first-person references"""

@@ -1,0 +1,109 @@
+
+/* Integrity Report Styles */
+.integrity-report-container {
+    background: #1e293b; /* Dark slate background */
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+    color: #f8fafc;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.report-title {
+    color: #f8fafc;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.25rem;
+    border-bottom: 1px solid #334155;
+    padding-bottom: 10px;
+}
+
+.integrity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.integrity-card {
+    background: #0f172a; /* Darker background for cards */
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    gap: 15px;
+    border: 1px solid #334155;
+    transition: transform 0.2s;
+}
+
+.integrity-card:hover {
+    transform: translateY(-2px);
+}
+
+.integrity-card.success { border-left: 4px solid #22c55e; }
+.integrity-card.warning { border-left: 4px solid #f59e0b; }
+.integrity-card.danger { border-left: 4px solid #ef4444; }
+
+.card-icon {
+    font-size: 1.5rem;
+    padding: 10px;
+    background: #1e293b;
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.integrity-card.success .card-icon { color: #22c55e; }
+.integrity-card.warning .card-icon { color: #f59e0b; }
+.integrity-card.danger .card-icon { color: #ef4444; }
+
+.card-content {
+    flex: 1;
+}
+
+.card-content h5 {
+    margin: 0 0 5px 0;
+    color: #94a3b8;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.score-display {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    margin-bottom: 5px;
+}
+
+.score-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #f8fafc;
+}
+
+.score-label {
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.score-details {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #cbd5e1;
+    line-height: 1.4;
+}
+
+.integrity-error {
+    background: #450a0a;
+    color: #fca5a5;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #7f1d1d;
+}

@@ -24,7 +24,7 @@ from config.settings import (
 )
 
 # Import models
-from models.paper_structure import ResearchPaper, Author, Reference
+from models.paper_structure import ResearchPaper, Author, Reference, Figure
 
 # Import services
 from services.paper_generator import PaperGeneratorService
@@ -32,6 +32,7 @@ from services.presentation_generator import PresentationGeneratorService
 from services.rag_service import RAGService
 from services.export_service import ExportService
 from services.ocr_service import OCRService
+from services.integrity_service import ContentIntegrityService
 
 # Import utilities
 from utils.text_processing import TextProcessor
@@ -148,6 +149,7 @@ rag_service = RAGService()
 export_service = ExportService()
 ocr_service = OCRService()
 text_processor = TextProcessor()
+integrity_service = ContentIntegrityService()
 
 logger.info("="*70)
 logger.info("🎓 AI Research Paper Generator v3.0")
@@ -723,7 +725,7 @@ def download_pdf():
         authors=[Author(**a) for a in paper_data['authors']],
         abstract=paper_data['abstract'],
         sections=paper_data['sections'],
-        references=[],
+        references=[Reference(**r) for r in paper_data.get('references', [])],
         figures={k: Figure(**v) for k, v in paper_data.get('figures', {}).items()},
         doi=paper_data['doi'],
         generated_at=datetime.fromisoformat(paper_data['generated_at'])
@@ -758,7 +760,7 @@ def download_docx():
         authors=[Author(**a) for a in paper_data['authors']],
         abstract=paper_data['abstract'],
         sections=paper_data['sections'],
-        references=[],
+        references=[Reference(**r) for r in paper_data.get('references', [])],
         figures={},
         doi=paper_data['doi'],
         generated_at=datetime.fromisoformat(paper_data['generated_at'])
@@ -848,7 +850,7 @@ def download_pptx():
         
         # Generate PPTX
         filename = f"presentation_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pptx"
-        filepath = os.path.join(DOWNLOAD_DIR, filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         presentation_generator.generate_presentation(paper, filepath)
         
         return send_file(
@@ -862,6 +864,43 @@ def download_pptx():
         logger.error(f"PPTX generation error: {e}", exc_info=True)
         return jsonify({'success': False, 'error': str(e)}), 500
 
+
+@app.route('/api/check-integrity', methods=['POST'])
+def check_integrity():
+    """Check paper integrity (plagiarism and AI detection)"""
+    try:
+        data = request.json
+        paper_data = data.get('paper')
+        
+        if not paper_data:
+            return jsonify({'error': 'No paper data provided'}), 400
+            
+        # Reconstruct paper content
+        full_text = f"{paper_data.get('title', '')}\n\n{paper_data.get('abstract', '')}\n\n"
+        for section in paper_data.get('sections', {}).values():
+            full_text += f"{section}\n\n"
+            
+        # Get source documents (abstracts from references)
+        # Note: In a real scenario, we'd want the full text of references, 
+        # but here we use what we have (abstracts if available in RAG cache)
+        # For this implementation, we'll use the reference titles/abstracts passed in paper_data
+        source_docs = []
+        for ref in paper_data.get('references', []):
+            if isinstance(ref, dict):
+                source_docs.append(f"{ref.get('title', '')} {ref.get('abstract', '')}")
+        
+        # Run checks
+        plagiarism_result = integrity_service.check_plagiarism(full_text, source_docs)
+        ai_result = integrity_service.detect_ai_content(full_text)
+        
+        return jsonify({
+            'plagiarism': plagiarism_result,
+            'ai_detection': ai_result
+        })
+        
+    except Exception as e:
+        logger.error(f"Integrity check failed: {e}")
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     logger.info(f"🚀 Starting server on http://{HOST}:{PORT}")

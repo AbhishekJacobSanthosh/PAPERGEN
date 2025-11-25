@@ -9,7 +9,7 @@ MODEL_NAME = "llama3.1:8b"
 
 # ==================== API CONFIGURATION ====================
 SEMANTIC_SCHOLAR_API = "https://api.semanticscholar.org/graph/v1"
-RAG_PAPER_LIMIT = 5
+RAG_PAPER_LIMIT = 15
 CACHE_EXPIRY_HOURS = 24
 
 # ==================== DIRECTORIES ====================

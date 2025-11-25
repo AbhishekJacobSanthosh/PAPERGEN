@@ -1,8 +1,13 @@
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
 *.log
 paper_cache/
 saved_papers/
+uploads/
 .DS_Store
-.env
-venv/
