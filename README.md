@@ -15,7 +15,7 @@ Professional research paper generator with Literature Survey, RAG, and IEEE form
 
 1. **Install Ollama and pull the model:**
 
-ollama pull qwen2.5-coder:7b
+ollama pull llama3.1:8b
 
 2. **Clone and setup:**
 
