@@ -122,6 +122,10 @@
                         title="Recover last generated paper if browser timed out">
                         🔄 Recover Last Paper
                     </button>
+                    <button class="btn-secondary btn-large" onclick="showRecoveryModal()"
+                        title="Choose a specific paper from history">
+                        📂 Recover Specific Paper
+                    </button>
                 </div>
             </div>
 
@@ -133,6 +137,21 @@
                     <button class="btn-secondary flex-1" onclick="downloadPaper('pdf')">📥 PDF</button>
                     <button class="btn-secondary flex-1" onclick="downloadPaper('docx')">📝 DOCX</button>
                     <button class="btn-secondary flex-1" onclick="downloadPaper('pptx')">📊 PPTX</button>
+                </div>
+            </div>
+
+            <!-- Recovery Modal -->
+            <div id="recoveryModal" class="modal hidden">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>📂 Recover Saved Paper</h3>
+                        <button class="btn-close" onclick="closeRecoveryModal()">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="savedPapersList" class="paper-list">
+                            <p class="text-center">Loading saved papers...</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

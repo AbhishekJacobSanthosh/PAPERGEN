@@ -367,6 +367,65 @@ def get_latest_paper():
         return jsonify({'success': False, 'error': str(e)}), 500
 
 
+@app.route('/api/list-saved-papers', methods=['GET'])
+def list_saved_papers():
+    """List all saved papers with metadata"""
+    try:
+        files = glob.glob(os.path.join(SAVED_PAPERS_DIR, '*.json'))
+        papers = []
+        
+        for filepath in files:
+            try:
+                with open(filepath, 'r') as f:
+                    data = json.load(f)
+                    papers.append({
+                        'filename': os.path.basename(filepath),
+                        'title': data.get('title', 'Untitled'),
+                        'date': data.get('generated_at', 'Unknown'),
+                        'timestamp': os.path.getctime(filepath)
+                    })
+            except Exception as e:
+                logger.warning(f"Failed to read paper {filepath}: {e}")
+                continue
+        
+        # Sort by timestamp descending (newest first)
+        papers.sort(key=lambda x: x['timestamp'], reverse=True)
+        
+        return jsonify({'success': True, 'papers': papers})
+    except Exception as e:
+        logger.error(f"Error listing papers: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/recover-paper', methods=['POST'])
+def recover_paper():
+    """Recover a specific paper by filename"""
+    data = request.json
+    filename = data.get('filename')
+    
+    if not filename:
+        return jsonify({'success': False, 'error': 'Filename required'}), 400
+        
+    # Security check: prevent path traversal
+    if '..' in filename or '/' in filename or '\\' in filename:
+        return jsonify({'success': False, 'error': 'Invalid filename'}), 400
+        
+    filepath = os.path.join(SAVED_PAPERS_DIR, filename)
+    
+    if not os.path.exists(filepath):
+        return jsonify({'success': False, 'error': 'Paper not found'}), 404
+        
+    try:
+        with open(filepath, 'r') as f:
+            paper_data = json.load(f)
+            
+        logger.info(f"Recovered paper: {filename}")
+        return jsonify({'success': True, 'paper': paper_data})
+    except Exception as e:
+        logger.error(f"Error recovering paper {filename}: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
 # ==================== LITERATURE SURVEY ====================
 
 @app.route('/api/retrieve-papers', methods=['POST'])

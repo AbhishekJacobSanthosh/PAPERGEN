@@ -58,14 +58,14 @@ MAX_RETRIES = 2
 # Lower temperature = more focused/deterministic
 # Higher temperature = more creative/diverse
 TEMPERATURE_SETTINGS = {
-    "title": 0.9,
-    "abstract": 0.8,
-    "introduction": 0.8,
-    "literature_review": 0.75,
-    "methodology": 0.65,  # Still needs to be somewhat precise
-    "results": 0.65,
-    "discussion": 0.85,
-    "conclusion": 0.8
+    "title": 0.95,
+    "abstract": 0.85,
+    "introduction": 0.9,
+    "literature_review": 0.85,
+    "methodology": 0.7,  # Still needs to be somewhat precise
+    "results": 0.7,
+    "discussion": 0.9,
+    "conclusion": 0.9
 }
 
 # ==================== CONTENT GENERATION FIXES ====================

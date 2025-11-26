@@ -16,13 +16,16 @@ from config.settings import (
 )
 
 # Human-style writing guide to reduce AI detection
+# Human-style writing guide to reduce AI detection
 HUMAN_STYLE_GUIDE = """
 STYLE GUIDELINES (CRITICAL):
-1. VARIETY: Vary sentence length significantly. Mix short, punchy sentences with longer, complex ones.
-2. VOCABULARY: Avoid these "AI buzzwords": delve, underscore, pivotal, realm, tapestry, landscape, leverage, intricate, multifaceted, paramount.
-3. TONE: Write with a specific, opinionated academic voice. Avoid generic neutrality.
-4. TRANSITIONS: Avoid robotic transitions like "Furthermore", "Moreover", "In conclusion". Use natural flow.
-5. STRUCTURE: Do not use perfect symmetry in paragraphs. Make it feel organic.
+1. BURSTINESS: Vary sentence length drastically. Use very short sentences (3-5 words) followed by long, complex ones. This is the #1 way to pass AI detection.
+2. VOCABULARY: STRICTLY AVOID these "AI buzzwords": delve, underscore, pivotal, realm, tapestry, landscape, leverage, intricate, multifaceted, paramount, game-changer, revolutionizing, testament, fostering, nuances, comprehensive, exploration, notable, crucial, vital, significant, enhance, utilize, facilitate, optimize.
+3. TONE: Write with a critical, slightly opinionated academic voice. Be skeptical. Avoid generic neutrality.
+4. TRANSITIONS: DO NOT use robotic transitions like "Furthermore", "Moreover", "In conclusion", "Additionally", "Notably", "Importantly". Use natural flow or no transition at all.
+5. STRUCTURE: Do not use perfect symmetry in paragraphs. Make it feel organic and slightly imperfect.
+6. PERSPECTIVE: Use "This study" or "The research" but imply a human author's specific intent.
+7. PARAPHRASING: When citing sources, you MUST rewrite the core idea completely. Do not just swap synonyms. Change the sentence structure entirely.
 """
 
 # Generation configuration constants
@@ -463,48 +466,6 @@ Write the complete abstract now:"""
     
     def _prompt_introduction(self, title: str, word_count: int, 
                             paper_context: str, rag_context: str, user_data: Optional[str]) -> str:
-        rag_section = f"Research literature context:\n{rag_context}\n" if rag_context else ""
-        
-        return f"""Write the Introduction section for this research paper:
-
-        CITATION RULE: You MUST use IEEE style citations like [1], [2] when referring to the provided research context. Do NOT use (Author, Year).
-
-{paper_context}
-
-{rag_section}
-
-Write a {word_count}-word Introduction that includes:
-
-1. Opening Context (3-4 sentences):
-   - Establish the broader research area of "{title}"
-   - Explain why "{title}" is important
-   - Current state of the field
-
-2. Problem Statement (3 sentences):
-   - Identify specific challenges in "{title}"
-   - Explain limitations of existing approaches
-   - Why this problem in "{title}" matters
-
-3. Research Objectives (2 sentences):
-   - Clear statement: "This research aims to..."
-   - Specific goals related to "{title}"
-
-4. Paper Organization (1 sentence):
-   - Brief overview of remaining sections
-
-REQUIREMENTS:
-- Target {word_count} words (±30 acceptable)
-- Use third person: "This research" not "My research"
-- Reference the specific subject "{title}" - never leave it blank
-- Be specific, not generic
-- End with complete sentence about paper structure
-- Use present tense for current state, past tense for previous work
-- Write in plain text only, no formatting
-
-Write the Introduction section now:"""
-
-    def _prompt_literature_review(self, title: str, word_count: int,
-                              paper_context: str, rag_context: str, user_data: Optional[str]) -> str:
         rag_section = rag_context if rag_context else f"Focus on general approaches in {title}."
         
         # ULTRA-EXPLICIT: Use actual topic in examples
@@ -559,6 +520,69 @@ Write the Introduction section now:"""
     Write the Literature Review now, using "{title}" in every reference to the research topic:"""
 
 
+    def _prompt_literature_review(self, title: str, word_count: int, 
+                                 paper_context: str, rag_context: str, user_data: Optional[str]) -> str:
+        rag_section = rag_context if rag_context else f"Focus on general approaches in {title}."
+        
+        return f"""Write the Literature Review section for this research paper.
+
+    THE RESEARCH TOPIC IS: {title}
+
+    {HUMAN_STYLE_GUIDE}
+
+    {paper_context}
+
+    Research papers to review:
+    {rag_section}
+
+    ABSOLUTE REQUIREMENT - READ THIS CAREFULLY:
+    Whenever you write about research work, you MUST write the complete phrase "{title}" after "on".
+    
+    CITATION RULE: You MUST use IEEE style citations like [1], [2] for EVERY paper discussed. Do NOT use (Author, Year).
+
+    PLAGIARISM DEFENSE (CRITICAL):
+    You are analyzing existing papers. You MUST NOT copy their abstracts.
+    - Read the abstract.
+    - Understand the core finding.
+    - Close the "book" in your mind.
+    - Write the finding in your own completely new sentence structure.
+    - If you copy a phrase of 5+ words, you fail.
+
+    CORRECT EXAMPLES (using the actual topic "{title}"):
+    ✓ "Recent work by Smith et al. [1] on {title} explores..."
+    ✓ "The literature review on {title} provides..."
+    ✓ "Research on {title} [2] has demonstrated..."
+    ✓ "Studies on {title} have shown..."
+
+    WRONG EXAMPLES (DO NOT DO THIS):
+    ✗ "Recent work by Smith et al. on , explores..." ← FORBIDDEN
+    ✗ "Research on provides..." ← FORBIDDEN  
+    ✗ "Work on investigates..." ← FORBIDDEN
+
+    Write a {word_count}-word Literature Review that includes:
+
+    1. Overview (2 sentences):
+    Start with: "The literature review on {title} provides..." or "Research on {title} encompasses..."
+
+    2. Key Research Areas (4 paragraphs):
+    For EACH paper, write: "Recent work by [Author Names] et al. on {title} explores [specific contribution]."
+    Example: "Recent work by Johnson et al. on {title} explores adaptive learning mechanisms using reinforcement learning algorithms."
+
+    3. Comparative Analysis (1 paragraph):
+    Write: "Comparing different approaches in {title} research reveals..."
+
+    4. Research Gaps (1 paragraph):
+    Write: "Despite progress in {title} research, several gaps remain..."
+
+    CRITICAL - COPY THESE EXACT PATTERNS:
+    - "work on {title} explores"
+    - "research on {title} demonstrates"  
+    - "studies on {title} reveal"
+    - "approaches to {title} include"
+
+    DO NOT LEAVE "{title}" BLANK. Always write the full phrase: {title}
+
+    Write the Literature Review now, using "{title}" in every reference to the research topic:"""
     def _prompt_methodology(self, title: str, word_count: int,
                        paper_context: str, rag_context: str, user_data: Optional[str]) -> str:
         user_section = ""

@@ -172,6 +172,22 @@ async function generatePaper() {
                                 progressBar.style.width = `${sectionMap[data.section]}%`;
                             }
                             progressMessage.textContent = data.message;
+                        } else if (data.status === 'parallel_start') {
+                            progressMessage.textContent = data.message;
+                        } else if (data.status === 'section_complete') {
+                            // Update progress based on completed section
+                            const sectionMap = {
+                                'introduction': 60,
+                                'literature_review': 68,
+                                'methodology': 75,
+                                'results': 82,
+                                'discussion': 89,
+                                'conclusion': 94
+                            };
+                            if (sectionMap[data.section]) {
+                                progressBar.style.width = `${sectionMap[data.section]}%`;
+                            }
+                            progressMessage.textContent = `Completed ${data.section.replace('_', ' ')}...`;
                         } else if (data.status === 'references') {
                             progressBar.style.width = '95%';
                             progressMessage.textContent = data.message;
@@ -476,3 +492,78 @@ function getScoreClass(score, type) {
 }
 
 
+// Recovery Modal Functions
+async function showRecoveryModal() {
+    const modal = document.getElementById('recoveryModal');
+    const listContainer = document.getElementById('savedPapersList');
+
+    modal.classList.remove('hidden');
+    listContainer.innerHTML = '<p class="text-center">Loading saved papers...</p>';
+
+    try {
+        const response = await fetch('/api/list-saved-papers');
+        const data = await response.json();
+
+        if (!data.success || !data.papers || data.papers.length === 0) {
+            listContainer.innerHTML = '<p class="text-center">No saved papers found.</p>';
+            return;
+        }
+
+        let html = '<ul class="saved-papers-ul">';
+        data.papers.forEach(paper => {
+            html += `
+                <li onclick="recoverSpecificPaper('${paper.filename}')">
+                    <div class="paper-info">
+                        <span class="paper-title">${paper.title}</span>
+                        <span class="paper-date">${paper.date}</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </li>
+            `;
+        });
+        html += '</ul>';
+        listContainer.innerHTML = html;
+
+    } catch (error) {
+        console.error('Error listing papers:', error);
+        listContainer.innerHTML = '<p class="text-center text-error">Failed to load papers.</p>';
+    }
+}
+
+function closeRecoveryModal() {
+    const modal = document.getElementById('recoveryModal');
+    modal.classList.add('hidden');
+}
+
+async function recoverSpecificPaper(filename) {
+    closeRecoveryModal();
+    showLoading('Recovering selected paper...');
+
+    try {
+        const response = await fetch('/api/recover-paper', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ filename: filename })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            currentPaper = data.paper;
+            displayGeneratedPaper({
+                title: data.paper.title,
+                authors: data.paper.authors,
+                content: null,
+                ...data.paper
+            });
+            showNotification('✅ Paper recovered successfully!', 'success');
+        } else {
+            showNotification(data.error || 'Failed to recover paper', 'error');
+        }
+    } catch (error) {
+        console.error('Recovery Error:', error);
+        showNotification('Failed to recover paper', 'error');
+    } finally {
+        hideLoading();
+    }
+}

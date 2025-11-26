@@ -167,7 +167,7 @@ class PaperGeneratorService:
         
         # Step 6: Generate figures
         figures = {}
-        if USE_REALISTIC_DATA and retrieved_papers:
+        if USE_REALISTIC_DATA:
             logger.info("Generating figures and tables...")
             try:
                 table_data = self.figure_gen.generate_realistic_comparison_table(retrieved_papers)

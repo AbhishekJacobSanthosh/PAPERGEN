@@ -39,8 +39,8 @@ class ExportService:
         full_height = letter[1] - 1.5*inch
         
         # --- First Page Layout ---
-        # Top Frame for Title/Authors (approx 3 inches high, adjustable)
-        header_height = 3.5*inch 
+        # Top Frame for Title/Authors
+        header_height = 2.5*inch 
         body_height = full_height - header_height - 0.2*inch
         
         frame_top = Frame(
@@ -105,7 +105,7 @@ class ExportService:
         
         # Title
         elements.append(Paragraph(paper.title, styles['pdf_title']))
-        elements.append(Spacer(1, 0.2*inch))
+        elements.append(Spacer(1, 0.1*inch))
         
         # Authors
         if paper.authors:
@@ -132,7 +132,7 @@ class ExportService:
                 ('VALIGN', (0, 0), (-1, -1), 'TOP'),
             ]))
             elements.append(t)
-            elements.append(Spacer(1, 0.3*inch))
+            elements.append(Spacer(1, 0.1*inch))
             
         # Force break to left column of first page
         elements.append(FrameBreak())
@@ -369,18 +369,30 @@ class ExportService:
             try:
                 table_data = figures[key].data
                 num_cols = len(table_data[0])
-                col_width = frame_width / num_cols * 0.9
+                col_width = frame_width / num_cols * 0.95
                 
-                t = Table(table_data, colWidths=[col_width] * num_cols)
+                # Wrap content in Paragraphs for text wrapping
+                formatted_data = []
+                for row in table_data:
+                    formatted_row = []
+                    for cell in row:
+                        # Use a smaller font style for table content
+                        p = Paragraph(str(cell), styles['pdf_caption']) 
+                        formatted_row.append(p)
+                    formatted_data.append(formatted_row)
+                
+                t = Table(formatted_data, colWidths=[col_width] * num_cols)
                 t.setStyle(TableStyle([
                     ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#667eea')),
                     ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
                     ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                    ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
-                    ('FONTSIZE', (0, 0), (-1, -1), 7),
-                    ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
-                    ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
                     ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+                    ('LEFTPADDING', (0, 0), (-1, -1), 3),
+                    ('RIGHTPADDING', (0, 0), (-1, -1), 3),
+                    ('TOPPADDING', (0, 0), (-1, -1), 3),
+                    ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
+                    ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
                 ]))
                 
                 elements.append(t)

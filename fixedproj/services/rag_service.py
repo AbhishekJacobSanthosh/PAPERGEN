@@ -48,6 +48,16 @@ class RAGService:
                 print(f"[RAG] No papers found. Retrying with simplified query: {simplified_query}")
                 papers = self._search_api(simplified_query, limit)
         
+        # Second fallback: Minimal query
+        if not papers:
+            # Try just the first few significant words
+            words = [w for w in query.split() if len(w) > 3]
+            if len(words) >= 2:
+                minimal_query = ' '.join(words[:3])
+                if minimal_query != query and minimal_query != self._simplify_query(query):
+                    print(f"[RAG] Still no papers. Retrying with minimal query: {minimal_query}")
+                    papers = self._search_api(minimal_query, limit)
+        
         if papers:
             # Save to cache
             self._save_to_cache(query, papers)
