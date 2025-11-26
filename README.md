@@ -32,6 +32,8 @@ python app.py
 
 http://localhost:8080
 
+Make sure to have python version 3.10.11
+
 ## Project Structure
 
 research-paper-generator/
