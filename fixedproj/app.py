@@ -14,6 +14,12 @@ import os
 import logging
 import json
 import glob
+import sys
+
+# Force UTF-8 encoding for Windows console
+if sys.platform.startswith('win'):
+    sys.stdout.reconfigure(encoding='utf-8')
+    sys.stderr.reconfigure(encoding='utf-8')
 from functools import wraps
 from flask import jsonify
 

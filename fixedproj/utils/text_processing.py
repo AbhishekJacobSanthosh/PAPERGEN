@@ -8,6 +8,34 @@ import re
 class TextProcessor:
     """Utility class for text processing operations"""
 
+
+    @staticmethod
+    def normalize_text(text: str) -> str:
+        """
+        Normalize text by replacing non-standard characters with ASCII equivalents
+        """
+        if not text:
+            return text
+            
+        replacements = {
+            '\u2010': '-',  # HYPHEN
+            '\u2011': '-',  # NON-BREAKING HYPHEN
+            '\u2012': '-',  # FIGURE DASH
+            '\u2013': '-',  # EN DASH
+            '\u2014': '-',  # EM DASH
+            '\u2015': '-',  # HORIZONTAL BAR
+            '\u2018': "'",  # LEFT SINGLE QUOTATION MARK
+            '\u2019': "'",  # RIGHT SINGLE QUOTATION MARK
+            '\u201c': '"',  # LEFT DOUBLE QUOTATION MARK
+            '\u201d': '"',  # RIGHT DOUBLE QUOTATION MARK
+            '\u2026': '...', # HORIZONTAL ELLIPSIS
+        }
+        
+        for char, replacement in replacements.items():
+            text = text.replace(char, replacement)
+            
+        return text
+
     @staticmethod
     def validate_title_preserved(text: str, paper_title: str) -> tuple:
         """

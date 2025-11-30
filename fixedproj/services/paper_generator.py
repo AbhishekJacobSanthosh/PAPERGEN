@@ -44,7 +44,7 @@ class PaperGeneratorService:
         retrieved_papers = []
         if use_rag:
             logger.info("Retrieving papers from Semantic Scholar...")
-            retrieved_papers = self.rag.search_papers(topic, limit=5)
+            retrieved_papers = self.rag.search_papers(topic, limit=20)
             rag_context = self.rag.build_context(retrieved_papers)
             if len(rag_context) > MAX_RAG_CONTEXT_CHARS:
                 rag_context = rag_context[:MAX_RAG_CONTEXT_CHARS] + "..."
@@ -238,7 +238,7 @@ class PaperGeneratorService:
         retrieved_papers = []
         if use_rag:
             yield json.dumps({'status': 'rag_start', 'message': 'Searching for relevant research papers...'})
-            retrieved_papers = self.rag.search_papers(topic, limit=5)
+            retrieved_papers = self.rag.search_papers(topic, limit=20)
             rag_context = self.rag.build_context(retrieved_papers)
             if len(rag_context) > MAX_RAG_CONTEXT_CHARS:
                 rag_context = rag_context[:MAX_RAG_CONTEXT_CHARS] + "..."
@@ -378,80 +378,16 @@ class PaperGeneratorService:
         return title
     
     def _generate_references(self, retrieved_papers: List[Reference], title: str) -> List[Reference]:
-        # Use all retrieved papers up to limit
+        # Use all retrieved papers
         references = list(retrieved_papers)
         logger.info(f"Using {len(references)} retrieved papers for references")
         
-        needed = MIN_REFERENCES - len(references)
-        if needed > 0:
-            logger.info(f"Generating {needed} generic references to meet minimum of {MIN_REFERENCES}")
-            generic_refs = self._get_generic_references(title, needed)
-            references.extend(generic_refs)
+        if len(references) < MIN_REFERENCES:
+             logger.warning(f"Only found {len(references)} papers, but proceeding with authentic references only.")
             
         return references
     
-    def _get_generic_references(self, title: str, count: int) -> List[Reference]:
-        generic_refs = []
-        current_year = datetime.now().year
-        stopwords = {'the', 'a', 'an', 'in', 'on', 'for', 'to', 'of', 'and', 'using', 'with'}
-        words = [w for w in title.split() if w.lower() not in stopwords and len(w) > 3]
-        keyword_phrase = ' '.join(words[:3]) if len(words) >= 3 else (
-            ' '.join(words) if words else "Advanced Research"
-        )
-        keyword_phrase = keyword_phrase.title()
-        templates = [
-            "Recent Advances in {topic}: A Comprehensive Survey",
-            "Deep Learning Approaches for {topic} Applications",
-            "{topic}: State-of-the-Art Methods and Future Directions",
-            "A Systematic Review of {topic} Techniques",
-            "Novel Architectures for {topic} Systems",
-            "Transformer-Based Methods in {topic}",
-            "Comparative Analysis of {topic} Algorithms",
-            "Automated {topic} Using Machine Learning",
-            "Multi-Modal Approaches to {topic}",
-            "Attention Mechanisms for Improved {topic}",
-            "Scalable Solutions for {topic} Challenges",
-            "Optimization Strategies in {topic}",
-            "Robust {topic} Methods for Real-World Applications",
-            "Explainable AI for {topic}",
-            "Transfer Learning in {topic} Domains"
-        ]
-        venues = [
-            "IEEE Transactions on Pattern Analysis and Machine Intelligence",
-            "International Conference on Computer Vision (ICCV)",
-            "Conference on Neural Information Processing Systems (NeurIPS)",
-            "International Conference on Machine Learning (ICML)",
-            "IEEE Transactions on Industrial Informatics",
-            "ACM Computing Surveys",
-            "International Journal of Computer Vision",
-            "Computer Vision and Pattern Recognition (CVPR)",
-            "European Conference on Computer Vision (ECCV)",
-            "IEEE Access",
-            "Nature Machine Intelligence",
-            "Journal of Machine Learning Research"
-        ]
-        author_pools = [
-            ["Smith", "Johnson", "Williams"],
-            ["Zhang", "Li", "Wang"],
-            ["Kumar", "Patel", "Singh"],
-            ["Garcia", "Martinez", "Rodriguez"],
-            ["Kim", "Park", "Lee"]
-        ]
-        for i in range(count):
-            template = templates[i % len(templates)]
-            title_text = template.format(topic=keyword_phrase)
-            authors_group = author_pools[i % len(author_pools)]
-            authors_list = [f"{name[0]}. {name}" for name in authors_group]
-            ref = Reference(
-                title=title_text,
-                authors=authors_list,
-                year=current_year - (i % 8) - 1,
-                venue=venues[i % len(venues)],
-                doi=f"10.{1000 + i}/{current_year - (i % 8)}.{1000 + i}",
-                citation_count=max(10, 100 - i * 7)
-            )
-            generic_refs.append(ref)
-        return generic_refs
+
     
     def _format_references(self, references: List[Reference]) -> str:
         formatted = []
@@ -460,8 +396,11 @@ class PaperGeneratorService:
             ref_str = f"[{i}] {authors_str}, \"{ref.title},\" {ref.venue}, {ref.year}."
             if ref.doi:
                 ref_str += f" DOI: {ref.doi}"
+            
+            # Normalize text to remove artifacts like black squares (non-standard hyphens)
+            ref_str = self.text_processor.normalize_text(ref_str)
             formatted.append(ref_str)
-        return '\n'.join(formatted)
+        return '\n\n'.join(formatted)
     
     def _generate_doi(self) -> str:
         year = datetime.now().year

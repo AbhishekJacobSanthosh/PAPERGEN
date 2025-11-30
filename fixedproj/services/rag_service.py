@@ -22,7 +22,7 @@ class RAGService:
     
     def search_papers(self, query: str, limit: int = RAG_PAPER_LIMIT) -> List[Reference]:
         """
-        Search for papers on Semantic Scholar with caching
+        Search for papers on Semantic Scholar with caching and robust fallback strategies
         
         Args:
             query: Search query
@@ -33,39 +33,60 @@ class RAGService:
         """
         # Check cache first
         cached = self._load_from_cache(query)
-        if cached:
+        if cached and len(cached) >= limit:
             print(f"[RAG] Using cached papers for: {query[:50]}...")
             return cached[:limit]
         
-        # Search API
         print(f"[RAG] Searching Semantic Scholar: {query[:50]}...")
-        papers = self._search_api(query, limit)
         
-        # Fallback for long queries if no papers found
-        if not papers and len(query.split()) > 5:
+        all_papers = []
+        seen_titles = set()
+        
+        def add_papers(new_papers):
+            for p in new_papers:
+                if p.title.lower() not in seen_titles:
+                    seen_titles.add(p.title.lower())
+                    all_papers.append(p)
+        
+        # Strategy 1: Exact query
+        papers = self._search_api(query, limit)
+        add_papers(papers)
+        
+        # Strategy 2: Simplified query
+        if len(all_papers) < limit and len(query.split()) > 5:
             simplified_query = self._simplify_query(query)
             if simplified_query != query:
-                print(f"[RAG] No papers found. Retrying with simplified query: {simplified_query}")
+                print(f"[RAG] Expanding search with simplified query: {simplified_query}")
                 papers = self._search_api(simplified_query, limit)
+                add_papers(papers)
         
-        # Second fallback: Minimal query
-        if not papers:
-            # Try just the first few significant words
+        # Strategy 3: Minimal query (keywords)
+        if len(all_papers) < limit:
             words = [w for w in query.split() if len(w) > 3]
             if len(words) >= 2:
                 minimal_query = ' '.join(words[:3])
                 if minimal_query != query and minimal_query != self._simplify_query(query):
-                    print(f"[RAG] Still no papers. Retrying with minimal query: {minimal_query}")
+                    print(f"[RAG] Expanding search with minimal query: {minimal_query}")
                     papers = self._search_api(minimal_query, limit)
+                    add_papers(papers)
+
+        # Strategy 4: Broad domain search (if still desperate)
+        if len(all_papers) < limit:
+            # Extract just the main noun phrases or last few words
+            broad_query = ' '.join(query.split()[-2:])
+            if len(broad_query) > 3 and broad_query != query:
+                 print(f"[RAG] Expanding search with broad query: {broad_query}")
+                 papers = self._search_api(broad_query, limit)
+                 add_papers(papers)
         
-        if papers:
-            # Save to cache
-            self._save_to_cache(query, papers)
-            print(f"[RAG] Retrieved {len(papers)} papers")
+        if all_papers:
+            # Save to cache (update even if we had some cached, now we might have more)
+            self._save_to_cache(query, all_papers)
+            print(f"[RAG] Retrieved {len(all_papers)} unique papers total")
         else:
-            print("[RAG] No papers found")
+            print("[RAG] No papers found after all attempts")
         
-        return papers
+        return all_papers[:limit]
     
     def build_context(self, papers: List[Reference]) -> str:
         """

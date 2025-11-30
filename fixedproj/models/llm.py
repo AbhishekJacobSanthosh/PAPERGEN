@@ -15,17 +15,36 @@ from config.settings import (
     TEMPERATURE_SETTINGS, WORD_COUNT_TARGET, ENFORCE_COMPLETE_SENTENCES
 )
 
-# Human-style writing guide to reduce AI detection
-# Human-style writing guide to reduce AI detection
+CASUAL_STYLE_GUIDE = """
+CRITICAL STYLE INSTRUCTIONS (THE "DRUNK" DRAFT):
+1. **Role**: You are a cynical, burnt-out engineer writing a rant on your personal blog.
+2. **Tone**: Aggressive, critical, opinionated, casual. Use slang.
+3. **Structure**: Chaotic. Mix very short sentences with long rants.
+4. **Content**: Cover all the technical points requested, but frame them as "why most people get this wrong" or "here's the ugly truth".
+5. **Citations**: Keep the citations [1], [2] but you can be rude about them (e.g., "Smith [1] claims X, but that's garbage because...").
+"""
+
+FORMAL_STYLE_GUIDE = """
+CRITICAL STYLE INSTRUCTIONS (THE "SOBER" EDIT):
+1. **Role**: You are a strict editor for an IEEE transaction.
+2. **Task**: Translate the text above into formal, high-quality academic English.
+3. **Tone**: Professional, objective, precise.
+4. **Structure**: Academic paragraphs.
+5. **Preservation**:
+   - KEEP all specific numbers, metrics, and data points.
+   - KEEP all citations [1], [2] exactly where they are relevant.
+   - KEEP the critical analysis/arguments (just phrase them politely).
+   - DO NOT add fluff like "In conclusion" or "It is important to note".
+"""
+
 HUMAN_STYLE_GUIDE = """
-STYLE GUIDELINES (CRITICAL):
-1. BURSTINESS: Vary sentence length drastically. Use very short sentences (3-5 words) followed by long, complex ones. This is the #1 way to pass AI detection.
-2. VOCABULARY: STRICTLY AVOID these "AI buzzwords": delve, underscore, pivotal, realm, tapestry, landscape, leverage, intricate, multifaceted, paramount, game-changer, revolutionizing, testament, fostering, nuances, comprehensive, exploration, notable, crucial, vital, significant, enhance, utilize, facilitate, optimize.
-3. TONE: Write with a critical, slightly opinionated academic voice. Be skeptical. Avoid generic neutrality.
-4. TRANSITIONS: DO NOT use robotic transitions like "Furthermore", "Moreover", "In conclusion", "Additionally", "Notably", "Importantly". Use natural flow or no transition at all.
-5. STRUCTURE: Do not use perfect symmetry in paragraphs. Make it feel organic and slightly imperfect.
-6. PERSPECTIVE: Use "This study" or "The research" but imply a human author's specific intent.
-7. PARAPHRASING: When citing sources, you MUST rewrite the core idea completely. Do not just swap synonyms. Change the sentence structure entirely.
+CRITICAL HUMAN WRITING INSTRUCTIONS:
+1. **NO ROBOTIC TRANSITIONS**: BANNED words: "Furthermore", "Moreover", "In conclusion", "Additionally", "Notably", "Importantly", "Consequently", "Thus", "Therefore". DO NOT USE THEM. Start sentences directly.
+2. **NO AI BUZZWORDS**: BANNED words: "delve", "underscore", "pivotal", "realm", "tapestry", "landscape", "leverage", "intricate", "multifaceted", "paramount", "game-changer", "revolutionizing", "testament", "fostering", "nuances", "comprehensive", "exploration", "notable", "crucial", "vital", "significant", "enhance", "utilize", "facilitate", "optimize", "orchestrate", "synergy", "paradigm".
+3. **BURSTINESS**: Write like a human. Some sentences should be 4 words. Others should be 25 words. Never write three sentences of the same length in a row.
+4. **OPINIONATED TONE**: Don't be neutral. Be critical. Point out flaws. Use phrases like "Surprisingly," "Unfortunately," "In contrast," "However,".
+5. **ACTIVE VOICE**: Use active voice. "Smith [1] argues..." NOT "It is argued by Smith [1]..."
+6. **SYNTHESIS OVER SUMMARY**: Never summarize a paper in isolation. Always compare it to another. "While X did this, Y did that."
 """
 
 # Generation configuration constants
@@ -42,16 +61,24 @@ class LLMInterface:
         self.api_url = OLLAMA_API_URL
         self.model = MODEL_NAME
     
+    def warmup(self) -> bool:
+        """Warmup the LLM model to ensure it's loaded"""
+        try:
+            print(f"[LLM] Warming up model {self.model}...")
+            result = self.generate(
+                "Hello",
+                max_tokens=5,
+                style_guide=""
+            )
+            return result is not None
+        except Exception as e:
+            print(f"[LLM] Warmup failed: {e}")
+            return False
+    
     @staticmethod
     def _sanitize_user_input(text: str) -> str:
         """
         Sanitize user input to prevent prompt injection
-        
-        Args:
-            text: Raw user input
-            
-        Returns:
-            Sanitized text safe for prompt embedding
         """
         if not text:
             return text
@@ -80,22 +107,17 @@ class LLMInterface:
         return text.strip()
     
     def generate(self, prompt: str, temperature: float = 0.7, 
-                 max_tokens: int = 500, context: str = "") -> Optional[str]:
+                 max_tokens: int = 500, context: str = "",
+                 style_guide: Optional[str] = None) -> Optional[str]:
         """
         Generate text using Ollama with retry logic and exponential backoff
-        
-        Args:
-            prompt: The generation prompt
-            temperature: Sampling temperature (0.0-1.0)
-            max_tokens: Maximum tokens to generate
-            context: Additional context from RAG
-            
-        Returns:
-            Generated text or None if failed
         """
         # Sanitize inputs
         prompt = self._sanitize_user_input(prompt)
         context = self._sanitize_user_input(context)
+        
+        # Use provided style guide or default to HUMAN_STYLE_GUIDE
+        current_style = style_guide if style_guide is not None else HUMAN_STYLE_GUIDE
         
         # Build full prompt with context
         if context:
@@ -111,14 +133,14 @@ CRITICAL RULES:
 4. NO bullet points or numbered lists
 5. Write in continuous prose paragraphs only
 6. End with a complete sentence (proper punctuation)
-7. Use the research context to inform your writing
+7. Use the research context to inform your writing but SYNTHESIZE it, do not copy.
 8. Be specific and avoid generic placeholder statements
 9. Do NOT repeat the section title
 10. Do NOT use asterisks or hashtags anywhere
 11. NEVER leave blank placeholders - always use complete specific terms
-12. When referring to topics, use the full specific subject name
+12. When referring to topics, use the full specific subject name OR natural variations (e.g., "this field", "the domain").
 
-{HUMAN_STYLE_GUIDE}"""
+{current_style}"""
         else:
             full_prompt = f"""{prompt}
 
@@ -133,9 +155,9 @@ CRITICAL RULES:
 8. Do NOT repeat the section title
 9. Do NOT use asterisks or hashtags anywhere
 10. NEVER leave blank placeholders - always use complete specific terms
-11. When referring to topics, use the full specific subject name
+11. When referring to topics, use the full specific subject name OR natural variations.
 
-{HUMAN_STYLE_GUIDE}"""
+{current_style}"""
         
         for attempt in range(MAX_RETRIES):
             try:
@@ -218,7 +240,8 @@ Generate ONLY the title, nothing else."""
         result = self.generate(
             prompt,
             temperature=TEMPERATURE_SETTINGS["title"],
-            max_tokens=60
+            max_tokens=60,
+            style_guide="" # No style guide needed for title
         )
         
         if result:
@@ -228,55 +251,46 @@ Generate ONLY the title, nothing else."""
             if title.lower().startswith('title:'):
                 title = title[6:].strip()
             return title
-        
-        # Fallback: use first 10 words of description
-        return ' '.join(description.split()[:10])
     
     # ==================== MULTIPLE TITLE GENERATION ====================
 
     def generate_title_options(self, description: str, count: int = 3) -> List[str]:
         """
         Generate multiple title options from description
-        
-        Args:
-            description: Research description/brief
-            count: Number of title options to generate (default 3)
-            
-        Returns:
-            List of title strings
         """
         description = self._sanitize_user_input(description)
         
-        prompt = f"""Generate {count} different concise academic research paper titles from this description:
+        # Request more titles than needed (buffer)
+        buffer_count = count + 2
+        
+        prompt = f"""Task: Generate {buffer_count} concise academic research paper titles based on the description below.
 
+    Description:
     "{description}"
 
-    Requirements for EACH title:
-    - Maximum 18 words
-    - MUST be a complete, standalone title that makes sense on its own
-    - DO NOT end mid-sentence or with incomplete phrases like "directly on" or "involves deploying"
-    - Professional academic tone
-    - Capture core research focus clearly and completely
-    - No quotation marks or extra formatting
-    - Title case capitalization
-    - Each title should emphasize a different aspect of the research
+    Constraints:
+    1. Max 15 words per title.
+    2. NO full sentences.
+    3. NO "Title 1" or "Option 1" prefixes in the text (just the numbered list).
+    4. Professional, academic style.
 
-    Output format (exactly like this):
-    1. [First Title]
-    2. [Second Title]
-    3. [Third Title]
+    Example Output:
+    1. Deep Learning Approaches for Medical Imaging
+    2. Novel Architectures in Convolutional Neural Networks
+    3. Automated Disease Detection using AI
 
-    Generate ONLY the numbered list of titles, nothing else."""
+    Generate the numbered list of {buffer_count} titles now:"""
 
         result = self.generate(
             prompt,
-            temperature=0.8,  # Higher temperature for variety
-            max_tokens=200
+            temperature=0.8,
+            max_tokens=500,
+            style_guide=""
         )
         
+        titles = []
         if result:
             # Parse the numbered list
-            titles = []
             lines = result.strip().split('\n')
             
             for line in lines:
@@ -286,40 +300,48 @@ Generate ONLY the title, nothing else."""
                     # Remove the number prefix
                     title = re.sub(r'^[\d]+[\.\)\-\:]\s*', '', line)
                     title = title.replace('"', '').replace("'", "").strip()
+                    
+                    # Validation: Check length and sentence structure
+                    if len(title.split()) > 25:
+                        # Truncate if too long
+                        title = ' '.join(title.split()[:20]) + "..."
+                    
                     if title and len(titles) < count:
                         titles.append(title)
             
             # If parsing failed, try to split by newlines
             if len(titles) < count:
-                titles = []
                 for line in lines:
                     line = line.strip().replace('"', '').replace("'", "")
-                    if line and not line.lower().startswith(('generate', 'title', 'output')):
+                    if line and not line.lower().startswith(('generate', 'title', 'output', 'task', 'description')):
                         # Remove number prefix if present
                         line = re.sub(r'^[\d]+[\.\)\-\:]\s*', '', line)
                         if line and len(titles) < count:
                             titles.append(line)
+        
+        # Smart Fallback: Extract keywords if we don't have enough titles
+        if len(titles) < count:
+            # Simple keyword extraction
+            stopwords = {'the', 'a', 'an', 'in', 'on', 'for', 'to', 'of', 'and', 'using', 'with', 'this', 'paper', 'study', 'proposes', 'presents', 'we', 'is', 'are'}
+            words = [w for w in description.split() if w.lower() not in stopwords and len(w) > 2]
             
-            # Ensure we have exactly 'count' titles
+            # Create variations
             while len(titles) < count:
-                # Generate fallback titles
-                words = description.split()
-                if len(words) > 12:
-                    titles.append(' '.join(words[:12]))
+                idx = len(titles)
+                if idx == 0 and len(words) >= 4:
+                    # Variation 1: First few keywords
+                    titles.append(' '.join(words[:8]).title())
+                elif idx == 1 and len(words) >= 6:
+                    # Variation 2: Middle keywords or combination
+                    titles.append(f"Research on {' '.join(words[:6])}".title())
+                elif idx == 2:
+                    # Variation 3: Analysis of...
+                    titles.append(f"Analysis of {' '.join(words[:5])}".title())
                 else:
-                    titles.append(description[:80])
+                    # Last resort
+                    titles.append(f"Research Paper Option {idx + 1}")
             
-            return titles[:count]
-        
-        # Complete fallback: generate simple variants
-        words = description.split()
-        fallback_titles = []
-        fallback_titles.append(' '.join(words[:10]))
-        fallback_titles.append(f"A Study on {' '.join(words[:7])}")
-        fallback_titles.append(f"Research on {' '.join(words[:7])}")
-        
-        return fallback_titles[:count]
-
+        return titles[:count]
     
     # ==================== ABSTRACT GENERATION (FIXED - LONGER) ====================
     
@@ -379,7 +401,8 @@ Write the complete abstract now:"""
             prompt,
             temperature=TEMPERATURE_SETTINGS["abstract"],
             max_tokens=400,
-            context=context
+            context=context,
+            style_guide=""
         )
         
         if result:
@@ -393,21 +416,14 @@ Write the complete abstract now:"""
         
         return "Abstract generation failed."
     
-    # ==================== SECTION GENERATION (FIXED WITH BETTER CONTEXT) ====================
+    # ==================== SECTION GENERATION (UPDATED FOR STYLE TRANSFER) ====================
     
     def generate_section(self, section_name: str, title: str, 
                         previous_sections: Dict[str, str],
                         rag_context: str = "",
                         user_data: Optional[str] = None) -> str:
         """
-        Generate section with awareness of previous sections and user data
-        
-        Args:
-            section_name: Name of section to generate
-            title: Paper title
-            previous_sections: Dict of already generated sections
-            rag_context: RAG context from retrieved papers
-            user_data: User-provided experimental data
+        Generate section using "Write Drunk, Edit Sober" strategy.
         """
         # Sanitize all inputs
         title = self._sanitize_user_input(title)
@@ -434,22 +450,143 @@ Write the complete abstract now:"""
         if not prompt_func:
             return f"[Section {section_name} not implemented]"
         
-        prompt = prompt_func(title, target_words, paper_context, rag_context, user_data)
+        # Get the base content prompt
+        base_prompt = prompt_func(title, target_words, paper_context, rag_context, user_data)
         
-        result = self.generate(
-            prompt,
-            temperature=TEMPERATURE_SETTINGS.get(section_name, 0.7),
+        # STEP 1: THE "DRUNK" DRAFT
+        # We append the Casual Style Guide instructions to the prompt
+        casual_draft = self.generate(
+            base_prompt,
+            temperature=0.9, # High temperature for creativity/burstiness
             max_tokens=int(target_words * TOKEN_MULTIPLIER),
-            context=""  # Context already in prompt
+            context="", # Context is already in base_prompt
+            style_guide=CASUAL_STYLE_GUIDE
         )
         
-        return result if result else f"[{section_name.title()} generation failed]"
+        if not casual_draft:
+            return f"[{section_name.title()} generation failed at Step 1]"
+            
+        # STEP 2: THE "SOBER" EDIT
+        formal_prompt = f"""You are an expert academic editor.
+        
+        TASK: Rewrite the following "rough draft" into a formal, high-quality IEEE research paper section.
+        
+        ROUGH DRAFT:
+        "{casual_draft}"
+        
+        REQUIREMENTS:
+        - Maintain the unique arguments and critical perspective of the draft.
+        - Fix the slang and casual tone to be professional and academic.
+        - KEEP all citations [1], [2] and specific numbers/data.
+        - Ensure varied sentence structures (burstiness).
+        - Output ONLY the rewritten text.
+        """
+        
+        formal_version = self.generate(
+            formal_prompt,
+            temperature=0.6, # Lower temperature for precision
+            max_tokens=int(target_words * TOKEN_MULTIPLIER),
+            style_guide=FORMAL_STYLE_GUIDE
+        )
+        
+        if not formal_version:
+            return casual_draft # Fallback to draft if formalization fails (better than nothing)
+            
+        # STEP 3: NUCLEAR FILTER (Safety Net)
+        final_clean = self._force_remove_banned_words(formal_version)
+        
+        return final_clean
+
+    def humanize_text(self, text: str, section_name: str) -> str:
+        """
+        Second pass to rewrite text to be more human-like.
+        Forces burstiness and removes AI buzzwords.
+        """
+        # Don't humanize references or very short text
+        if section_name == 'references' or len(text) < 100:
+            return text
+            
+        prompt = f"""You are a strict, skeptical editor. Rewrite the following text to make it sound like a human wrote it.
+
+    Original Text:
+    "{text}"
+
+    RULES:
+    1. **Kill the Robot**: Remove all "AI-isms" like "delve", "landscape", "paramount", "tapestry".
+    2. **Be Blunt**: Use active voice. Say "We tested X" instead of "X was tested".
+    3. **Vary Length**: Write some very short sentences. (e.g. "This failed.")
+    4. **No Fluff**: Remove "It is important to note that", "In conclusion", "Furthermore". Just say the point.
+    5. **Keep Data**: Do not change any numbers, percentages, or citations [1].
+
+    Rewrite it now:"""
+
+        humanized = self.generate(
+            prompt,
+            temperature=0.85, 
+            max_tokens=len(text.split()) * 3
+        )
+        
+        return humanized if humanized else text
+
+    def _force_remove_banned_words(self, text: str) -> str:
+        """
+        Python-side regex replacement for stubborn banned words.
+        """
+        replacements = {
+            "delve into": "investigate",
+            "delve": "investigate",
+            "underscore": "highlight",
+            "pivotal": "key",
+            "realm": "field",
+            "tapestry": "complex set",
+            "landscape": "context",
+            "leverage": "use",
+            "intricate": "complex",
+            "multifaceted": "complex",
+            "paramount": "critical",
+            "game-changer": "major advance",
+            "revolutionizing": "transforming",
+            "testament": "proof",
+            "fostering": "encouraging",
+            "nuances": "details",
+            "comprehensive": "thorough",
+            "exploration": "study",
+            "notable": "key",
+            "crucial": "critical",
+            "vital": "important",
+            "significant": "major",
+            "enhance": "improve",
+            "utilize": "use",
+            "facilitate": "help",
+            "optimize": "improve",
+            "orchestrate": "manage",
+            "synergy": "combination",
+            "paradigm": "model",
+            "furthermore,": "",
+            "moreover,": "",
+            "additionally,": "",
+            "in conclusion,": "",
+            "importantly,": "",
+            "notably,": "",
+            "consequently,": "so,",
+            "thus,": "so,",
+            "therefore,": "so,"
+        }
+        
+        for word, replacement in replacements.items():
+            # Case insensitive replacement
+            pattern = re.compile(re.escape(word), re.IGNORECASE)
+            text = pattern.sub(replacement, text)
+            
+        # Clean up double spaces created by removals
+        text = re.sub(r'\s+', ' ', text).strip()
+        return text
     
     def _build_paper_context(self, title: str, previous_sections: Dict[str, str]) -> str:
         """Build enhanced context summary from previous sections"""
         context_parts = [
             f"Paper Title: {title}",
-            f"\nREMINDER: The research topic is '{title}'. When referring to the research area, application domain, or field of study, ALWAYS use this specific subject. Never leave it blank or use vague terms."
+            f"\nREMINDER: The research topic is '{title}'. When referring to the research area, application domain, or field of study, you can use the title or natural variations like 'this field', 'the domain', or 'such systems'."
         ]
         
         if "abstract" in previous_sections:
@@ -463,14 +600,13 @@ Write the complete abstract now:"""
         return '\n'.join(context_parts)
     
     # ==================== SECTION-SPECIFIC PROMPTS (ALL FIXED) ====================
-    
+
     def _prompt_introduction(self, title: str, word_count: int, 
                             paper_context: str, rag_context: str, user_data: Optional[str]) -> str:
         rag_section = rag_context if rag_context else f"Focus on general approaches in {title}."
         
-        # ULTRA-EXPLICIT: Use actual topic in examples
-        return f"""Write the Literature Review section for this research paper.
-
+        return f"""Write the Introduction section for this research paper.
+    
     THE RESEARCH TOPIC IS: {title}
 
     {paper_context}
@@ -478,47 +614,25 @@ Write the complete abstract now:"""
     Research papers to review:
     {rag_section}
 
-    ABSOLUTE REQUIREMENT - READ THIS CAREFULLY:
-    Whenever you write about research work, you MUST write the complete phrase "{title}" after "on".
-    
     CITATION RULE: You MUST use IEEE style citations like [1], [2] for EVERY paper discussed. Do NOT use (Author, Year).
 
-    CORRECT EXAMPLES (using the actual topic "{title}"):
-    ✓ "Recent work by Smith et al. [1] on {title} explores..."
-    ✓ "The literature review on {title} provides..."
-    ✓ "Research on {title} [2] has demonstrated..."
-    ✓ "Studies on {title} have shown..."
+    Write a {word_count}-word Introduction that includes:
 
-    WRONG EXAMPLES (DO NOT DO THIS):
-    ✗ "Recent work by Smith et al. on , explores..." ← FORBIDDEN
-    ✗ "Research on provides..." ← FORBIDDEN  
-    ✗ "Work on investigates..." ← FORBIDDEN
+    1. Background (1 paragraph):
+    Start broadly about the field and narrow down to the specific topic.
+    
+    2. Problem Statement (1 paragraph):
+    Discuss the challenges and limitations of current approaches.
 
-    Write a {word_count}-word Literature Review that includes:
+    3. Research Objectives (1 paragraph):
+    State clearly what this paper aims to achieve.
 
-    1. Overview (2 sentences):
-    Start with: "The literature review on {title} provides..." or "Research on {title} encompasses..."
+    4. Significance (1 paragraph):
+    Why is this research important?
 
-    2. Key Research Areas (4 paragraphs):
-    For EACH paper, write: "Recent work by [Author Names] et al. on {title} explores [specific contribution]."
-    Example: "Recent work by Johnson et al. on {title} explores adaptive learning mechanisms using reinforcement learning algorithms."
+    {HUMAN_STYLE_GUIDE}
 
-    3. Comparative Analysis (1 paragraph):
-    Write: "Comparing different approaches in {title} research reveals..."
-
-    4. Research Gaps (1 paragraph):
-    Write: "Despite progress in {title} research, several gaps remain..."
-
-    CRITICAL - COPY THESE EXACT PATTERNS:
-    - "work on {title} explores"
-    - "research on {title} demonstrates"  
-    - "studies on {title} reveal"
-    - "approaches to {title} include"
-
-    DO NOT LEAVE "{title}" BLANK. Always write the full phrase: {title}
-
-    Write the Literature Review now, using "{title}" in every reference to the research topic:"""
-
+    Write the Introduction now:"""
 
     def _prompt_literature_review(self, title: str, word_count: int, 
                                  paper_context: str, rag_context: str, user_data: Optional[str]) -> str:
@@ -534,61 +648,39 @@ Write the complete abstract now:"""
 
     Research papers to review:
     {rag_section}
-
-    ABSOLUTE REQUIREMENT - READ THIS CAREFULLY:
-    Whenever you write about research work, you MUST write the complete phrase "{title}" after "on".
     
     CITATION RULE: You MUST use IEEE style citations like [1], [2] for EVERY paper discussed. Do NOT use (Author, Year).
 
     PLAGIARISM DEFENSE (CRITICAL):
-    You are analyzing existing papers. You MUST NOT copy their abstracts.
-    - Read the abstract.
-    - Understand the core finding.
-    - Close the "book" in your mind.
-    - Write the finding in your own completely new sentence structure.
-    - If you copy a phrase of 5+ words, you fail.
-
-    CORRECT EXAMPLES (using the actual topic "{title}"):
-    ✓ "Recent work by Smith et al. [1] on {title} explores..."
-    ✓ "The literature review on {title} provides..."
-    ✓ "Research on {title} [2] has demonstrated..."
-    ✓ "Studies on {title} have shown..."
-
-    WRONG EXAMPLES (DO NOT DO THIS):
-    ✗ "Recent work by Smith et al. on , explores..." ← FORBIDDEN
-    ✗ "Research on provides..." ← FORBIDDEN  
-    ✗ "Work on investigates..." ← FORBIDDEN
+    - Do NOT copy abstracts.
+    - SYNTHESIZE findings: Group similar papers together (e.g., "Several studies [1], [3] have addressed...").
+    - Do NOT start every sentence with "Recent work by..." or "Smith et al. proposed...". This is robotic.
+    - Use varied sentence structures.
 
     Write a {word_count}-word Literature Review that includes:
 
     1. Overview (2 sentences):
-    Start with: "The literature review on {title} provides..." or "Research on {title} encompasses..."
+    Briefly summarize the state of the field.
 
     2. Key Research Areas (4 paragraphs):
-    For EACH paper, write: "Recent work by [Author Names] et al. on {title} explores [specific contribution]."
-    Example: "Recent work by Johnson et al. on {title} explores adaptive learning mechanisms using reinforcement learning algorithms."
+    Discuss the retrieved papers. Group them by theme or methodology if possible. 
+    - Instead of listing them one by one, weave them into a narrative.
+    - Compare and contrast their approaches.
+    - Example: "While [1] focused on X, [2] argued that Y is more effective..."
 
     3. Comparative Analysis (1 paragraph):
-    Write: "Comparing different approaches in {title} research reveals..."
+    Compare the different approaches discussed.
 
     4. Research Gaps (1 paragraph):
-    Write: "Despite progress in {title} research, several gaps remain..."
+    Identify what is missing in the current literature.
 
-    CRITICAL - COPY THESE EXACT PATTERNS:
-    - "work on {title} explores"
-    - "research on {title} demonstrates"  
-    - "studies on {title} reveal"
-    - "approaches to {title} include"
-
-    DO NOT LEAVE "{title}" BLANK. Always write the full phrase: {title}
-
-    Write the Literature Review now, using "{title}" in every reference to the research topic:"""
+    Write the Literature Review now:"""
     def _prompt_methodology(self, title: str, word_count: int,
                        paper_context: str, rag_context: str, user_data: Optional[str]) -> str:
         user_section = ""
         if user_data:
             user_section = f"""
-
+    
     USER-PROVIDED EXPERIMENTAL DETAILS (USE THESE EXACT DETAILS):
     {user_data}
 
@@ -600,69 +692,43 @@ Write the complete abstract now:"""
 
     {paper_context}{user_section}
 
-    ABSOLUTE REQUIREMENT:
-    The opening sentence MUST include the complete phrase "{title}".
-
-    CORRECT OPENING EXAMPLES:
-    ✓ "This research employed a computational approach to investigate {title} using machine learning techniques."
-    ✓ "This study used Random Forest and Neural Networks to address challenges in {title}."
-    ✓ "The methodology for studying {title} involved a mixed-methods approach combining quantitative and qualitative data."
-
-    WRONG OPENING EXAMPLES (DO NOT DO THIS):
-    ✗ "This research employed a computational approach to investigate ." ← FORBIDDEN
-    ✗ "The study focused on using advanced techniques." ← MISSING TOPIC
-    ✗ "We used machine learning for analysis." ← MISSING TOPIC
-
     Write a {word_count}-word Methodology section that includes:
 
     1. Research Design (2-3 sentences):
-    MUST start with: "This research employed [approach type] to investigate {title} using [specific methods]."
-   - Overall experimental approach for studying {title}
-   - Type of study (experimental, computational, analytical, etc.)
-   - Example good phrasing: "This research employed a computational approach to investigate {title} using blockchain technology..."
-   - Example BAD phrasing: "This research employed a computational approach to investigate ." ← NEVER DO THIS
+    Describe the overall experimental approach.
+    
+    2. Data Collection (1-2 paragraphs):
+    - Dataset description: name, source, size, characteristics
+    - Data collection procedures
+    - Selection criteria or sampling method
+    - Preprocessing steps applied
 
-2. Data Collection (1-2 paragraphs):
-   - Dataset description: name, source, size, characteristics
-   - Data collection procedures for {title} research
-   - Selection criteria or sampling method
-   - Preprocessing steps applied
+    3. Methods and Techniques (2-3 paragraphs):
+    - Specific algorithms/models/methods used
+    - If user provided blockchain details (Hyperledger, consensus, nodes, etc.), include ALL of them
+    - If user provided ML details (models, frameworks, parameters), include ALL of them
+    - Technical implementation details with specific version numbers
+    - Parameters and configurations (learning rate, batch size, epochs, consensus algorithm, etc.)
+    - Tools and frameworks (TensorFlow, PyTorch, Hyperledger Fabric, AWS, etc.)
+    - Architecture details (number of layers, nodes, organizations, peer nodes, orderer nodes, etc.)
+    - Smart contracts or code implementation details if applicable
 
-3. Methods and Techniques (2-3 paragraphs):
-   - Specific algorithms/models/methods used for {title}
-   - If user provided blockchain details (Hyperledger, consensus, nodes, etc.), include ALL of them
-   - If user provided ML details (models, frameworks, parameters), include ALL of them
-   - Technical implementation details with specific version numbers
-   - Parameters and configurations (learning rate, batch size, epochs, consensus algorithm, etc.)
-   - Tools and frameworks (TensorFlow, PyTorch, Hyperledger Fabric, AWS, etc.)
-   - Architecture details (number of layers, nodes, organizations, peer nodes, orderer nodes, etc.)
-   - Smart contracts or code implementation details if applicable
+    4. Evaluation Metrics (1 paragraph):
+    - Metrics used: accuracy, precision, recall, F1-score, throughput, latency, etc.
+    - Validation approach (cross-validation, train-test split, testing period)
+    - Statistical analysis methods
 
-4. Evaluation Metrics (1 paragraph):
-   - Metrics used: accuracy, precision, recall, F1-score, throughput, latency, etc.
-   - Validation approach (cross-validation, train-test split, testing period)
-   - Statistical analysis methods
+    CRITICAL REQUIREMENTS:
+    - Target {word_count} words (±50 acceptable)
+    - Be SPECIFIC with all technical details
+    - Use past tense: "The research used", "The model was trained", "The system was deployed"
+    - Include realistic technical specifications
+    - If user data provided, integrate it seamlessly and use ALL their details
+    - Write in plain text only, no markdown formatting
+    - Use third person: "This research used" NOT "We used"
+    - Include ALL user-provided details: specific tools, versions, parameters, dataset info, testing duration
 
-CRITICAL REQUIREMENTS:
-- Target {word_count} words (±50 acceptable)
-- Be SPECIFIC with all technical details
-- Use past tense: "The research used", "The model was trained", "The system was deployed"
-- Include realistic technical specifications
-- If user data provided, integrate it seamlessly and use ALL their details
-- Always reference "{title}" as the application domain - NEVER leave it blank
-- NO vague statements like "various techniques were used"
-- NO incomplete references like "methodology for ." or "approach to ,"
-- Write in plain text only, no markdown formatting
-- Use third person: "This research used" NOT "We used"
-- Include ALL user-provided details: specific tools, versions, parameters, dataset info, testing duration
-
-Example of GOOD opening sentence:
-"This research employed a permissioned blockchain architecture using Hyperledger Fabric to address {title} challenges..."
-
-Example of BAD opening sentence:
-"This research employed a computational approach to investigate ." ← FORBIDDEN
-
-Write a detailed, specific Methodology section now:"""
+    Write a detailed, specific Methodology section now:"""
 
     def _prompt_results(self, title: str, word_count: int,
                        paper_context: str, rag_context: str, user_data: Optional[str]) -> str:
@@ -682,7 +748,7 @@ IMPORTANT: Incorporate the user's actual results and metrics above. Use their sp
 Write a {word_count}-word Results section that includes:
 
 1. Overview (2 sentences):
-   - Summary of results for "{title}" experiments
+   - Summary of results
    - Structure of results section
 
 2. Primary Results (3 paragraphs):
@@ -697,7 +763,7 @@ Write a {word_count}-word Results section that includes:
    - Strengths and weaknesses observed
    
 4. Comparative Results (1 paragraph):
-   - How results compare to state-of-the-art in "{title}"
+   - How results compare to state-of-the-art
    - Percentage improvements over existing methods
    - Notable achievements
 
@@ -708,7 +774,6 @@ REQUIREMENTS:
 - Use past tense: "The model achieved", "Results showed"
 - Be specific with numbers
 - If user data provided, use their actual metrics
-- Always specify the application: "{title}"
 - NO vague statements like "good results were obtained"
 - Write in plain text only, no formatting
 
@@ -720,43 +785,30 @@ Write the Results section with realistic metrics now:"""
         
         return f"""Write the Discussion section for this research paper on "{title}":
 
-        CITATION RULE: Use IEEE style citations [1], [2] when comparing your results with previous work.
-
 {paper_context}
-
 {rag_section}
 
 Write a {word_count}-word Discussion section that includes:
 
-1. Interpretation (2 paragraphs):
-   - Explain what the results mean for "{title}"
-   - Why were these results obtained?
-   - Connect results to research objectives
+1. Interpretation of Results (2 paragraphs):
+   - What do the findings mean?
+   - Do they support the initial hypothesis?
+   - Explain WHY the results occurred (the underlying mechanisms)
 
 2. Comparison with Literature (2 paragraphs):
-   - How do results compare to previous work on "{title}"?
-   - Better/worse/similar performance and why?
-   - What's novel about these findings in "{title}" research?
+   - Compare your findings with the papers in the context.
+   - "Consistent with Smith [1], we found..." or "Contrary to Jones [2]..."
 
-3. Implications (1 paragraph):
-   - Practical implications for "{title}" applications
-   - Theoretical contributions to the field
-   - Significance to "{title}" domain
+3. Limitations (1 paragraph):
+   - Honest assessment of study limitations (e.g., dataset size, specific conditions)
 
-4. Limitations (1 paragraph):
-   - Acknowledge limitations honestly
-   - Factors affecting generalizability
-   - Constraints of current approach to "{title}"
+4. Future Work (1 paragraph):
+   - Suggest 2-3 specific directions for future research
 
 REQUIREMENTS:
 - Target {word_count} words
-- Be analytical and critical
-- Reference the research literature provided
-- Connect back to objectives from introduction
-- Use present tense for interpretations, past tense for results
-- Always specify the field: "{title}"
-- Use third person: "This research demonstrates" not "My research"
-- Be honest about limitations
+- Be analytical, not just descriptive
+- Use citations [1], [2] when comparing
 - Write in plain text only, no formatting
 
 Write the Discussion section now:"""
@@ -767,42 +819,23 @@ Write the Discussion section now:"""
 
 {paper_context}
 
-Write a {word_count}-word Conclusion section that includes:
+Write a {word_count}-word Conclusion that includes:
 
-   - Open questions in "{title}" to address
+1. Summary of Contributions (1 paragraph):
+   - Restate the main problem and your solution
+   - Highlight the key achievements
 
-4. Closing Statement (1 sentence):
-   - Broader impact on "{title}" field
-   - End on a strong, forward-looking note
+2. Key Findings (1 paragraph):
+   - Recap the most important quantitative results
+   - Emphasize the impact
+
+3. Final Remarks (1 paragraph):
+   - Broader implications for the field
 
 REQUIREMENTS:
 - Target {word_count} words
-- Be concise and impactful
-- NO new information (only summarize)
-- Use past tense for what was done
-- Use future tense for future work
-- Always reference the specific field: "{title}"
-- Use third person: "This research" not "Our research"
-- End with a complete, strong concluding sentence
+- No new citations
+- Strong closing statement
 - Write in plain text only, no formatting
 
-Write the Conclusion section now:"""
-
-    # ==================== UTILITY METHODS ====================
-    
-    def warmup(self) -> bool:
-        """Warmup the model with a simple request"""
-        try:
-            response = requests.post(
-                self.api_url,
-                json={
-                    "model": self.model,
-                    "prompt": "Test",
-                    "stream": False,
-                    "options": {"num_predict": 10}
-                },
-                timeout=30
-            )
-            return response.status_code == 200
-        except:
-            return False
+Write the Conclusion now:"""
