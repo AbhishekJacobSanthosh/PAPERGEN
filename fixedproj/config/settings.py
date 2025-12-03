@@ -1,7 +1,11 @@
 """
 Configuration settings for Research Paper Generator
 """
+
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # ==================== OLLAMA CONFIGURATION ====================
 OLLAMA_API_URL = "http://localhost:11434/api/generate"
@@ -11,6 +15,10 @@ MODEL_NAME = "llama3.1:8b"
 SEMANTIC_SCHOLAR_API = "https://api.semanticscholar.org/graph/v1"
 RAG_PAPER_LIMIT = 15
 CACHE_EXPIRY_HOURS = 24
+
+# ==================== ZEROGPT CONFIGURATION ====================
+ZEROGPT_API_URL = "https://api.zerogpt.com/api/detect/detectText"
+ZEROGPT_API_KEY = os.environ.get("ZEROGPT_API_KEY", "")
 
 # ==================== DIRECTORIES ====================
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
