@@ -39,6 +39,7 @@ from services.rag_service import RAGService
 from services.export_service import ExportService
 from services.ocr_service import OCRService
 from services.integrity_service import ContentIntegrityService
+from services.evaluation_service import EvaluationService
 
 # Import utilities
 from utils.text_processing import TextProcessor
@@ -156,6 +157,7 @@ export_service = ExportService()
 ocr_service = OCRService()
 text_processor = TextProcessor()
 integrity_service = ContentIntegrityService()
+evaluation_service = EvaluationService()
 
 logger.info("="*70)
 logger.info("🎓 AI Research Paper Generator v3.0")
@@ -875,6 +877,131 @@ def extract_ocr():
     logger.info(f"OCR extracted {len(text)} characters")
     
     return jsonify({'success': True, 'text': text})
+
+# ==================== EVALUATION ====================
+
+@app.route('/api/evaluate-paper', methods=['POST'])
+@handle_api_errors
+def evaluate_paper_endpoint():
+    """Evaluate generated paper with BLEU and ROUGE scores"""
+    data = request.json
+    
+    if not data or 'paper' not in data:
+        raise ValidationError("No paper data provided")
+    
+    paper_data = data['paper']
+    
+    logger.info(f"Evaluating paper: {paper_data.get('title', 'Unknown')[:50]}...")
+    
+    # Get reference papers if provided, otherwise use paper's references
+    reference_papers = data.get('reference_papers')
+    
+    # Perform evaluation
+    evaluation_report = evaluation_service.evaluate_paper(paper_data, reference_papers)
+    
+    if 'error' in evaluation_report:
+        return jsonify({
+            'success': False,
+            'error': evaluation_report['error']
+        }), 400
+    
+    # Generate text report
+    text_report = evaluation_service.generate_report_text(evaluation_report)
+    
+    logger.info(f"✓ Paper evaluation complete")
+    
+    return jsonify({
+        'success': True,
+        'evaluation': evaluation_report,
+        'report_text': text_report
+    })
+
+@app.route('/api/evaluate-survey', methods=['POST'])
+@handle_api_errors
+def evaluate_survey_endpoint():
+    """Evaluate literature survey with BLEU and ROUGE scores"""
+    data = request.json
+    
+    if not data or 'survey' not in data:
+        raise ValidationError("No survey text provided")
+    
+    survey_text = data['survey']
+    reference_papers = data.get('papers', [])
+    
+    if not reference_papers:
+        raise ValidationError("No reference papers provided")
+    
+    logger.info(f"Evaluating literature survey ({len(survey_text.split())} words)...")
+    
+    # Perform evaluation
+    evaluation_report = evaluation_service.evaluate_literature_survey(survey_text, reference_papers)
+    
+    if 'error' in evaluation_report:
+        return jsonify({
+            'success': False,
+            'error': evaluation_report['error']
+        }), 400
+    
+    # Generate text report
+    text_report = evaluation_service.generate_report_text(evaluation_report)
+    
+    logger.info(f"✓ Survey evaluation complete")
+    
+    return jsonify({
+        'success': True,
+        'evaluation': evaluation_report,
+        'report_text': text_report
+    })
+
+@app.route('/api/evaluate-latest-paper', methods=['GET'])
+@handle_api_errors
+def evaluate_latest_paper():
+    """Evaluate the most recently saved paper"""
+    try:
+        # Get latest paper
+        list_of_files = glob.glob(os.path.join(SAVED_PAPERS_DIR, '*.json'))
+        if not list_of_files:
+            return jsonify({'success': False, 'error': 'No saved papers found'}), 404
+            
+        latest_file = max(list_of_files, key=os.path.getctime)
+        
+        with open(latest_file, 'r') as f:
+            paper_data = json.load(f)
+        
+        logger.info(f"Evaluating latest paper: {paper_data.get('title', 'Unknown')[:50]}...")
+        
+        # Perform evaluation
+        evaluation_report = evaluation_service.evaluate_paper(paper_data)
+        
+        if 'error' in evaluation_report:
+            return jsonify({
+                'success': False,
+                'error': evaluation_report['error']
+            }), 400
+        
+        # Generate text report
+        text_report = evaluation_service.generate_report_text(evaluation_report)
+        
+        # Save evaluation report
+        eval_filename = os.path.basename(latest_file).replace('.json', '_evaluation.json')
+        eval_filepath = os.path.join(SAVED_PAPERS_DIR, eval_filename)
+        
+        with open(eval_filepath, 'w') as f:
+            json.dump(evaluation_report, f, indent=4)
+        
+        logger.info(f"✓ Evaluation saved to {eval_filepath}")
+        
+        return jsonify({
+            'success': True,
+            'evaluation': evaluation_report,
+            'report_text': text_report,
+            'saved_to': eval_filepath
+        })
+        
+    except Exception as e:
+        logger.error(f"Error evaluating latest paper: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 
 # ==================== ERROR HANDLERS ====================
 
