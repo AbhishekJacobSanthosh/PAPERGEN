@@ -9,6 +9,7 @@ Production-ready Flask application with:
 """
 from flask import Flask, request, jsonify, render_template, send_file, Response, stream_with_context
 from datetime import datetime
+from io import BytesIO
 from functools import wraps
 import os
 import logging
@@ -288,14 +289,18 @@ def generate_paper_endpoint():
     
     logger.info(f"Paper generated successfully - Words: {paper.metadata['total_words']}")
     
-    # Auto-save the paper
+    # Auto-save the paper with descriptive filename
     try:
+        import re
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        filename = f"paper_{timestamp}.json"
+        # Create readable filename from title
+        clean_title = re.sub(r'[^\w\s-]', '', paper.title)  # Remove special chars
+        clean_title = re.sub(r'\s+', '_', clean_title.strip())[:50]  # Replace spaces, limit length
+        filename = f"{timestamp}_{clean_title}.json"
         filepath = os.path.join(SAVED_PAPERS_DIR, filename)
         
-        with open(filepath, 'w') as f:
-            json.dump(paper.to_dict(), f, indent=4)
+        with open(filepath, 'w', encoding='utf-8') as f:
+            json.dump(paper.to_dict(), f, indent=4, ensure_ascii=False)
             
         logger.info(f"Auto-saved paper to {filepath}")
     except Exception as e:
@@ -844,7 +849,46 @@ def download_docx():
         mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     )
 
-# ==================== OCR ====================
+@app.route('/api/download-html', methods=['POST'])
+@handle_api_errors
+def download_html():
+    """Export paper as HTML with proper formatting"""
+    data = request.json
+    paper_data = data.get('paper', {})
+    
+    if not paper_data:
+        raise ValidationError("No paper data")
+    
+    logger.info(f"Generating paper HTML - Title: {paper_data.get('title', 'Unknown')[:50]}...")
+    
+    # Reconstruct paper object
+    paper = ResearchPaper(
+        title=paper_data['title'],
+        authors=[Author(**a) for a in paper_data['authors']],
+        abstract=paper_data['abstract'],
+        sections=paper_data['sections'],
+        references=[Reference(**r) for r in paper_data.get('references', [])],
+        figures={},
+        doi=paper_data['doi'],
+        generated_at=datetime.fromisoformat(paper_data['generated_at'])
+    )
+    
+    html_content = export_service.generate_html(paper)
+    
+    logger.info("Paper HTML generated successfully")
+    
+    # Return as downloadable HTML file
+    buffer = BytesIO(html_content.encode('utf-8'))
+    buffer.seek(0)
+    
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name=f"paper_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html",
+        mimetype='text/html'
+    )
+
+# ==================== OCR ===================="
 
 @app.route('/api/extract-ocr', methods=['POST'])
 @handle_api_errors

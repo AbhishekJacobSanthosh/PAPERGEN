@@ -242,10 +242,12 @@ function displayGeneratedPaper(data) {
             <div class="date" style="color: #666; font-size: 0.9rem;">Generated: ${formatDate(data.generated_date)}</div>
             
             <div class="integrity-section" style="margin-top: 15px;">
-                <button onclick="checkIntegrity()" class="btn-secondary btn-small">🛡️ Check Content Integrity</button>
-                <div id="integrityResults" class="hidden" style="margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 5px; text-align: left;">
-                    <!-- Results will appear here -->
+                <div class="flex-gap">
+                    <button onclick="checkIntegrity()" class="btn-secondary btn-small">🛡️ Check Content Integrity</button>
+                    <button onclick="evaluatePaperQuality()" class="btn-secondary btn-small">📊 Evaluate Quality (BLEU/ROUGE)</button>
                 </div>
+                <div id="integrityResults" class="hidden" style="margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 5px; text-align: left;"></div>
+                <div id="evaluationResults" class="hidden" style="margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 5px; text-align: left;"></div>
             </div>
         </div>
     `;
@@ -357,6 +359,7 @@ async function downloadPaper(format = 'pdf') {
     if (format === 'pdf') endpoint = '/api/download-pdf';
     else if (format === 'docx') endpoint = '/api/download-docx';
     else if (format === 'pptx') endpoint = '/api/download-pptx';
+    else if (format === 'html') endpoint = '/api/download-html';
 
     try {
         const response = await fetch(endpoint, {
@@ -483,9 +486,90 @@ async function checkIntegrity() {
     }
 }
 
+
+async function evaluatePaperQuality() {
+    if (!currentPaper) return;
+
+    const resultsDiv = document.getElementById('evaluationResults');
+    resultsDiv.classList.remove('hidden');
+    resultsDiv.innerHTML = 'Evaluating quality... <span class="spinner"></span>';
+
+    try {
+        const response = await fetch('/api/evaluate-paper', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ paper: currentPaper })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) throw new Error(data.error || 'Evaluation failed');
+
+        const evalData = data.evaluation;
+        const bleu = evalData.overall_scores.bleu['bleu-avg'];
+        const rouge = evalData.overall_scores.rouge['rouge-l'].f1;
+        const interp = evalData.interpretation;
+
+        let html = `
+            <div class="integrity-report-container">
+                <h4 class="report-title"><i class="fas fa-chart-bar"></i> Quality Evaluation Report</h4>
+                
+                <div class="integrity-grid">
+                    <!-- BLEU Card -->
+                    <div class="integrity-card ${getScoreClass(bleu * 100, 'quality')}">
+                        <div class="card-icon"><i class="fas fa-language"></i></div>
+                        <div class="card-content">
+                            <h5>BLEU Score (Precision)</h5>
+                            <div class="score-display">
+                                <span class="score-value">${(bleu).toFixed(4)}</span>
+                                <span class="score-label">${interp.bleu_quality}</span>
+                            </div>
+                            <p class="score-details">${interp.bleu_note}</p>
+                        </div>
+                    </div>
+
+                    <!-- ROUGE Card -->
+                    <div class="integrity-card ${getScoreClass(rouge * 100, 'quality')}">
+                        <div class="card-icon"><i class="fas fa-check-double"></i></div>
+                        <div class="card-content">
+                            <h5>ROUGE-L (Recall)</h5>
+                            <div class="score-display">
+                                <span class="score-value">${(rouge).toFixed(4)}</span>
+                                <span class="score-label">${interp.rouge_quality}</span>
+                            </div>
+                            <p class="score-details">${interp.rouge_note}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                    <strong>Overall Assessment:</strong> ${interp.overall_assessment}
+                </div>
+            </div>
+        `;
+
+        resultsDiv.innerHTML = html;
+
+    } catch (error) {
+        resultsDiv.innerHTML = `
+            <div class="integrity-error">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>Error: ${error.message}</span>
+            </div>`;
+    }
+}
+
 function getScoreClass(score, type) {
     if (type === 'plagiarism') {
         return score > 40 ? 'danger' : (score > 20 ? 'warning' : 'success');
+    } else if (type === 'quality') {
+        // QUALITY SCORING (BLEU/ROUGE for Research Generation)
+        // High score (>20%) = Warning (Potential plagiarism/copying)
+        // Moderate score (4-20%) = Success (Good original synthesis)
+        // Low score (<4%) = Danger (Hallucination/off-topic)
+        if (score > 20) return 'warning';
+        if (score > 4) return 'success';
+        return 'danger';
     } else {
         return score > 80 ? 'danger' : (score > 50 ? 'warning' : 'success');
     }

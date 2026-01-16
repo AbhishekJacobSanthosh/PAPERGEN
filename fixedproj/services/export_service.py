@@ -19,6 +19,21 @@ from models.paper_structure import ResearchPaper
 class ExportService:
     """Service for exporting papers to PDF and DOCX"""
     
+    def _fix_encoding(self, text: str) -> str:
+        """Fix common UTF-8 encoding issues in text"""
+        if not text:
+            return text
+        encoding_fixes = {
+            'â€¢': '•', 'Â²': '²', 'Â³': '³',
+            'Ã©': 'é', 'Ã¡': 'á', 'Ã­': 'í', 'Ã³': 'ó', 'Ãº': 'ú',
+            'Ã±': 'ñ', 'Ã¼': 'ü', 'Ã¶': 'ö', 'Ã¤': 'ä',
+            'â€"': '—', 'â€™': "'", 'â€œ': '"', 'â€': '"',
+        }
+        result = text
+        for bad, good in encoding_fixes.items():
+            result = result.replace(bad, good)
+        return result
+    
     def generate_pdf(self, paper: ResearchPaper) -> BytesIO:
         """Generate IEEE-format PDF with correct layout"""
         buffer = BytesIO()
@@ -168,9 +183,15 @@ class ExportService:
                 elements.append(Paragraph(title, styles['pdf_section']))
                 
                 content = paper.sections[key]
-                for para in content.split('\n\n'):
+                # Convert single newlines to <br/> for proper line breaks in PDF
+                # First, normalize multiple newlines, then convert single newlines
+                formatted_content = content.replace('\n\n', '<<PARA>>').replace('\n', '<br/>').replace('<<PARA>>', '\n\n')
+                
+                for para in formatted_content.split('\n\n'):
                     if para.strip():
-                        elements.append(Paragraph(para.strip(), styles['pdf_body']))
+                        # Clean up any remaining formatting issues
+                        clean_para = para.strip()
+                        elements.append(Paragraph(clean_para, styles['pdf_body']))
                 
                 if key == 'results':
                     elements.extend(self._add_figures_to_pdf(paper.figures, col_width, styles))
@@ -253,6 +274,138 @@ class ExportService:
         except ImportError:
             raise Exception("python-docx not installed. Run: pip install python-docx")
 
+    def generate_html(self, paper: ResearchPaper) -> str:
+        """Generate HTML with proper CSS formatting for structured content"""
+        
+        # CSS for IEEE-like formatting with two columns
+        css = """
+        <style>
+            @media print { body { font-size: 10pt; } }
+            body { font-family: 'Times New Roman', serif; max-width: 900px; margin: 0 auto; padding: 20px; line-height: 1.4; font-size: 10pt; }
+            h1 { text-align: center; font-size: 22px; margin-bottom: 10px; column-span: all; }
+            .header { column-span: all; text-align: center; margin-bottom: 15px; }
+            .authors { text-align: center; margin-bottom: 15px; column-span: all; }
+            .author { display: inline-block; margin: 0 10px; text-align: center; font-size: 9pt; }
+            .author-name { font-weight: bold; }
+            .author-affil { font-style: italic; }
+            .author-email { font-size: 8pt; }
+            .abstract { text-align: justify; margin-bottom: 15px; font-style: italic; column-span: all; }
+            .abstract-title { font-weight: bold; }
+            .two-column { column-count: 2; column-gap: 20px; text-align: justify; }
+            .section-title { font-weight: bold; font-size: 11pt; text-align: center; margin-top: 15px; margin-bottom: 8px; }
+            .content { text-align: justify; margin-bottom: 8px; white-space: pre-line; }
+            .subsection { font-weight: bold; font-style: italic; margin-top: 10px; margin-bottom: 5px; }
+            ul { margin: 8px 0; padding-left: 15px; }
+            li { margin: 3px 0; }
+            .algorithm { background: #f8f8f8; border: 1px solid #ddd; padding: 8px; margin: 8px 0; font-family: 'Courier New', monospace; font-size: 9pt; white-space: pre; }
+            .references { font-size: 9pt; }
+            .ref-item { margin: 3px 0; }
+        </style>
+        """
+        
+        # Build HTML
+        html = f"""<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{paper.title}</title>
+    {css}
+</head>
+<body>
+    <h1>{paper.title}</h1>
+    
+    <div class="authors">
+"""
+        
+        # Authors
+        for author in paper.authors:
+            html += f"""
+        <div class="author">
+            <div class="author-name">{author.name}</div>
+            <div class="author-affil">{author.affiliation}</div>
+            <div class="author-email">{author.email}</div>
+        </div>
+"""
+        
+        html += """    </div>
+    
+    <div class="abstract">
+        <span class="abstract-title">Abstract—</span>""" + paper.abstract + """
+    </div>
+"""
+        
+        if paper.doi:
+            html += f'    <p><strong>DOI:</strong> {paper.doi}</p>\n'
+        
+        # Start two-column layout for body content
+        html += '\n    <div class="two-column">\n'
+        
+        # Sections
+        section_titles = {
+            'introduction': 'I. INTRODUCTION',
+            'literature_review': 'II. LITERATURE REVIEW',
+            'methodology': 'III. METHODOLOGY',
+            'results': 'IV. RESULTS',
+            'discussion': 'V. DISCUSSION',
+            'conclusion': 'VI. CONCLUSION',
+            'references': 'REFERENCES'
+        }
+        
+        for key, title in section_titles.items():
+            if key in paper.sections:
+                html += f'\n    <div class="section-title">{title}</div>\n'
+                
+                content = self._fix_encoding(paper.sections[key])
+                # Convert bullets to HTML list items
+                lines = content.split('\n')
+                in_list = False
+                
+                for line in lines:
+                    line = line.strip()
+                    if not line:
+                        if in_list:
+                            html += '    </ul>\n'
+                            in_list = False
+                        continue
+                    
+                    # Check for bullet points
+                    if line.startswith('•') or line.startswith('-') or line.startswith('*'):
+                        if not in_list:
+                            html += '    <ul>\n'
+                            in_list = True
+                        # Remove bullet character
+                        item = line.lstrip('•-* ')
+                        html += f'        <li>{item}</li>\n'
+                    # Check for subsection headers (A. B. C. etc)
+                    elif len(line) > 2 and line[0].isupper() and line[1] == '.' and line[2] == ' ':
+                        if in_list:
+                            html += '    </ul>\n'
+                            in_list = False
+                        html += f'    <div class="subsection">{line}</div>\n'
+                    # Check for algorithm blocks
+                    elif line.upper().startswith('ALGORITHM'):
+                        if in_list:
+                            html += '    </ul>\n'
+                            in_list = False
+                        html += f'    <div class="algorithm">{line}</div>\n'
+                    else:
+                        if in_list:
+                            html += '    </ul>\n'
+                            in_list = False
+                        html += f'    <p class="content">{line}</p>\n'
+                
+                if in_list:
+                    html += '    </ul>\n'
+        
+        # Close two-column div
+        html += '    </div>\n'
+        
+        html += """
+</body>
+</html>"""
+        
+        return html
+
     def _create_styles(self):
         """Create PDF styles matching IEEE format"""
         styles = getSampleStyleSheet()
@@ -318,7 +471,9 @@ class ExportService:
             alignment=TA_JUSTIFY,
             fontName='Times-Roman',
             firstLineIndent=12,
-            spaceAfter=6
+            spaceAfter=6,
+            allowWidows=0,
+            allowOrphans=0
         ))
         
         # Abstract

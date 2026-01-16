@@ -38,13 +38,13 @@ PAPER_TYPE = "experimental"  # Options: "experimental", "review", "auto"
 
 # Target word counts for each section
 WORD_COUNT_TARGET = {
-    "abstract": 180,
-    "introduction": 350,
-    "literature_review": 400,
-    "methodology": 350,
-    "results": 300,
-    "discussion": 350,
-    "conclusion": 250
+    "abstract": 150,
+    "introduction": 300,
+    "literature_review": 300,
+    "methodology": 400,
+    "results": 250,
+    "discussion": 250,
+    "conclusion": 150
 }
 
 # Reference settings
@@ -85,6 +85,7 @@ SHARE_CONTEXT_BETWEEN_SECTIONS = True
 
 # Generate realistic data (not placeholders)
 USE_REALISTIC_DATA = True
+USE_BOLD_HEADERS = True
 
 # ==================== CREATE DIRECTORIES ====================
 for directory in [UPLOAD_FOLDER, CACHE_DIR, SAVED_PAPERS_DIR]:

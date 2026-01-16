@@ -417,49 +417,41 @@ class EvaluationService:
         rouge_f1 = rouge_scores.get('rouge-l', {}).get('f1', 0)
         
         # BLEU interpretation
-        if bleu_avg >= 0.5:
-            bleu_quality = "Very High"
-            bleu_note = "Excellent overlap with references - verify originality"
-        elif bleu_avg >= 0.3:
+        if bleu_avg >= 0.2:
             bleu_quality = "High"
-            bleu_note = "Good integration of reference material"
-        elif bleu_avg >= 0.15:
-            bleu_quality = "Moderate"
-            bleu_note = "Adequate synthesis of sources"
-        elif bleu_avg >= 0.05:
-            bleu_quality = "Low"
-            bleu_note = "Limited reference integration"
+            bleu_note = "Strong similarity to references (Check for plagiarism)"
+        elif bleu_avg >= 0.1:
+            bleu_quality = "Good"
+            bleu_note = "Good synthesis of reference terminology"
+        elif bleu_avg >= 0.04:
+            bleu_quality = "Normal"
+            bleu_note = "Original synthesis with appropriate technical terms"
         else:
-            bleu_quality = "Very Low"
-            bleu_note = "Minimal connection to source material"
+            bleu_quality = "Low"
+            bleu_note = "Minimal connection to source material (Too creative?)"
         
         # ROUGE interpretation
-        if rouge_f1 >= 0.5:
-            rouge_quality = "Very High"
-            rouge_note = "Excellent content coverage"
-        elif rouge_f1 >= 0.3:
+        if rouge_f1 >= 0.2:
             rouge_quality = "High"
-            rouge_note = "Good content alignment"
-        elif rouge_f1 >= 0.15:
-            rouge_quality = "Moderate"
-            rouge_note = "Adequate content coverage"
+            rouge_note = "Extensive coverage of reference content"
+        elif rouge_f1 >= 0.1:
+            rouge_quality = "Good"
+            rouge_note = "Good conceptual alignment with sources"
         elif rouge_f1 >= 0.05:
-            rouge_quality = "Low"
-            rouge_note = "Limited content overlap"
+            rouge_quality = "Normal"
+            rouge_note = "Original writing covering key concepts"
         else:
-            rouge_quality = "Very Low"
-            rouge_note = "Minimal content similarity"
+            rouge_quality = "Low"
+            rouge_note = "Limited overlap with reference content"
         
         # Overall assessment
         avg_score = (bleu_avg + rouge_f1) / 2
-        if avg_score >= 0.4:
-            overall = "Excellent - Strong synthesis of reference material"
-        elif avg_score >= 0.25:
-            overall = "Good - Well-integrated with sources"
-        elif avg_score >= 0.12:
-            overall = "Fair - Moderate source integration"
+        if avg_score >= 0.15:
+            overall = "High Fidelity - Strongly grounded in references"
+        elif avg_score >= 0.05:
+            overall = "Original Research - Good synthesis of sources"
         else:
-            overall = "Needs Improvement - Weak connection to references"
+            overall = "Creative/Novel - Low direct overlap with references"
         
         return {
             'bleu_quality': bleu_quality,

@@ -207,8 +207,15 @@ Abstract: {paper.abstract[:400]}...
         return '\n'.join(context_parts)
     
     def _get_cache_key(self, query: str) -> str:
-        """Generate cache key from query"""
-        return hashlib.md5(query.lower().encode()).hexdigest()
+        """Generate cache key from query - uses readable topic name"""
+        import re
+        # Clean the query to make a safe filename
+        clean = re.sub(r'[^\w\s-]', '', query.lower())  # Remove special chars
+        clean = re.sub(r'\s+', '_', clean.strip())       # Replace spaces with underscore
+        clean = clean[:60]  # Limit length
+        # Add short hash suffix for uniqueness
+        hash_suffix = hashlib.md5(query.lower().encode()).hexdigest()[:8]
+        return f"{clean}_{hash_suffix}"
     
     def _load_from_cache(self, query: str) -> Optional[List[Reference]]:
         """Load cached papers if available and fresh"""

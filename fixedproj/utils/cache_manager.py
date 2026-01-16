@@ -8,6 +8,8 @@ from datetime import datetime, timedelta
 from typing import Optional, Any
 from config.settings import CACHE_DIR, CACHE_EXPIRY_HOURS
 
+import re
+
 class CacheManager:
     """Utility class for cache management"""
     
@@ -16,8 +18,14 @@ class CacheManager:
         os.makedirs(cache_dir, exist_ok=True)
     
     def get_cache_key(self, query: str) -> str:
-        """Generate cache key from query"""
-        return hashlib.md5(query.lower().encode()).hexdigest()
+        """Generate cache key from query - uses readable topic name"""
+        # Clean the query to make a safe filename
+        clean = re.sub(r'[^\w\s-]', '', query.lower())  # Remove special chars
+        clean = re.sub(r'\s+', '_', clean.strip())       # Replace spaces with underscore
+        clean = clean[:60]  # Limit length
+        # Add short hash suffix for uniqueness
+        hash_suffix = hashlib.md5(query.lower().encode()).hexdigest()[:8]
+        return f"{clean}_{hash_suffix}"
     
     def get(self, key: str, max_age_hours: int = CACHE_EXPIRY_HOURS) -> Optional[Any]:
         """Get cached data if available and fresh"""

@@ -34,7 +34,9 @@ CRITICAL STYLE INSTRUCTIONS (THE "SOBER" EDIT):
    - KEEP all specific numbers, metrics, and data points.
    - KEEP all citations [1], [2] exactly where they are relevant.
    - KEEP the critical analysis/arguments (just phrase them politely).
-   - DO NOT add fluff like "In conclusion" or "It is important to note".
+   - REMOVE all fluff, redundancy, and filler words.
+   - Make the text DENSE and information-rich found in top-tier IEEE papers.
+   - SHORTEN the text if possible while keeping the core information.
 """
 
 HUMAN_STYLE_GUIDE = """
@@ -126,36 +128,33 @@ class LLMInterface:
 
 Based on the above research context, {prompt}
 
-CRITICAL RULES:
-1. Write ONLY plain text content - NO markdown formatting
-2. NO headers with ### or ##
-3. NO bold text with ** or *
-4. NO bullet points or numbered lists
-5. Write in continuous prose paragraphs only
-6. End with a complete sentence (proper punctuation)
-7. Use the research context to inform your writing but SYNTHESIZE it, do not copy.
-8. Be specific and avoid generic placeholder statements
-9. Do NOT repeat the section title
-10. Do NOT use asterisks or hashtags anywhere
-11. NEVER leave blank placeholders - always use complete specific terms
-12. When referring to topics, use the full specific subject name OR natural variations (e.g., "this field", "the domain").
+CRITICAL FORMATTING RULES:
+1. SUBSECTION HEADERS must be on their OWN LINE: "A. Problem Setup" (newline) then content.
+2. BULLET POINTS (•) - each bullet on its OWN LINE with a line break before and after.
+3. EQUATIONS inline: Attention = softmax(QK^T / sqrt(d)) * V
+4. PSEUDOCODE as numbered steps (NO backticks ```):
+   ALGORITHM BlockSparseAttention:
+   1. Partition input into blocks
+   2. Compute sparse attention
+   3. Return weighted output
+5. NO ASCII TABLES with |pipes| - use bullet comparisons instead:
+   • Baseline: 28ms, 6GB
+   • Proposed: 12ms, 3.6GB
+6. EACH NEW ITEM ON ITS OWN LINE. Line breaks are critical.
+7. Be DENSE and TECHNICAL.
+8. Use IEEE citations [1], [2].
 
 {current_style}"""
         else:
             full_prompt = f"""{prompt}
 
-CRITICAL RULES:
-1. Write ONLY plain text content - NO markdown formatting
-2. NO headers with ### or ##
-3. NO bold text with ** or *
-4. NO bullet points or numbered lists
-5. Write in continuous prose paragraphs only
-6. End with a complete sentence (proper punctuation)
-7. Be specific and avoid generic statements
-8. Do NOT repeat the section title
-9. Do NOT use asterisks or hashtags anywhere
-10. NEVER leave blank placeholders - always use complete specific terms
-11. When referring to topics, use the full specific subject name OR natural variations.
+CRITICAL FORMATTING RULES:
+1. SUBSECTION HEADERS on their OWN LINE.
+2. BULLETS (•) on separate lines.
+3. EQUATIONS inline. NO ASCII tables with |pipes|.
+4. PSEUDOCODE as numbered steps, NO backticks.
+5. EACH NEW ITEM = NEW LINE.
+6. Be DENSE and TECHNICAL.
 
 {current_style}"""
         
@@ -355,44 +354,22 @@ Generate ONLY the title, nothing else."""
         prompt = f"""Write a comprehensive {target_words}-word abstract for a research paper titled:
 "{title}"
 
-The abstract must cover these elements in order:
+The abstract must cover these elements in flowing prose (NO bullets, NO numbered lists, NO subsections):
 
-1. Background (3 sentences): 
-   - Establish the research domain using specific terms from the title
-   - Explain current challenges in "{title}" field
-   - Why this research area matters
-
-2. Research Gap (2 sentences):
-   - What specific problem hasn't been solved
-   - Limitations of existing approaches in this exact field
-
-3. Objectives (2 sentences):
-   - Clear statement of what this research achieves
-   - Specific goals related to "{title}"
-
-4. Methodology (3 sentences):
-   - Approach and techniques used
-   - Dataset or experimental setup
-   - Key technical methods employed
-
-5. Results (3 sentences):
-   - Main quantitative findings with specific metrics
-   - Performance improvements
-   - Comparative results with baselines
-
-6. Conclusion & Impact (2 sentences):
-   - Significance of findings for "{title}" field
-   - Broader implications and applications
+- Background: Establish the research domain and current challenges
+- Research Gap: What problem hasn't been solved
+- Objectives: What this research achieves
+- Methodology: Approach and techniques used
+- Results: Main quantitative findings with specific metrics
+- Conclusion: Significance and implications
 
 CRITICAL REQUIREMENTS:
 - MUST be {target_words} words (±10 words)
+- Write as CONTINUOUS FLOWING PARAGRAPHS - NO bullets, NO numbered lists, NO "A." "B." subsections
 - MUST end with a complete sentence about impact
 - Use past tense for completed work
 - Include specific numerical results
 - NO vague placeholders - always use the complete topic "{title}"
-- When referring to the research area, use the full specific subject
-- NEVER write "applications in" without specifying the application
-- End with a strong concluding statement
 - Output ONLY the abstract text. Do NOT start with "Here is...", "This paper...", "Abstract:", or any other introductory phrase.
 
 Write the complete abstract now:"""
@@ -478,7 +455,9 @@ Write the complete abstract now:"""
         - Maintain the unique arguments and critical perspective of the draft.
         - Fix the slang and casual tone to be professional and academic.
         - KEEP all citations [1], [2] and specific numbers/data.
-        - Ensure varied sentence structures (burstiness).
+        - KEEP all mathematical formulas.
+        - START paragraphs with bold headings like `<b>Key Insight:</b>` where appropriate.
+        - CUT FLUFF: Remove "It is worth noting", "In conclusion", etc.
         - Output ONLY the rewritten text.
         """
         
@@ -495,7 +474,94 @@ Write the complete abstract now:"""
         # STEP 3: NUCLEAR FILTER (Safety Net)
         final_clean = self._force_remove_banned_words(formal_version)
         
-        return final_clean
+        # STEP 4: FORMAT STRUCTURED CONTENT (Insert line breaks)
+        formatted = self._format_structured_content(final_clean)
+        
+        return formatted
+
+    def _format_structured_content(self, text: str) -> str:
+        """
+        Post-process LLM output to:
+        1. Fix character encoding issues (â€¢ → •, Â² → ², etc.)
+        2. Remove triple backticks
+        3. Insert line breaks before structural patterns
+        """
+        import re
+        
+        result = text
+        
+        # STEP 1: Fix common encoding issues (UTF-8 misinterpreted as Windows-1252)
+        encoding_fixes = {
+            'â€¢': '•',      # Bullet point
+            'Â²': '²',       # Superscript 2
+            'Â³': '³',       # Superscript 3
+            'Ã©': 'é',       # e with acute
+            'Ã¡': 'á',       # a with acute
+            'Ã­': 'í',       # i with acute
+            'Ã³': 'ó',       # o with acute
+            'Ãº': 'ú',       # u with acute
+            'Ã±': 'ñ',       # n with tilde
+            'Ã¼': 'ü',       # u with umlaut
+            'Ã¶': 'ö',       # o with umlaut
+            'Ã¤': 'ä',       # a with umlaut
+            'â€"': '—',      # Em dash
+            'â€"': '–',      # En dash
+            'â€™': "'",      # Right single quote
+            'â€œ': '"',      # Left double quote
+            'â€': '"',       # Right double quote (partial)
+            '\\u2022': '•',  # Bullet (unicode escape)
+        }
+        
+        for bad, good in encoding_fixes.items():
+            result = result.replace(bad, good)
+        
+        # STEP 2: Remove triple backticks (code fences)
+        result = re.sub(r'```\s*', '', result)
+        result = re.sub(r'\s*```', '', result)
+        
+        # STEP 3: Insert line breaks before structural patterns
+        # Only for sections that need subsections (Methodology, Results, Discussion)
+        # NOT for abstract or introduction
+        subsection_patterns = [
+            r'(\w)\s+(A\.\s+\w)',      # A. subsection (after any word)
+            r'(\w)\s+(B\.\s+\w)',      # B. subsection
+            r'(\w)\s+(C\.\s+\w)',      # C. subsection
+            r'(\w)\s+(D\.\s+\w)',      # D. subsection
+            r'(\w)\s+(E\.\s+\w)',      # E. subsection
+        ]
+        
+        for pattern in subsection_patterns:
+            result = re.sub(pattern, r'\1\n\n\2', result)
+        
+        # STEP 3B: Handle bullet points more aggressively
+        # Replace any bullet that comes after text (except at start of string)
+        result = re.sub(r'(\S)\s*•\s*', r'\1\n\n• ', result)
+        
+        # Handle numbered lists (1. 2. 3.) - put on own lines
+        # Must have word character before, then space, then digit+period
+        result = re.sub(r'(\w)\s+(\d+)\.\s+', r'\1\n\n\2. ', result)
+        
+        # Algorithm headers
+        result = re.sub(r'(\w)\s+(ALGORITHM)', r'\1\n\n\2', result)
+        
+        # STEP 3C: Put labels on their own lines
+        labels = ['Key Insight:', 'Key Finding:', 'Key Observation:', 'Problem Statement:',
+                  'Significance:', 'Objectives:', 'Methodology:', 'Conclusion:',
+                  'Limitations:', 'Future Work:', 'Recommendations:', 'Summary:']
+        for label in labels:
+            result = re.sub(rf'(\w)\s+({re.escape(label)})', rf'\1\n\n\2', result)
+        
+        # Put formulas on their own lines
+        result = re.sub(r'(\w)\s*(Speedup\w*\s*=)', r'\1\n\n\2', result)
+        result = re.sub(r'(\w)\s*(O\([^)]+\)\s*complexity)', r'\1\n\n\2', result, flags=re.IGNORECASE)
+        
+        # STEP 4: Clean up formatting artifacts
+        result = re.sub(r'-{3,}', '', result)          # Remove dashes like ----
+        result = re.sub(r'\*{2,}', '', result)         # Remove ** markdown bold
+        result = re.sub(r'\n{3,}', '\n\n', result)     # Multiple newlines
+        result = re.sub(r'  +', ' ', result)           # Multiple spaces
+        
+        return result.strip()
 
     def humanize_text(self, text: str, section_name: str) -> str:
         """
@@ -614,23 +680,26 @@ Write the complete abstract now:"""
     Research papers to review:
     {rag_section}
 
-    CITATION RULE: You MUST use IEEE style citations like [1], [2] for EVERY paper discussed. Do NOT use (Author, Year).
+    CITATION RULE: Use IEEE style citations [1], [2] for papers discussed.
 
-    Write a {word_count}-word Introduction that includes:
+    STRUCTURE YOUR OUTPUT LIKE THIS:
 
-    1. Background (1 paragraph):
-    Start broadly about the field and narrow down to the specific topic.
+    Start with 2-3 sentences of background context.
     
-    2. Problem Statement (1 paragraph):
-    Discuss the challenges and limitations of current approaches.
+    Then discuss the problem. If mathematical, include the core equation:
+    - Example: The standard attention has O(N²) complexity.
+    
+    State your objectives using bullets or a short list:
+    • Objective 1
+    • Objective 2
+    
+    End with the significance (2 sentences).
 
-    3. Research Objectives (1 paragraph):
-    State clearly what this paper aims to achieve.
-
-    4. Significance (1 paragraph):
-    Why is this research important?
-
-    {HUMAN_STYLE_GUIDE}
+    REQUIREMENTS:
+    - Target {word_count} words.
+    - Be CONCISE and TECHNICAL.
+    - Include at least one equation or complexity notation if applicable.
+    - Use IEEE citations [1], [2].
 
     Write the Introduction now:"""
 
@@ -692,43 +761,43 @@ Write the complete abstract now:"""
 
     {paper_context}{user_section}
 
-    Write a {word_count}-word Methodology section that includes:
+    STRUCTURE YOUR OUTPUT EXACTLY LIKE THIS:
 
-    1. Research Design (2-3 sentences):
-    Describe the overall experimental approach.
+    A. Problem Formulation
+    State the core mathematical problem. Include the key equation:
+    - Example: mean = (1/N) * Σ a_i for all i
     
-    2. Data Collection (1-2 paragraphs):
-    - Dataset description: name, source, size, characteristics
-    - Data collection procedures
-    - Selection criteria or sampling method
-    - Preprocessing steps applied
-
-    3. Methods and Techniques (2-3 paragraphs):
-    - Specific algorithms/models/methods used
-    - If user provided blockchain details (Hyperledger, consensus, nodes, etc.), include ALL of them
-    - If user provided ML details (models, frameworks, parameters), include ALL of them
-    - Technical implementation details with specific version numbers
-    - Parameters and configurations (learning rate, batch size, epochs, consensus algorithm, etc.)
-    - Tools and frameworks (TensorFlow, PyTorch, Hyperledger Fabric, AWS, etc.)
-    - Architecture details (number of layers, nodes, organizations, peer nodes, orderer nodes, etc.)
-    - Smart contracts or code implementation details if applicable
-
-    4. Evaluation Metrics (1 paragraph):
-    - Metrics used: accuracy, precision, recall, F1-score, throughput, latency, etc.
-    - Validation approach (cross-validation, train-test split, testing period)
-    - Statistical analysis methods
+    B. Algorithm Design
+    Describe the algorithm with PSEUDOCODE:
+    
+    function algorithm_name(input[]):
+        initialization step
+        for each element:
+            processing step
+        return result
+    
+    Explain the pseudocode briefly (2 sentences).
+    
+    C. Implementation Details
+    Use BULLET POINTS for specifications:
+    • Framework: (e.g., PyTorch 2.1, TensorFlow)
+    • Hardware: (e.g., NVIDIA A100, 4 GPUs)
+    • Dataset: (name, size, splits)
+    • Hyperparameters: (learning rate, batch size, epochs)
+    
+    D. Experimental Protocol
+    Describe the test procedure in 2-3 sentences.
 
     CRITICAL REQUIREMENTS:
-    - Target {word_count} words (±50 acceptable)
-    - Be SPECIFIC with all technical details
-    - Use past tense: "The research used", "The model was trained", "The system was deployed"
-    - Include realistic technical specifications
-    - If user data provided, integrate it seamlessly and use ALL their details
-    - Write in plain text only, no markdown formatting
-    - Use third person: "This research used" NOT "We used"
-    - Include ALL user-provided details: specific tools, versions, parameters, dataset info, testing duration
+    - Target {word_count} words total.
+    - MANDATORY: Include at least 1 mathematical equation.
+    - MANDATORY: Include pseudocode block.
+    - MANDATORY: Include bullet list for specs.
+    - Use subsection headers (A. B. C. D.).
+    - If user provided data, use their EXACT values.
+    - Be DENSE and TECHNICAL.
 
-    Write a detailed, specific Methodology section now:"""
+    Write the Methodology section now:"""
 
     def _prompt_results(self, title: str, word_count: int,
                        paper_context: str, rag_context: str, user_data: Optional[str]) -> str:
@@ -745,39 +814,36 @@ IMPORTANT: Incorporate the user's actual results and metrics above. Use their sp
 
 {paper_context}{user_section}
 
-Write a {word_count}-word Results section that includes:
+STRUCTURE YOUR OUTPUT EXACTLY LIKE THIS:
 
-1. Overview (2 sentences):
-   - Summary of results
-   - Structure of results section
+A. Key Findings
+Start with a brief summary (2 sentences), then use BULLET POINTS:
+• Finding 1: (specific metric, e.g., "2.4x speedup over baseline")
+• Finding 2: (specific comparison)
+• Finding 3: (statistical significance if applicable)
 
-2. Primary Results (3 paragraphs):
-   - Present main quantitative findings clearly
-   - Include specific metrics: accuracy X.X%, precision 0.XX, F1-score 0.XX
-   - Reference "as shown in Table 1" and "illustrated in Figure 1"
-   - Compare with baseline methods
+B. Performance Comparison
+Use BULLETS for comparison (NO tables with |pipes|):
+• Baseline: speed Xms, memory YMB
+• Proposed: speed Xms, memory YMB
+• Improvement: X% faster
 
-3. Detailed Analysis (2 paragraphs):
-   - Performance across different conditions
-   - Statistical significance (p < 0.05)
-   - Strengths and weaknesses observed
-   
-4. Comparative Results (1 paragraph):
-   - How results compare to state-of-the-art
-   - Percentage improvements over existing methods
-   - Notable achievements
+C. Detailed Analysis
+Discuss WHY these results occurred. Reference Figure 1 if applicable.
+Include statistical significance: (p < 0.05).
 
-REQUIREMENTS:
-- Target {word_count} words
-- Use REALISTIC quantitative values (e.g., accuracy 92.4%, precision 0.91)
-- Reference Table 1 and Figures 1-2
-- Use past tense: "The model achieved", "Results showed"
-- Be specific with numbers
-- If user data provided, use their actual metrics
-- NO vague statements like "good results were obtained"
-- Write in plain text only, no formatting
+D. Comparison with State-of-the-Art
+Compare with methods from [1], [2]. Use specific numbers.
 
-Write the Results section with realistic metrics now:"""
+CRITICAL REQUIREMENTS:
+- Target {word_count} words total.
+- MANDATORY: Include bullet list of key findings.
+- MANDATORY: Include comparison table.
+- Use subsection headers (A. B. C. D.).
+- If user provided data, use their EXACT values.
+- Be SPECIFIC with numbers.
+
+Write the Results section now:"""
 
     def _prompt_discussion(self, title: str, word_count: int,
                           paper_context: str, rag_context: str, user_data: Optional[str]) -> str:
@@ -788,28 +854,30 @@ Write the Results section with realistic metrics now:"""
 {paper_context}
 {rag_section}
 
-Write a {word_count}-word Discussion section that includes:
+STRUCTURE YOUR OUTPUT LIKE THIS:
 
-1. Interpretation of Results (2 paragraphs):
-   - What do the findings mean?
-   - Do they support the initial hypothesis?
-   - Explain WHY the results occurred (the underlying mechanisms)
+A. Interpretation of Results
+Explain WHY the results occurred. If applicable, include an equation:
+- Example: Speedup_max = 1 / (f + (1-f)/p) where f is serial fraction
 
-2. Comparison with Literature (2 paragraphs):
-   - Compare your findings with the papers in the context.
-   - "Consistent with Smith [1], we found..." or "Contrary to Jones [2]..."
+B. Comparison with Literature
+Compare with [1], [2]. Use specific metrics:
+• Consistent with [1]: (specific finding)
+• Different from [2]: (specific finding)
 
-3. Limitations (1 paragraph):
-   - Honest assessment of study limitations (e.g., dataset size, specific conditions)
+C. Limitations
+Use bullets:
+• Limitation 1
+• Limitation 2
 
-4. Future Work (1 paragraph):
-   - Suggest 2-3 specific directions for future research
+D. Future Directions
+Suggest 2-3 specific improvements in brief bullet form.
 
 REQUIREMENTS:
-- Target {word_count} words
-- Be analytical, not just descriptive
-- Use citations [1], [2] when comparing
-- Write in plain text only, no formatting
+- Target {word_count} words.
+- Use subsection headers (A. B. C. D.).
+- Include equations where applicable.
+- Use citations [1], [2].
 
 Write the Discussion section now:"""
 
