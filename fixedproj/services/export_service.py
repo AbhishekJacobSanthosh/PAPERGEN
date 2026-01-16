@@ -400,6 +400,20 @@ class ExportService:
         # Close two-column div
         html += '    </div>\n'
         
+        # Add figures if available
+        if hasattr(paper, 'figures') and paper.figures:
+            html += '\n    <div class="figures-section" style="margin-top: 20px; column-span: all;">\n'
+            html += '    <div class="section-title">FIGURES</div>\n'
+            for fig_id, figure in paper.figures.items():
+                if hasattr(figure, 'data') and figure.data:
+                    html += f'''
+    <div style="text-align: center; margin: 15px 0;">
+        <img src="data:image/png;base64,{figure.data}" style="max-width: 90%; border: 1px solid #ddd; padding: 5px;">
+        <p style="font-style: italic; font-size: 9pt; margin-top: 5px;">{figure.caption}</p>
+    </div>
+'''
+            html += '    </div>\n'
+        
         html += """
 </body>
 </html>"""

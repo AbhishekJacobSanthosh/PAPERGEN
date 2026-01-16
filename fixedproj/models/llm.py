@@ -547,7 +547,10 @@ Write the complete abstract now:"""
         # STEP 3C: Put labels on their own lines
         labels = ['Key Insight:', 'Key Finding:', 'Key Observation:', 'Problem Statement:',
                   'Significance:', 'Objectives:', 'Methodology:', 'Conclusion:',
-                  'Limitations:', 'Future Work:', 'Recommendations:', 'Summary:']
+                  'Limitations:', 'Future Work:', 'Recommendations:', 'Summary:',
+                  'Data Protection Concerns:', 'The Problem:', 'Need for Standardization:',
+                  'Complexity of Existing Solutions:', 'Comparative Analysis:', 
+                  'Research Gaps:', 'Critical Implications:']
         for label in labels:
             result = re.sub(rf'(\w)\s+({re.escape(label)})', rf'\1\n\n\2', result)
         
@@ -558,6 +561,20 @@ Write the complete abstract now:"""
         # STEP 4: Clean up formatting artifacts
         result = re.sub(r'-{3,}', '', result)          # Remove dashes like ----
         result = re.sub(r'\*{2,}', '', result)         # Remove ** markdown bold
+        result = re.sub(r'#{1,6}\s*', '', result)      # Remove markdown headers (###)
+        
+        # STEP 5: Remove LLM meta-commentary
+        meta_patterns = [
+            r'Note:\s*The above.*?(?:tone|content|format|style)\.?',
+            r'Note:\s*This study.*?(?:tone|format)\.?',
+            r'I have (?:maintained|preserved|kept).*?\.?',
+            r'The (?:above|following) (?:rewritten )?text.*?\.?',
+            r'\(as depicted in Figure \d+\)',  # Remove figure references since no figs
+            r'See Figure \d+\.?',
+        ]
+        for pattern in meta_patterns:
+            result = re.sub(pattern, '', result, flags=re.IGNORECASE)
+        
         result = re.sub(r'\n{3,}', '\n\n', result)     # Multiple newlines
         result = re.sub(r'  +', ' ', result)           # Multiple spaces
         
