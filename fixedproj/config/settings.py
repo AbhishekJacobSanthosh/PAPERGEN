@@ -53,6 +53,7 @@ MAX_REFERENCES = 25
 MAX_RAG_CONTEXT_CHARS = 4000
 
 # Figure generation
+USE_REALISTIC_DATA = True  # Enable figure/table generation
 GENERATE_WORDCLOUD = True
 GENERATE_KEYWORD_CHART = True
 GENERATE_TABLES = True
